@@ -1,0 +1,10 @@
+make all --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/arthur/Documents/C++/irc'
+clang++ -Wall -Werror -Wextra -std=c++98 -c src/socket.cpp -o src/socket.o
+echo "Compiling library"
+mkdir -p build
+echo "Mounting build folder"
+clang++ -Wall -Werror -Wextra -std=c++98 src/socket.o server.cpp -o build/server -lpthread
+echo "Compiling server"
+make: Leaving directory '/home/arthur/Documents/C++/irc'
+ 
