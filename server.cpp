@@ -1,28 +1,25 @@
-#include "src/socket.hpp"
+#include "src/irc.hpp"
 
-void login(int client_fd) {
-	
-	send(client_fd, "login", 5, 0);
-	
-}
-
-
-
-void app()
+void app(const char **envp)
 {
-	Socket server(IP, PORT, SERVER);
+	Socket server(IP, PORT, SERVER, envp);
+
+	server.setPassword(PASSWORD);
 	server.listening();
-	server.create_client(login);
+	server.run();
+
 }
 
-
-int main(void)
+int main(int argc, const char **argv, const char **envp)
 {
+	(void)argc;
+	(void)argv;
+
 	try
 	{
-		app();
+		app(envp);
 	}
-	catch (const std::exception& e)
+	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
 		return (1);
