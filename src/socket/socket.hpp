@@ -1,55 +1,29 @@
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
 
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <pthread.h>
-#include <vector>
-#include <iostream>
-#include <unistd.h>
-#include <poll.h>
-
 #include "../irc.hpp"
-#include "../define.hpp"
 
-struct User;
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/poll.h>
+#include <netinet/in.h>
 
-void *thread_bind(void *arg);
+#include <unistd.h>
+#include <errno.h>
 
-class Socket
+#define SERVER_PORT 10000
+
+class Server
 {
-	typedef struct sockaddr_in sockaddr_in;
-	typedef bool socket_mode;
-
 public:
-	Socket(const char *ip, int port, socket_mode mode, const char **envp = NULL);
-	~Socket();
+	Server(void);
+	~Server(void);
 
-	// Static
-	// static int recv(int fd, char *buffer, int size);
-
-	// SERVER FUNCTION
-	void listening();
-	void setPassword(const char *password);
-	void run();
-	int create_client();
-
-	// CLIENT FUNCTION
-	void connecting();
-
-	// GLOBAL FUNCTION
-	int fd() const;
+	void run(void);
 
 private:
-	sockaddr_in _addr;
-	socket_mode _mode;
-	std::vector<pollfd> _pfds;
-
-	int _socket_fd;
-	int _port;
-	const char *_ip;
-	const char **_envp;
-	char *_password;
+	int _sock;
+	struct sockaddr_in6   _addr;
 };
 
 #endif

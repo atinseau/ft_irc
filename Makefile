@@ -1,25 +1,21 @@
 
 CC=clang++
-FLAGS=-Wall -Werror -Wextra -std=c++98 -g
+FLAGS=-Wall -Werror -Wextra -std=c++98
 
-LIB=	src/socket/socket.cpp \
-		src/utils/utils.cpp \
-		src/users/users.cpp
+LIB=	src/utils/utils.cpp \
+		src/socket/socket.cpp
+
 
 OBJS_LIB=$(LIB:.cpp=.o)
 
-SERVER_SRCS= server.cpp
-SERVER_NAME=build/server
-
-CLIENT_SRCS= client/main.cpp
-CLIENT_NAME=build/client
+SERVER_SRCS= main.cpp
+SERVER_NAME=ft_irc
 
 %.o:%.cpp
 	@$(CC) $(FLAGS) -c $< -o $@
 	@echo "Compiling $<"
 
 $(SERVER_NAME): $(OBJS_LIB)
-	@mkdir -p build
 
 all: $(SERVER_NAME)
 	@$(CC) $(FLAGS) $(OBJS_LIB) $(SERVER_SRCS) -o $(SERVER_NAME) -lpthread
@@ -31,18 +27,10 @@ clean:
 
 fclean: clean
 	@rm -f $(SERVER_NAME)
-	@rm -f $(CLIENT_NAME)
 	@rm -rf build
 	@echo "Cleaning build folder"
 
 re: fclean all
 
-# OPTIONNEL
-
-$(CLIENT_NAME): $(OBJS_LIB)
-	@mkdir -p build
-
-client: $(CLIENT_NAME)
-	@$(CC) $(FLAGS) $(OBJS_LIB) $(CLIENT_SRCS) -o $(CLIENT_NAME) -lpthread
 
 .DEFAULT_GOAL:=all
