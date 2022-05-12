@@ -8,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Wed May 11 20:10:10 2022
+# Make data base, printed on Thu May 12 09:29:00 2022
 
 # Variables
 
@@ -17,6 +17,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # automatic
 ?F = $(notdir $?)
 # environment
+ 
 VSCODE_LOG_NATIVE = false
 # environment
 NVM_INC = /Users/arthur/.nvm/versions/node/v16.15.0/include/node
@@ -31,7 +32,7 @@ CURDIR := /Users/arthur/Desktop/Dev/C++/ft_irc
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"f62d0d328ea2a469bad3c39b06263023.fr","_translationsConfigFile":"/Users/arthur/Library/Application Support/Code/clp/f62d0d328ea2a469bad3c39b06263023.fr/tcf.json","_cacheRoot":"/Users/arthur/Library/Application Support/Code/clp/f62d0d328ea2a469bad3c39b06263023.fr","_resolvedLanguagePackCoreLocation":"/Users/arthur/Library/Application Support/Code/clp/f62d0d328ea2a469bad3c39b06263023.fr/da15b6fd3ef856477bf6f4fb29ba1b7af717770d","_corruptedFile":"/Users/arthur/Library/Application Support/Code/clp/f62d0d328ea2a469bad3c39b06263023.fr/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"25fe6a3290ec415596628d4afc87a88c.fr","_translationsConfigFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/tcf.json","_cacheRoot":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr","_resolvedLanguagePackCoreLocation":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/da15b6fd3ef856477bf6f4fb29ba1b7af717770d","_corruptedFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/bin/make
 # makefile (from `Makefile', line 15)
@@ -43,7 +44,7 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/k4/j3zcwp293m1bg0x_tlsk1v_c0000gn/T/vscode-ipc-4edab1e9-c031-4de3-87c0-71aa41b36d00.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/k4/j3zcwp293m1bg0x_tlsk1v_c0000gn/T/vscode-ipc-86135918-bcc4-4650-aeaf-482932dcf0d3.sock
 # environment
 VSCODE_CWD = /
 # makefile (from `Makefile', line 9)
@@ -55,6 +56,8 @@ SERVER_SRCS = server.cpp
 # environment
 NVM_BIN = /Users/arthur/.nvm/versions/node/v16.15.0/bin
 # environment
+LaunchInstanceID = 62F30F4F-E913-42A0-BEE7-997F45B3CF6A
+# environment
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
@@ -63,7 +66,7 @@ LIB = src/socket/socket.cpp src/utils/utils.cpp src/users/users.cpp
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.MlsqgtYrSb/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.QpEZ591mrj/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -146,6 +149,8 @@ CLIENT_SRCS = client/main.cpp
 <F = $(notdir $<)
 # environment
 LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a6
 # automatic
 ^F = $(notdir $^)
 # default
@@ -159,9 +164,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 37363
+VSCODE_PID = 434
 # variable set hash-table stats:
-# Load=74/1024=7%, Rehash=0, Collisions=1/115=1%
+# Load=76/1024=7%, Rehash=0, Collisions=1/117=1%
 
 # Pattern-specific Variable Values
 
@@ -212,6 +217,7 @@ all: build/server
 # automatic
 # ? := build/server
 # variable set hash-table stats:
+ 
 # Load=8/32=25%, Rehash=0, Collisions=1/16=6%
 #  commands to execute (from `Makefile', line 25):
 	@$(CC) $(FLAGS) $(OBJS_LIB) $(SERVER_SRCS) -o $(SERVER_NAME) -lpthread
@@ -301,7 +307,6 @@ clean:
 
 src/utils/utils.o: src/utils/utils.cpp
 #  Implicit rule search has been done.
- 
 #  Implicit/static pattern stem: `src/utils/utils'
 #  Last modified 2022-05-11 17:39:12
 #  File has been updated.
@@ -371,6 +376,6 @@ src/users/users.o: src/users/users.cpp
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed May 11 20:10:10 2022
+# Finished Make data base on Thu May 12 09:29:00 2022
 
  

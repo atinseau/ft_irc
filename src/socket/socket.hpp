@@ -43,7 +43,7 @@ public:
 private:
 	sockaddr_in _addr;
 	socket_mode _mode;
-	std::vector<User> _pfds;
+	std::vector<pollfd> _pfds;
 
 	int _socket_fd;
 	int _port;

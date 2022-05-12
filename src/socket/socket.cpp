@@ -14,7 +14,7 @@ Socket::Socket(const char *ip, int port, Socket::socket_mode mode, const char **
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(port);
 
-	_pfds.push_back(User());
+	_pfds.push_back(pollfd());
 	_pfds.back().fd = _socket_fd;
 	_pfds.back().events = POLLIN;
 }
@@ -60,7 +60,7 @@ void Socket::run()
 			create_client();
 		}
 	
-		for (std::vector<User>::iterator it = _pfds.begin(); it != _pfds.end(); ++it)
+		for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ++it)
 		{
 			if (it->revents == POLLIN && it->fd != _socket_fd)
 			{
@@ -85,7 +85,7 @@ int Socket::create_client()
 	std::cout << "accept() success" << std::endl;
 	std::cout << "new client: " << client_fd << std::endl;
 
-	_pfds.push_back(User());
+	_pfds.push_back(pollfd());
 	_pfds.back().fd = client_fd;
 	_pfds.back().events = POLLIN;
 	return (client_fd);
