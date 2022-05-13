@@ -23,7 +23,9 @@ public:
 
 private:
 	int _sock;
-	struct sockaddr_in6   _addr;
+	struct sockaddr_in6 _addr;
+	std::vector<pollfd> _pfds;
+
 };
 
 #endif

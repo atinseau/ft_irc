@@ -29,9 +29,28 @@ Server::Server(void)
 		close(this->_sock);
 		throw std::runtime_error("bind() failed");
 	}
+
+	if (listen(_sock, 5) < 0)
+	{
+		close(this->_sock);
+		throw std::runtime_error("listen() failed");
+	}
+
+	pollfd pfd;
+
+	pfd.fd = this->_sock;
+	pfd.events = POLLIN;
+
+	this->_pfds.push_back(pfd);
 }
 
 Server::~Server()
 {
 	close(this->_sock);
+}
+
+
+void Server::run(void)
+{
+
 }
