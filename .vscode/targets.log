@@ -64,7 +64,7 @@ LIB = src/utils/utils.cpp src/socket/socket.cpp
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.QpEZ591mrj/Listeners
+SSH_AUTH_sockServer = /private/tmp/com.apple.launchd.QpEZ591mrj/Listeners
 # automatic
 %F = $(notdir $%)
 # environment

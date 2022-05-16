@@ -2,30 +2,40 @@
 #define SOCKET_HPP
 
 #include "../irc.hpp"
-
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <netinet/in.h>
-
 #include <unistd.h>
 #include <errno.h>
+#include <map>
+# define BLEU "\e[1;36m"
+# define BLEU_2 "\e[1;34m"
+# define ROUGE "\e[1;31m"
+# define VERT "\e[1;32m"
+# define JAUNE "\e[1;33m"
+# define VIOLET "\e[1;35m"
+# define BLANC "\e[0m"
 
 #define SERVER_PORT 10000
+#define TIME 10 * 100 * 1000
 
 class Server
 {
 public:
 	Server(void);
 	~Server(void);
-
 	void run(void);
-
+	//void addClient();
 private:
-	int _sock;
-	struct sockaddr_in6 _addr;
-	std::vector<pollfd> _pfds;
-
+	//Clients _clientelle;
+	int _sockServer;
+	struct sockaddr_in6 _addrServer;
+	//std::vector<pollfd> _pfds;
+	pollfd				_pfds[100];
 };
+
+void	msgServer(std::string str);
 
 #endif

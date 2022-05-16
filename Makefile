@@ -3,7 +3,7 @@ CC=clang++
 FLAGS=-Wall -Werror -Wextra -std=c++98
 
 LIB=	src/utils/utils.cpp \
-		src/socket/socket.cpp
+		src/socket/socket.cpp\
 
 
 OBJS_LIB=$(LIB:.cpp=.o)

@@ -2,7 +2,8 @@
 
 void app()
 {
-	const Server srv;
+	Server srv;
+	srv.run();
 }
 
 int main(int argc, const char **argv, const char **envp)

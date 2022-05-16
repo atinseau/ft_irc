@@ -1,5 +1,6 @@
 #include "utils.hpp"
 
+
 strvec split(const char *str, char c)
 {
 	strvec res;
