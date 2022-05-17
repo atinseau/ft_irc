@@ -1,20 +1,27 @@
 #include "src/irc.hpp"
 
-void app()
+void app(std::string port, std::string password)
 {
-	Server srv;
+	Server srv(port, password);
 	srv.run();
 }
 
-int main(int argc, const char **argv, const char **envp)
+int main(int ac, const char **av, const char **envp)
 {
-	(void)argc;
-	(void)argv;
 	(void)envp;
 
+	std::string port;
+	std::string password;
 	try
 	{
-		app();
+		if (ac != 3)
+			app("10000", "root");
+		else 
+		{
+			port = av[1];
+			password = av[2];
+		}
+		app(port, password);
 	}
 	catch (const std::exception &e)
 	{

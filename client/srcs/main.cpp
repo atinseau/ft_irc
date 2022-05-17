@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 10:11:23 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/17 11:29:51 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/17 15:39:17 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,20 @@ int	main()
 	connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
 	std::cout << "connecté" << std::endl;
 	std::string test;
-	while (test != "fin")
+	char str[4];
+	while (1)
 	{
 		std::getline(std::cin, test);
+		std::cout << test << std::endl;
 		send(socketClient, test.c_str(), test.size(), 0);
+		
+		if (test == "end")
+		{
+			recv(socketClient, str, sizeof(str), 0);
+			test = str;
+			if (test == "end")
+				break;
+		}
 	}
 	close(socketClient);
 	return (0);

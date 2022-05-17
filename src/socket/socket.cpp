@@ -1,11 +1,36 @@
 #include "socket.hpp"
 
+//message type de server
 void	msgServer(std::string str)
 {
 	std::cerr << VIOLET << "---SERVER---  " << str << BLANC << std::endl;
 }
 
-Server::Server(void)
+//initialisation avec un controle du port et du password donner
+Server::Server(std::string port, std::string password) : _password(password)
+{
+	for (size_t i = 0; i < port.size(); i++)
+	{
+		if (port[i] < 48 || port[i] > 57)
+			throw std::runtime_error(ROUGE"Port incorrecte"BLANC);
+		if (i > 5)
+			throw std::runtime_error(ROUGE"Port incorrecte"BLANC);
+		this->_port = atoi(port.c_str());
+		if (this->_port > 65536)
+			throw std::runtime_error(ROUGE"Port incorrecte"BLANC);
+	}
+	this->playServer();
+}
+
+//close du server avec close de chaque fd
+Server::~Server()
+{
+	for (int i = 0; this->_pfds[i].fd > 0; i++)
+		close(this->_pfds[i].fd);
+}
+
+//programation du serveur
+void Server::playServer(void)
 {
 	int rc;
 	int on = 1;
@@ -20,7 +45,7 @@ Server::Server(void)
 	memset(&this->_addrServer, 0, sizeof(this->_addrServer));
 	this->_addrServer.sin6_family      = AF_INET6;
 	memcpy(&this->_addrServer.sin6_addr, &in6addr_any, sizeof(in6addr_any));
-	this->_addrServer.sin6_port        = htons(SERVER_PORT);
+	this->_addrServer.sin6_port        = htons(this->_port);
 	if ((rc = bind(this->_sockServer,(struct sockaddr *)&this->_addrServer, sizeof(this->_addrServer))) < 0)
 			throw std::runtime_error(ROUGE"bind() failed"BLANC);
 	if ((rc = listen(this->_sockServer, 32)) < 0)
@@ -31,18 +56,10 @@ Server::Server(void)
 	msgServer("Server correctement initialiser...");
 }
 
-Server::~Server()
-{
-	for (int i = 0; this->_pfds[i].fd > 0; i++)
-		close(this->_pfds[i].fd);
-}
-
+//protocole d ajoue des fd et de reception des message
 void Server::run(void)
 {
-	int rc, len, current_size;
-	pollfd tmp;
-	bool end_server, close_conn, compress_array;
-	char buffer[200];
+	int rc, current_size;
 	do
 	{
 		msgServer("En attente de poll()...");
@@ -56,77 +73,94 @@ void Server::run(void)
 			if(this->_pfds[i].revents != POLLIN)
 			{
 				std::cout << ROUGE << "Error! revents = " << this->_pfds[i].revents << BLANC << std::endl;
-				end_server = true;
+				this->closedAndPreventClient(i);
 				break;
 			}
 			if (this->_pfds[i].fd == this->_sockServer)
-			{
-				msgServer("Listening socket is readable");
-				do
-				{
-					tmp.events = POLLIN;
-					if ((tmp.fd = accept(this->_sockServer, NULL, NULL)) < 0)
-					{
-						if (errno != EWOULDBLOCK)
-							throw std::runtime_error(ROUGE"accept() failed"BLANC);
-						break;
-					}
-					std::cerr << VIOLET << "---SERVER---  " << "Nouvel connection ! fd : " << tmp.fd << BLANC << std::endl;
-					this->_pfds.push_back(tmp);
-				} while (tmp.fd != -1);
-			}
+				this->AddClient();
 			else
-			{
-				std::cerr << VIOLET << "---SERVER---  Descripteur" << this->_pfds[i].fd << " est lisible..." << BLANC << std::endl;
-				close_conn = false;
-				do
-				{
-					memset(&buffer, 0, 200);
-					if ((rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0)) < 0)
-					{
-						if (errno != EWOULDBLOCK)
-							throw std::runtime_error(ROUGE"recv() failed"BLANC);
-						break;
-					}
-					if (rc == 0)
-					{
-						msgServer("Connection closed\n");
-						close_conn = true;
-						break;
-					}
-					len = rc;
-					buffer[len] = '\0';
-					//std::cerr << BLEU << "---SERVER---  Reception :" << len << " bits" << BLANC << std::endl;
-					//std::cerr << BLEU << "---SERVER---  Reception :(" << buffer <<")" << BLANC << std::endl;
-					std::cout << "(" << buffer << ")"<< std::endl;
-					rc = send(this->_pfds[i].fd, buffer, len, 0);
-					if (rc < 0)
-						throw std::runtime_error(ROUGE"send() failed"BLANC);
-				} while(true);
-				if (close_conn)
-				{
-					close(this->_pfds[i].fd);
-					this->_pfds[i].fd = -1;
-					compress_array = true;
-				}
-			}
+				this->Reception(i);
 		}
-		int tmp = this->_pfds.size();
-		if (compress_array)
+	} while (1);
+}
+
+//ajoute les client 
+void	Server::AddClient(void)
+{
+	pollfd tmp;
+	msgServer("Listening socket is readable");
+	do
+	{
+		tmp.events = POLLIN;
+		if ((tmp.fd = accept(this->_sockServer, NULL, NULL)) < 0)
 		{
-			compress_array = false;
-			for (int i = 0; i < tmp; i++)
-			{
-				if (this->_pfds[i].fd == -1)
-				{
-					for(int j = i; j < tmp - 1; j++)
-					{
-						this->_pfds[j].fd = this->_pfds[j+1].fd;
-					}
-					i--;
-					tmp--;
-				}
-			}
+			if (errno != EWOULDBLOCK)
+				throw std::runtime_error(ROUGE"accept() failed"BLANC);
+			break;
 		}
-	} while (end_server == false); 
+		std::cerr << VIOLET << "---SERVER---  Connection" << VERT << " open " << VIOLET << "fd : " << tmp.fd << BLANC << std::endl;
+		this->_pfds.push_back(tmp);
+	} while (tmp.fd != -1);
+}
+
+//previent le client de la fermeture, ferme le fd du client et suprime l element du tableau 
+void	Server::closedAndPreventClient(int i)
+{
+	send(this->_pfds[i].fd, "end", sizeof("end"), 0);
+	close(this->_pfds[i].fd);
+	std::cerr << VIOLET << "---SERVER---  Connection" << ROUGE << " closed " << VIOLET << "fd : " << this->_pfds[i].fd << BLANC << std::endl;
+	this->_pfds[i].fd = -1;
+	int tmp = this->_pfds.size();
+	for (int i = 0; i < tmp; i++)
+	{
+		if (this->_pfds[i].fd == -1)
+		{
+			for(int j = i; j < tmp - 1; j++)
+				this->_pfds[j].fd = this->_pfds[j+1].fd;
+			i--;
+			tmp--;
+		}
+	}
+}
+
+//receptionne les message 
+void	Server::Reception(int i)
+{
+	char buffer[4];
+	int rc = 0;
+
+	do
+	{
+		std::string line;
+		int len = 0;
+		while ((rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0)) >= 0)
+		{
+			len += rc;
+			line += buffer;
+			memset(&buffer, 0, 4);
+		}
+		if (rc == 0 || line == "end")
+		{
+			this->closedAndPreventClient(i);
+			break;
+		}
+		else
+		{
+			std::cerr << BLEU << "------------------------------------------------"<< BLANC << std::endl;
+			std::cerr << BLEU << "RECEPTION"<< BLANC << std::endl;
+			std::cerr << BLEU << "source fd : (" << this->_pfds[i].fd << ")" << BLANC << std::endl;
+			std::cerr << BLEU << "taille    : ("<< len << "bits)"<< BLANC << std::endl;
+			std::cerr << BLEU << "message   : ("<< line << ")"<< BLANC << std::endl;
+			std::cerr << BLEU << "------------------------------------------------"<< BLANC << std::endl;
+		}
+		if (rc < 0)
+		{
+			if (errno != EWOULDBLOCK)
+				throw std::runtime_error(ROUGE"recv() failed"BLANC);
+			break;
+		}
+		rc = send(this->_pfds[i].fd, buffer, len, 0);
+		if (rc < 0)
+			throw std::runtime_error(ROUGE"send() failed"BLANC);
+	} while(true);
 }

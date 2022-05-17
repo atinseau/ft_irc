@@ -24,13 +24,20 @@
 class Server
 {
 public:
-	Server(void);
+	Server(std::string port, std::string password);
 	~Server(void);
-	void run(void);
+	void	playServer();					//programation du serveur
+	void	run(void);						//protocole d ajoue des fd et de reception des message
+	void	Reception(int i);				//receptionne les message
+	void	closedAndPreventClient(int i);	//previent le client de la fermeture, ferme le fd du client et suprime l element du tableau 
+	void	AddClient(void);				//ajoute les client 
 private:
-	int _sockServer;
-	struct sockaddr_in6 _addrServer;
-	std::vector<pollfd> _pfds;
+	int					_port;
+	std::string			_password;
+	int					_sockServer;
+	struct sockaddr_in6	_addrServer;
+	std::vector<pollfd>	_pfds;
+	Server(void){};
 };
 
 void	msgServer(std::string str);
