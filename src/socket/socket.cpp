@@ -9,6 +9,7 @@ Server::Server(void)
 {
 	int rc;
 	int on = 1;
+	pollfd tmp;
 
 	if ((this->_sockServer = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
 		throw std::runtime_error(ROUGE"socket() failed"BLANC);
@@ -23,10 +24,10 @@ Server::Server(void)
 	if ((rc = bind(this->_sockServer,(struct sockaddr *)&this->_addrServer, sizeof(this->_addrServer))) < 0)
 			throw std::runtime_error(ROUGE"bind() failed"BLANC);
 	if ((rc = listen(this->_sockServer, 32)) < 0)
-				throw std::runtime_error(ROUGE"listen() failed"BLANC);
-	memset(this->_pfds, 0 , sizeof(this->_pfds));
-	this->_pfds[0].fd = this->_sockServer;
-	this->_pfds[0].events = POLLIN;
+			throw std::runtime_error(ROUGE"listen() failed"BLANC);
+	tmp.fd = this->_sockServer;
+	tmp.events = POLLIN;
+	this->_pfds.push_back(tmp);
 	msgServer("Server correctement initialiser...");
 }
 
@@ -40,19 +41,17 @@ Server::~Server()
 
 void Server::run(void)
 {
-	int rc, len, new_sd, current_size;
-	int nfds = 1;
+	int rc, len, current_size;
+	pollfd tmp;
 	bool end_server, close_conn, compress_array;
 	char buffer[200];
 	do
 	{
 		msgServer("En attente de poll()...");
-		rc = poll(this->_pfds, nfds, TIME);
-		if (rc < 0)
-			throw std::runtime_error(ROUGE"poll() failed"BLANC);
-		if (rc == 0)
-			throw std::runtime_error(ROUGE"poll() timeout"BLANC);
-		current_size = nfds;
+		if ((rc = poll(&(*this->_pfds.begin()), this->_pfds.size(), TIME)) <= 0)
+			throw std::runtime_error(ROUGE"poll() failed/timeout"BLANC);
+		current_size = this->_pfds.size();
+		std::cout << "ici " << current_size << std::endl;
 		for (int i = 0; i < current_size; i++)
 		{
 			if(this->_pfds[i].revents == 0)
@@ -68,18 +67,16 @@ void Server::run(void)
 				msgServer("Listening socket is readable");
 				do
 				{
-					new_sd = accept(this->_sockServer, NULL, NULL);
-					if (new_sd < 0)
+					tmp.events = POLLIN;
+					if ((tmp.fd = accept(this->_sockServer, NULL, NULL)) < 0)
 					{
 						if (errno != EWOULDBLOCK)
 							throw std::runtime_error(ROUGE"accept() failed"BLANC);
 						break;
 					}
-					std::cerr << VIOLET << "---SERVER---  " << "Nouvel connection ! fd : " << new_sd << BLANC << std::endl;
-					this->_pfds[nfds].fd = new_sd;
-					this->_pfds[nfds].events = POLLIN;
-					nfds++;
-				} while (new_sd != -1);
+					std::cerr << VIOLET << "---SERVER---  " << "Nouvel connection ! fd : " << tmp.fd << BLANC << std::endl;
+					this->_pfds.push_back(tmp);
+				} while (tmp.fd != -1);
 			}
 			else
 			{
@@ -114,20 +111,21 @@ void Server::run(void)
 					compress_array = true;
 				}
 			}
-		} 
+		}
+		int tmp = this->_pfds.size();
 		if (compress_array)
 		{
 			compress_array = false;
-			for (int i = 0; i < nfds; i++)
+			for (int i = 0; i < tmp; i++)
 			{
 				if (this->_pfds[i].fd == -1)
 				{
-					for(int j = i; j < nfds-1; j++)
+					for(int j = i; j < tmp - 1; j++)
 					{
 						this->_pfds[j].fd = this->_pfds[j+1].fd;
 					}
 					i--;
-					nfds--;
+					tmp--;
 				}
 			}
 		}
