@@ -19,7 +19,7 @@
 # define BLANC "\e[0m"
 
 #define SERVER_PORT 10000
-#define TIME 10 * 100 * 1000
+#define TIME 3 * 60 * 1000
 
 class Server
 {
