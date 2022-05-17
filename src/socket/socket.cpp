@@ -34,9 +34,7 @@ Server::Server(void)
 Server::~Server()
 {
 	for (int i = 0; this->_pfds[i].fd > 0; i++)
-	{
 		close(this->_pfds[i].fd);
-	} 
 }
 
 void Server::run(void)
@@ -51,7 +49,6 @@ void Server::run(void)
 		if ((rc = poll(&(*this->_pfds.begin()), this->_pfds.size(), TIME)) <= 0)
 			throw std::runtime_error(ROUGE"poll() failed/timeout"BLANC);
 		current_size = this->_pfds.size();
-		std::cout << "ici " << current_size << std::endl;
 		for (int i = 0; i < current_size; i++)
 		{
 			if(this->_pfds[i].revents == 0)
@@ -84,8 +81,8 @@ void Server::run(void)
 				close_conn = false;
 				do
 				{
-					rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0);
-					if (rc < 0)
+					memset(&buffer, 0, 200);
+					if ((rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0)) < 0)
 					{
 						if (errno != EWOULDBLOCK)
 							throw std::runtime_error(ROUGE"recv() failed"BLANC);
@@ -98,8 +95,10 @@ void Server::run(void)
 						break;
 					}
 					len = rc;
-					std::cerr << BLEU << "---SERVER---  Reception : " << len << " bits" << BLANC << std::endl;
-					std::cerr << BLEU << "---SERVER---  Reception : \" " << buffer << " \"" << BLANC << std::endl;
+					buffer[len] = '\0';
+					//std::cerr << BLEU << "---SERVER---  Reception :" << len << " bits" << BLANC << std::endl;
+					//std::cerr << BLEU << "---SERVER---  Reception :(" << buffer <<")" << BLANC << std::endl;
+					std::cout << "(" << buffer << ")"<< std::endl;
 					rc = send(this->_pfds[i].fd, buffer, len, 0);
 					if (rc < 0)
 						throw std::runtime_error(ROUGE"send() failed"BLANC);
@@ -129,5 +128,5 @@ void Server::run(void)
 				}
 			}
 		}
-	} while (end_server == false); /* End of serving running.    */
+	} while (end_server == false); 
 }

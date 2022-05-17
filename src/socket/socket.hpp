@@ -27,13 +27,10 @@ public:
 	Server(void);
 	~Server(void);
 	void run(void);
-	//void addClient();
 private:
-	//Clients _clientelle;
 	int _sockServer;
 	struct sockaddr_in6 _addrServer;
 	std::vector<pollfd> _pfds;
-	//pollfd				_pfds[100];
 };
 
 void	msgServer(std::string str);

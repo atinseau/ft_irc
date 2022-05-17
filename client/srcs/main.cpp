@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 10:11:23 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/17 09:25:11 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/17 11:29:51 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	main()
 	std::string test;
 	while (test != "fin")
 	{
-		std::cin >> test;
-		send(socketClient, &test, sizeof(std::string), 0);
+		std::getline(std::cin, test);
+		send(socketClient, test.c_str(), test.size(), 0);
 	}
 	close(socketClient);
 	return (0);
