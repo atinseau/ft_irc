@@ -6,12 +6,18 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:23 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 09:52:24 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/18 15:09:55 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.hpp"
 
+bool whitesapece(char c)
+{
+	if (c <= 32 && c >= 28)
+		return (true);
+	return (false);
+}
 
 strvec split(const char *str, char c)
 {

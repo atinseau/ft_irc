@@ -6,23 +6,20 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 10:11:23 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 10:53:57 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/18 18:18:02 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../src/irc.hpp"
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <sys/poll.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <errno.h>
-#include <map>
+
 
 int	main()
 {
+	int on = 1;
 	int	socketClient = socket(AF_INET6, SOCK_STREAM, 0);
+	pollfd fd;
+	if ((ioctl(socketClient, FIONBIO, (char *)&on)) < 0)
+		throw std::runtime_error(ROUGE"ioctl() failed"BLANC);
 	struct sockaddr_in6 addrClient;
 	memset(&addrClient, 0, sizeof(addrClient));
   	memcpy(&addrClient.sin6_addr, &in6addr_any, sizeof(in6addr_any));
@@ -31,17 +28,22 @@ int	main()
 	connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
 	std::cout << "connected" << std::endl;
 	std::string test;
-	char str[4];
+	char str[5];
+	fd.fd = socketClient;
+	fd.events = POLLIN;
 	while (1)
 	{
+		if ((poll(&(fd), sizeof(fd), TIME)) <= 0)
+			throw std::runtime_error(ROUGE"poll() failed/timeout"BLANC);
 		std::getline(std::cin, test);
+		test[test.size()] = '\0';
 		send(socketClient, test.c_str(), test.size(), 0);
-		
-		if (test == "end")
+		if (test == "/end")
 		{
 			recv(socketClient, str, sizeof(str), 0);
+			str[4] = '\0';
 			test = str;
-			if (test == "end")
+			if (test == "/end")
 				break;
 		}
 	}
