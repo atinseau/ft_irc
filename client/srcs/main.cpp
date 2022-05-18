@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 10:11:23 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/17 15:39:17 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/18 10:53:57 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,12 @@ int	main()
 	addrClient.sin6_family      = AF_INET6;
 	addrClient.sin6_port = htons(10000);
 	connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
-	std::cout << "connecté" << std::endl;
+	std::cout << "connected" << std::endl;
 	std::string test;
 	char str[4];
 	while (1)
 	{
 		std::getline(std::cin, test);
-		std::cout << test << std::endl;
 		send(socketClient, test.c_str(), test.size(), 0);
 		
 		if (test == "end")

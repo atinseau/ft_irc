@@ -1,23 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/18 09:52:26 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 09:52:27 by mbonnet          ###   ########.fr       */
+/*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
+/*   Updated: 2022/05/18 09:52:10 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#include "client.hpp"
 
-#include <vector>
-#include <iostream>
-
-typedef std::vector<std::string> strvec;
-
-strvec split(const char *str, char c);
-
-#endif 

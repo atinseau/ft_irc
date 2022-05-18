@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   socket.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
+/*   Updated: 2022/05/18 10:55:30 by mbonnet          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "socket.hpp"
 
 //message type de server
@@ -53,6 +65,7 @@ void Server::playServer(void)
 	tmp.fd = this->_sockServer;
 	tmp.events = POLLIN;
 	this->_pfds.push_back(tmp);
+	this->_client.push_back(Client());
 	msgServer("Server correctement initialiser...");
 }
 
@@ -88,6 +101,7 @@ void Server::run(void)
 void	Server::AddClient(void)
 {
 	pollfd tmp;
+
 	msgServer("Listening socket is readable");
 	do
 	{
@@ -100,6 +114,7 @@ void	Server::AddClient(void)
 		}
 		std::cerr << VIOLET << "---SERVER---  Connection" << VERT << " open " << VIOLET << "fd : " << tmp.fd << BLANC << std::endl;
 		this->_pfds.push_back(tmp);
+		this->_client.push_back(tmp.fd);
 	} while (tmp.fd != -1);
 }
 
@@ -109,18 +124,19 @@ void	Server::closedAndPreventClient(int i)
 	send(this->_pfds[i].fd, "end", sizeof("end"), 0);
 	close(this->_pfds[i].fd);
 	std::cerr << VIOLET << "---SERVER---  Connection" << ROUGE << " closed " << VIOLET << "fd : " << this->_pfds[i].fd << BLANC << std::endl;
-	this->_pfds[i].fd = -1;
-	int tmp = this->_pfds.size();
-	for (int i = 0; i < tmp; i++)
-	{
-		if (this->_pfds[i].fd == -1)
-		{
-			for(int j = i; j < tmp - 1; j++)
-				this->_pfds[j].fd = this->_pfds[j+1].fd;
-			i--;
-			tmp--;
-		}
-	}
+	this->_pfds.erase((this->_pfds.begin() + i));
+	//this->_pfds[i].fd = -1;
+	//int tmp = this->_pfds.size();
+	//for (int i = 0; i < tmp; i++)
+	//{
+	//	if (this->_pfds[i].fd == -1)
+	//	{
+	//		for(int j = i; j < tmp - 1; j++)
+	//			this->_pfds[j].fd = this->_pfds[j+1].fd;
+	//		i--;
+	//		tmp--;
+	//	}
+	//}
 }
 
 //receptionne les message 
@@ -131,6 +147,7 @@ void	Server::Reception(int i)
 
 	do
 	{
+		std::cout << "coucou" << std::endl;
 		std::string line;
 		int len = 0;
 		while ((rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0)) >= 0)
