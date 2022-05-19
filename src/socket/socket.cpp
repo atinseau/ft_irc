@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 18:19:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/19 17:50:25 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void Server::run(void)
 	int rc, current_size;
 	do
 	{
-		msgServer("En attente de poll()...");
 		if ((rc = poll(&(*this->_pfds.begin()), this->_pfds.size(), TIME)) <= 0)
 			throw std::runtime_error(ROUGE"poll() failed/timeout"BLANC);
 		current_size = this->_pfds.size();
@@ -90,11 +89,48 @@ void Server::run(void)
 				break;
 			}
 			if (this->_pfds[i].fd == this->_sockServer)
+			{
 				this->AddClient();
+			}
 			else
-				this->protocolReception(i);
+			{
+					this->protocolReception(i);
+					this->sendMessage(i,"MESSAGE coucou\r\n");
+			}
 		}
 	} while (1);
+}
+
+//receptionne les message 
+void	Server::protocolReception(int i)
+{
+	int rc;
+	do
+	{
+		std::string line;
+		int len = 0;
+		rc = this->Reception(&line, &len, i);
+		int pars = this->parsing(i, line);
+		if (pars == 1)
+			this->printReception(i, len, line);
+		else if (pars == -1)
+		{
+			this->closedAndPreventClient(i);
+			break ;
+		}
+		else if (pars == -2)
+		{
+			std::cout << "ERROR commande channel" << std::endl;
+			break ;
+		}
+		if (rc < 0)
+		{
+			if (errno != EWOULDBLOCK)
+				throw std::runtime_error(ROUGE"recv() failed"BLANC);
+			break;
+		}
+		
+	} while(true);
 }
 
 //ajoute les client 
@@ -130,8 +166,11 @@ void	Server::closedAndPreventClient(int i)
 
 void	Server::sendMessage(int i, std::string msg)
 {
-	std::cout << "coucou" << std::endl; 
-	send(this->_pfds[i].fd, msg.c_str() , sizeof(msg), 0);
+	int c;
+	(void)msg;
+	if ((c = send(this->_pfds[i].fd, msg.c_str() , msg.size() , 0)) < 0)
+		std::cout << "retour c : " << c << std::endl;
+	std::cout << "retour c : " << c << std::endl;
 }
 
 int	Server::Reception(std::string *line, int *len, int i)
@@ -139,13 +178,30 @@ int	Server::Reception(std::string *line, int *len, int i)
 	char buffer[1];
 	int rc = 0;
 
-	while ((rc = recv(this->_pfds[i].fd, buffer, sizeof(buffer), 0)) >= 0)
+	memset(&buffer, 0, 1);
+	while ((rc = recv(this->_pfds[i].fd, buffer, sizeof(char), 0)) >= 0)
 	{
+		if (buffer[0] == 13 || buffer[0] == 10)
+			buffer[0] = '\0';
 		(*line) += buffer[0];
-		*len += rc;
+		*len += rc; 
 		memset(&buffer, 0, 1);
 	}
+	std::cout << std::endl;
 	return (rc);
+} 
+
+int	Server::parsing(int i, std::string line)
+{
+	if (this->_client[i].getIdentify() == false)
+		return (this->managementOrdered(i, line));
+	else if (this->_client[i].getIdentify() == true)
+		return (this->managementOrdered(i, line));
+	else if (this->_client[i].getIdentify() == true)
+		return (1);
+	//else if (this->_client[i].getIdentify() == true && line == "/end")
+	//	return (-1);
+	return (-1);
 }
 
 int		Server::managementOrdered(int i, std::string line)
@@ -167,78 +223,35 @@ int		Server::managementOrdered(int i, std::string line)
 	line.copy(tmp2, line.size() - y ,y);
 	tmp2[line.size() - y] = '\0';
 	parametre = tmp2;
-	if (cmd == "/password" && parametre == this->_password)
+	if (cmd == "PASS" && parametre == this->_password)
 		this->_client[i].setIdentify(true);
-	else if (cmd == "/password" && parametre != this->_password)
+	else if (cmd == "PASS" && parametre != this->_password)
 		return (-1);
-	else if (cmd == "/username")
+	else if (cmd == "USER")
 		this->_client[i].setUsername(parametre);
-	else if (cmd == "/nickname")
+	else if (cmd == "NICK")
 		this->_client[i].setNickname(parametre);
-	else if (cmd == "/channel")
+	else if (cmd == "CHANNEL")
 	{
 		for (size_t x = 0; x < parametre.size(); x++)
-			if (parametre[x] < 48 || parametre[x] > 39)
+			if (parametre[x] < 48 || parametre[x] > 57)
 				return (-2);
 		this->_client[i].setChannel(std::atoi(parametre.c_str()));
 	}
+	else if (cmd == "MESSAGE")
+		return (1);
 	return (0);
 }
 
-int	Server::parsing(int i, std::string line)
-{
-	if (this->_client[i].getIdentify() == false && line[0] == '/')
-		return (this->managementOrdered(i, line));
-	else if (this->_client[i].getIdentify() == false && line[0] != '/')
-		return (-1);
-	else if (this->_client[i].getIdentify() == true && line == "/end")
-		return (-1);
-	else if (this->_client[i].getIdentify() == true && line[0] == '/')
-		return (this->managementOrdered(i, line));
-	else if (this->_client[i].getIdentify() == true)
-		return (1);
-	return (-1);
-}
 
 void	Server::printReception(int i, int len, std::string line)
 {
 	std::cerr << BLEU << "------------------------------------------------"<< BLANC << std::endl;
 	std::cerr << BLEU << "RECEPTION"<< BLANC << std::endl;
-	std::cerr << BLEU << "Username  : (" << this->_client[i].getUsername() << ")" << " Nickname  : (" << this->_client[i].getNickname() << ")" << BLANC << std::endl;
-	std::cerr << BLEU << "Channel   : (" << this->_client[i].getChannel() << ")" << " Fd        : (" << this->_pfds[i].fd << ")" << BLANC << std::endl;
+	std::cerr << BLEU << "Username  : " << this->_client[i].getUsername() << " Nickname  : " << this->_client[i].getNickname() << BLANC << std::endl;
+	std::cerr << BLEU << "Channel   : " << this->_client[i].getChannel() << " Fd        : " << this->_pfds[i].fd  << BLANC << std::endl;
 	std::cerr << BLEU << "taille    : ("<< len << "bits)"<< BLANC << std::endl;
-	std::cerr << BLEU << "message   : ("<< line << ")"<< BLANC << std::endl;
+	std::cerr << BLEU << "message   : "<< line << BLANC << std::endl;
 	std::cerr << BLEU << "------------------------------------------------"<< BLANC << std::endl;
 }
 
-//receptionne les message 
-void	Server::protocolReception(int i)
-{
-	int rc;
-	do
-	{
-		std::string line;
-		int len = 0;
-		rc = this->Reception(&line, &len, i);
-		int pars = this->parsing(i, line);
-		if (pars == 1)
-			this->printReception(i, len, line);
-		else if (pars == -1)
-		{
-			this->closedAndPreventClient(i);
-			break ;
-		}
-		else if (pars == -2)
-		{
-			std::cout << "ERROR commande channel" << std::endl;
-			break ;
-		}
-		if (rc < 0)
-		{
-			if (errno != EWOULDBLOCK)
-				throw std::runtime_error(ROUGE"recv() failed"BLANC);
-			break;
-		}
-		
-	} while(true);
-}

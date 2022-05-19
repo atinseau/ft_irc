@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:53:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 18:02:37 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/19 10:37:43 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ public:
 	std::string		getUsername(void){return (this->_username);};
 	std::string		getNickname(void){return (this->_nickname);};
 	void			setFd(int fd){this->_fd = fd;};
-	void			setChannel(int channel){std::cout << VERT << "Nouveau channel : " << this->_channel << BLANC << std::endl;this->_channel = channel;};
+	void			setChannel(int channel){std::cout << VERT << "Nouveau channel : " << channel << BLANC << std::endl;this->_channel = channel;};
 	void			setIdentify(bool iden){if (this->_identify == false) std::cout << VERT << "Moth de passe correcte" << BLANC << std::endl; this->_identify = iden;};
-	void			setUsername(std::string username){std::cout << VERT << "Nouveau username : " << this->_username << BLANC << std::endl;this->_username = username;};
-	void			setNickname(std::string nickname){std::cout << VERT << "Nouveau nickname : " << this->_nickname << BLANC << std::endl;this->_nickname = nickname;};
+	void			setUsername(std::string username){std::cout << VERT << "Nouveau username : " << username << BLANC << std::endl;this->_username = username;};
+	void			setNickname(std::string nickname){std::cout << VERT << "Nouveau nickname : " << nickname << BLANC << std::endl;this->_nickname = nickname;};
 	void			printPara(void);
 
 	~Client(void){};
