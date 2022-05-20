@@ -1,11 +1,6 @@
 make --dry-run --keep-going --print-directory
 make: Entering directory `/Users/arthur/Desktop/Dev/C++/ft_irc'
-clang++ -Wall -Werror -Wextra -std=c++98 -c src/utils/utils.cpp -o src/utils/utils.o
-echo "Compiling src/utils/utils.cpp"
- 
-clang++ -Wall -Werror -Wextra -std=c++98 -c src/socket/socket.cpp -o src/socket/socket.o
-echo "Compiling src/socket/socket.cpp"
-clang++ -Wall -Werror -Wextra -std=c++98 src/utils/utils.o src/socket/socket.o main.cpp -o ft_irc -lpthread
+clang++ -Wall -Werror -Wextra -std=c++98 -g src/utils/utils.o src/socket/socket.o src/client/client.o src/client/request.o main.cpp -o ft_irc -lpthread
 echo "Compiling server"
 make: Leaving directory `/Users/arthur/Desktop/Dev/C++/ft_irc'
  

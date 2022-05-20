@@ -8,7 +8,7 @@
 			"type": "lldb",
 			"request": "launch",
 			"name": "Debug",
-			"program": "${workspaceFolder}/build/server",
+			"program": "${workspaceFolder}/ft_irc",
 			"args": [],
 			"cwd": "${workspaceFolder}"
 		}

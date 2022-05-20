@@ -1,10 +1,11 @@
 
 CC=clang++
-FLAGS=-Wall -Werror -Wextra -std=c++98
+FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 
 LIB=	src/utils/utils.cpp \
 		src/socket/socket.cpp\
 		src/client/client.cpp\
+		src/client/request.cpp
 
 
 OBJS_LIB=$(LIB:.cpp=.o)

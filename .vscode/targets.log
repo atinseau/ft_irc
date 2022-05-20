@@ -8,11 +8,10 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Thu May 12 12:19:44 2022
+# Make data base, printed on Fri May 20 10:13:13 2022
 
 # Variables
 
- 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
@@ -22,6 +21,7 @@ VSCODE_LOG_NATIVE = false
 # environment
 NVM_INC = /Users/arthur/.nvm/versions/node/v16.15.0/include/node
 # automatic
+ 
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
@@ -32,7 +32,7 @@ CURDIR := /Users/arthur/Desktop/Dev/C++/ft_irc
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"25fe6a3290ec415596628d4afc87a88c.fr","_translationsConfigFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/tcf.json","_cacheRoot":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr","_resolvedLanguagePackCoreLocation":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/da15b6fd3ef856477bf6f4fb29ba1b7af717770d","_corruptedFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"25fe6a3290ec415596628d4afc87a88c.fr","_translationsConfigFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/tcf.json","_cacheRoot":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr","_resolvedLanguagePackCoreLocation":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5","_corruptedFile":"/Users/arthur/Library/Application Support/Code/clp/25fe6a3290ec415596628d4afc87a88c.fr/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/bin/make
 # makefile (from `Makefile', line 1)
@@ -42,29 +42,27 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/k4/j3zcwp293m1bg0x_tlsk1v_c0000gn/T/vscode-ipc-86135918-bcc4-4650-aeaf-482932dcf0d3.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/k4/j3zcwp293m1bg0x_tlsk1v_c0000gn/T/vscode-ipc-67f9876f-208d-46b6-a6d8-5710d31c4fa2.sock
 # environment
 VSCODE_CWD = /
-# makefile (from `Makefile', line 9)
+# makefile (from `Makefile', line 11)
 OBJS_LIB = $(LIB:.cpp=.o)
 # environment
-PATH = /Users/arthur/.nvm/versions/node/v16.15.0/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public
-# makefile (from `Makefile', line 11)
+PATH = /Users/arthur/.nvm/versions/node/v16.15.0/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Library/Apple/usr/bin
+# makefile (from `Makefile', line 13)
 SERVER_SRCS = main.cpp
 # environment
 NVM_BIN = /Users/arthur/.nvm/versions/node/v16.15.0/bin
-# environment
-LaunchInstanceID = 62F30F4F-E913-42A0-BEE7-997F45B3CF6A
 # environment
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 5)
-LIB = src/utils/utils.cpp src/socket/socket.cpp
+LIB = src/utils/utils.cpp src/socket/socket.cpp src/client/client.cpp src/client/request.cpp
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_sockServer = /private/tmp/com.apple.launchd.QpEZ591mrj/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.chl67b31lR/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -80,7 +78,7 @@ HOME = /Users/arthur
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/arthur/Library/Application Support/Code/CachedData/da15b6fd3ef856477bf6f4fb29ba1b7af717770d
+VSCODE_CODE_CACHE_PATH = /Users/arthur/Library/Application Support/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # environment
 LOGNAME = arthur
 # environment
@@ -97,7 +95,7 @@ XPC_FLAGS = 0x0
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
-# makefile (from `Makefile', line 12)
+# makefile (from `Makefile', line 14)
 SERVER_NAME = ft_irc
 # environment
 SHLVL = 1
@@ -107,7 +105,7 @@ CC = clang++
 MAKE_VERSION := 3.81
 # environment
 USER = arthur
-# makefile (from `Makefile', line 36)
+# makefile (from `Makefile', line 38)
 .DEFAULT_GOAL := all
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
@@ -120,7 +118,7 @@ TMPDIR = /var/folders/k4/j3zcwp293m1bg0x_tlsk1v_c0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/arthur/Library/Application Support/Code/1.67.1-main.sock
+VSCODE_IPC_HOOK = /Users/arthur/Library/Application Support/Code/1.67.2-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -130,7 +128,7 @@ MFLAGS = -Rrqp
 # environment
 NVM_DIR = /Users/arthur/.nvm
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.3371979.3371985
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.5473027.5473034
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -145,14 +143,12 @@ MAKEFILES :=
 <F = $(notdir $<)
 # environment
 LC_ALL = C
-# environment
-SECURITYSESSIONID = 186a6
 # automatic
 ^F = $(notdir $^)
 # default
 SUFFIXES := 
 # makefile (from `Makefile', line 3)
-FLAGS = -Wall -Werror -Wextra -std=c++98
+FLAGS = -Wall -Werror -Wextra -std=c++98 -g
 # default
 .INCLUDE_DIRS = /usr/local/include
 # environment
@@ -160,9 +156,10 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 434
+VSCODE_PID = 1089
 # variable set hash-table stats:
-# Load=74/1024=7%, Rehash=0, Collisions=1/107=1%
+ 
+# Load=72/1024=7%, Rehash=0, Collisions=1/109=1%
 
 # Pattern-specific Variable Values
 
@@ -170,17 +167,18 @@ VSCODE_PID = 434
 
 # Directories
 
-# . (device 16777220, inode 1819311): 7 files, no impossibilities.
-# src/utils (device 16777220, inode 1819383): 3 files, no impossibilities so far.
+# . (device 16777220, inode 1819311): 13 files, no impossibilities.
+# src/client (device 16777220, inode 5507975): 5 files, no impossibilities so far.
+# src/utils (device 16777220, inode 1819383): 4 files, no impossibilities so far.
+# src/socket (device 16777220, inode 4959304): 3 files, no impossibilities so far.
 
-# 10 files, no impossibilities in 2 directories.
+# 25 files, no impossibilities in 4 directories.
 
 # Implicit Rules
 
 %.o: %.cpp
-#  commands to execute (from `Makefile', line 15):
+#  commands to execute (from `Makefile', line 17):
 	@$(CC) $(FLAGS) -c $< -o $@
- 
 	@echo "Compiling $<"
 	
 
@@ -188,17 +186,56 @@ VSCODE_PID = 434
 
 # Files
 
+# Not a target:
+src/client/request.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-20 09:50:33
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
 all: ft_irc
 #  Command-line target.
 #  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `'
 #  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
+# automatic
+# @ := all
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := ft_irc
+# automatic
+# | := 
+# automatic
+# < := ft_irc
+# automatic
+# ^ := ft_irc
+# automatic
+# ? := ft_irc
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/4=0%
-#  commands to execute (from `Makefile', line 21):
+# Load=8/32=25%, Rehash=0, Collisions=1/16=6%
+#  commands to execute (from `Makefile', line 23):
 	@$(CC) $(FLAGS) $(OBJS_LIB) $(SERVER_SRCS) -o $(SERVER_NAME) -lpthread
 	@echo "Compiling server"
+	
+
+src/client/client.o: src/client/client.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `src/client/client'
+#  Last modified 2022-05-20 10:12:37
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 17):
+	@$(CC) $(FLAGS) -c $< -o $@
+	@echo "Compiling $<"
 	
 
 # Not a target:
@@ -210,7 +247,7 @@ all: ft_irc
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-12 12:19:21
+#  Last modified 2022-05-20 10:13:07
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -219,7 +256,16 @@ Makefile:
 # Not a target:
 src/utils/utils.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-04-24 19:03:09
+#  Last modified 2022-05-19 19:00:16
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/socket/socket.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-20 10:12:34
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -229,19 +275,32 @@ fclean: clean
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 29):
+#  commands to execute (from `Makefile', line 31):
 	@rm -f $(SERVER_NAME)
 	@rm -rf build
 	@echo "Cleaning build folder"
 	
 
-ft_irc: src/utils/utils.o src/socket/socket.o
+ft_irc: src/utils/utils.o src/socket/socket.o src/client/client.o src/client/request.o
 #  Implicit rule search has been done.
-#  File does not exist.
+#  Last modified 2022-05-20 10:12:38
 #  File has been updated.
-#  Needs to be updated (-q is set).
+#  Successfully updated.
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/4=0%
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+src/client/request.o: src/client/request.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `src/client/request'
+#  Last modified 2022-05-20 10:12:38
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 17):
+	@$(CC) $(FLAGS) -c $< -o $@
+	@echo "Compiling $<"
+	
 
 # Not a target:
 .DEFAULT:
@@ -258,7 +317,7 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 25):
+#  commands to execute (from `Makefile', line 27):
 	@rm -f $(OBJS_LIB)
 	@echo "Cleaning library"
 	
@@ -266,40 +325,41 @@ clean:
 src/utils/utils.o: src/utils/utils.cpp
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `src/utils/utils'
-#  File does not exist.
+#  Last modified 2022-05-20 10:12:36
 #  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := src/utils/utils.o
-# automatic
-# % := 
-# automatic
-# * := src/utils/utils
-# automatic
-# + := src/utils/utils.cpp
-# automatic
-# | := 
-# automatic
-# < := src/utils/utils.cpp
-# automatic
-# ^ := src/utils/utils.cpp
-# automatic
-# ? := src/utils/utils.cpp
+#  Successfully updated.
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
-#  commands to execute (from `Makefile', line 15):
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 17):
 	@$(CC) $(FLAGS) -c $< -o $@
 	@echo "Compiling $<"
 	
 
+ 
 # Not a target:
-src/socket/socket.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+src/client/client.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-20 09:52:04
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+src/socket/socket.o: src/socket/socket.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `src/socket/socket'
+#  Last modified 2022-05-20 10:12:37
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 17):
+	@$(CC) $(FLAGS) -c $< -o $@
+	@echo "Compiling $<"
+	
 
 # files hash-table stats:
-# Load=11/1024=1%, Rehash=0, Collisions=0/33=0%
+# Load=16/1024=2%, Rehash=0, Collisions=0/50=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -311,6 +371,6 @@ src/socket/socket.o:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Thu May 12 12:19:44 2022
+# Finished Make data base on Fri May 20 10:13:13 2022
 
  

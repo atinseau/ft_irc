@@ -37,7 +37,7 @@ int main(int ac, const char **av, const char **envp)
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << e.what() << std::endl;
+		ERROR(e.what());
 		return (1);
 	}
 	return (0);

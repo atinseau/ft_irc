@@ -15,32 +15,54 @@
 
 #include "../irc.hpp"
 
+#define BUFFER_SIZE 512
+
+/**
+ * @brief 
+ * Pas de Kamelcase pour les fonctions !
+ * exemple: 
+ * 		- get_fd()
+ * 		- get_channel()
+ * invalide:
+ * 		- GetFd()
+ * 		- GetChannel()
+ */
+
 class Server
 {
 public:
 	Server(std::string port, std::string password);
 	~Server(void);
-	void	playServer();										//programation du serveur
-	void	run(void);											//protocole d ajoue des fd et de reception des message
-	void	closedAndPreventClient(int i);						//previent le client de la fermeture, ferme le fd du client et suprime l element du tableau 
-	void	AddClient(void);									//ajoute les client 
-	void	protocolReception(int i);							//receptionne les message
-	int		Reception(std::string *line, int *len, int i);
-	int		parsing(int i, std::string line);					//traitement des information receptionner
-	void	printReception(int i, int len, std::string line);	//ecriture de la reception
-	int		managementOrdered(int i, std::string line);
-	void	sendMessage(int i, std::string msg); 
+	
+	void	run(void);
+
+	// void	closedAndPreventClient(int i);
+	// int		Reception(std::string *line, int *len, int i);
+	// int		parsing(int i, std::string line);
+	// void	printReception(int i, int len, std::string line);
+	// int		managementOrdered(int i, std::string line);
+	
 
 private:
 	int					_port;
+	int					_sock_server;
+	struct sockaddr_in6	_addr_server;
+
 	std::string			_password;
-	int					_sockServer;
-	struct sockaddr_in6	_addrServer;
 	std::vector<pollfd>	_pfds;
 	std::vector<Client>	_client;
-	Server(void){};
+
+	// Fonction de configuration
+	void	_create();
+	// client
+	void	_new_client(void);
+	void	_client_handler(int id);
+	
+	void	_disconnect(int i);
+
+	pollfd*	_create_pfd(int fd);
 };
 
-void	msgServer(std::string str);
+// void	msgServer(std::string str);
 
 #endif
