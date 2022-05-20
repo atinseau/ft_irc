@@ -36,12 +36,6 @@ public:
 	
 	void	run(void);
 
-	// void	closedAndPreventClient(int i);
-	// int		Reception(std::string *line, int *len, int i);
-	// int		parsing(int i, std::string line);
-	// void	printReception(int i, int len, std::string line);
-	// int		managementOrdered(int i, std::string line);
-	
 
 private:
 	int					_port;
@@ -52,17 +46,14 @@ private:
 	std::vector<pollfd>	_pfds;
 	std::vector<Client>	_client;
 
-	// Fonction de configuration
-	void	_create();
-	// client
+	void	_init();
 	void	_new_client(void);
 	void	_client_handler(int id);
-	
 	void	_disconnect(int i);
 
 	pollfd*	_create_pfd(int fd);
 };
 
-// void	msgServer(std::string str);
+
 
 #endif

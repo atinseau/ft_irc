@@ -19,9 +19,9 @@ bool whitesapece(char c)
 	return (false);
 }
 
-strvec split(const char *str, char c)
+std::vector<std::string> split(const char *str, char c)
 {
-	strvec res;
+	std::vector<std::string> res;
 
 	int i = 0;
 	int cursor = 0;

@@ -16,7 +16,7 @@
  * @brief
  * Constructeur de la class Server
  * va uniquement verifier que le port est correct
- * et va appeler la fonction _create() juste après
+ * et va appeler la fonction _init) juste après
  *
  * @param port
  * @param password
@@ -33,7 +33,7 @@ Server::Server(std::string port, std::string password) : _password(password)
 		if (this->_port > 65536)
 			throw std::runtime_error("Port incorrecte");
 	}
-	_create();
+	_init();
 }
 
 /**
@@ -54,7 +54,7 @@ Server::~Server()
  * utilisation de l'ipv6
  * puis création d'un "client" tampon pour faire matcher les id des futurs clients
  */
-void Server::_create(void)
+void Server::_init(void)
 {
 	int rc;
 	int on = 1;
@@ -76,17 +76,15 @@ void Server::_create(void)
 	if ((rc = listen(this->_sock_server, 32)) < 0)
 		throw std::runtime_error("listen() failed");
 
-	Client client(_create_pfd(this->_sock_server));
-
-	this->_client.push_back(client);
+	this->_client.push_back(Client(NULL));
+	_create_pfd(this->_sock_server);
 
 	SUCCESS("Le server est lancé sur le port " << this->_port);
 }
 
-
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 void Server::run(void)
 {
@@ -102,19 +100,17 @@ void Server::run(void)
 				continue;
 			if (this->_pfds[i].revents != POLLIN)
 			{
-				ERROR("Impossible de lire le socket");
 				_disconnect(i);
 				break;
 			}
 			if (this->_pfds[i].fd == this->_sock_server)
 			{
 				_new_client();
-				continue;
 			}
-
-			// _client
-
-			_client_handler(i);
+			else
+			{
+				_client_handler(i);
+			}
 		}
 	} while (1);
 }
@@ -126,14 +122,31 @@ void Server::run(void)
  */
 void Server::_client_handler(int id)
 {
-	Client& client = this->_client[id];
+	do
+	{
+		Client &client = this->_client[id];
+		Client::Request req = client.read();
+
+		if (req.type() != Client::Request::SUCCESS)
+			break;
 	
+		// parrsing
+		// if (this->client[id].check_auth(this->_password) == false)
+		//{
+		//		_disconnect(id);
+		//		ERROR("Le client " << id << "a un moth de passe incorecte");
+		//}
+		// if (this->client[id].auth == true)
+		//		this->client[id].sand()
 
-	Client::Request req = client.read();
+		Command::command_t cmd = Command::parse(req.body());
+
+		INFO("Commande recu: " << cmd.first);
+		for (std::vector<std::string>::iterator it = cmd.second.begin(); it != cmd.second.end(); it++)
+			INFO("Argument recu: " << *it);
 
 
-
-	DEBUG(req.body());
+	} while (true);
 }
 
 /**
@@ -145,8 +158,6 @@ void Server::_client_handler(int id)
 void Server::_new_client(void)
 {
 	int fd;
-
-	SUCCESS("Listening socket is readable");
 	do
 	{
 		if ((fd = accept(this->_sock_server, NULL, NULL)) < 0)
@@ -173,6 +184,7 @@ pollfd *Server::_create_pfd(int fd)
 	pfd.fd = fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;
+
 	this->_pfds.push_back(pfd);
 	return ((this->_pfds.end() - 1).base());
 }

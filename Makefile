@@ -5,7 +5,8 @@ FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 LIB=	src/utils/utils.cpp \
 		src/socket/socket.cpp\
 		src/client/client.cpp\
-		src/client/request.cpp
+		src/client/request.cpp \
+		src/command/command.cpp 
 
 
 OBJS_LIB=$(LIB:.cpp=.o)

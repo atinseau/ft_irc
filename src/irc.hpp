@@ -45,11 +45,14 @@
 #include <unistd.h>
 #include <map>
 #include <vector>
+#include <map>
 
 class Client;
 class Socket;
+class Command;
 
 #include "utils/utils.hpp"
+#include "command/command.hpp"
 #include "client/client.hpp"
 #include "socket/socket.hpp"
 

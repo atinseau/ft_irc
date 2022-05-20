@@ -23,35 +23,43 @@ public:
 	class Request : public request_t
 	{
 	public:
-		// enum Type
-		// {
-		// 	QUIT,
-		// 	NONE
-		// };
+		enum Type
+		{
+			QUIT,
+			NONE,
+			ERROR,
+			SUCCESS
+		};
 
 		Request();
 		explicit Request(int n, char *s);
 
 		request_t::first_type size() const;
-		request_t::second_type body() const;
+		const request_t::second_type& body() const;
 
-		// Type type() const;
+		Type type() const;
+		void set_type(Type t);
 
-	// private:
-	// 	Type _type;
+	private:
+		Type _type;
 	};
 
 	Client(pollfd *pfd);
 
 	void disconnect();
-	int fd() const;
+	int get_fd() const;
 	Request read();
+	bool	check_auth(std::string pass);
 
 private:
-	pollfd *_pfd;
+	pollfd								*_pfd;
+	std::map<const char *, std::string> _data;
 
-	// std::string _username;
-	// std::string _nickname;
+
+	bool								_auth;
+
+	// std::string						_username;
+	// std::string				_nickname;
 	// std::string _channel;
 	// std::string _password;
 };
