@@ -1,6 +1,0 @@
-make --dry-run --keep-going --print-directory
-make: Entering directory `/Users/arthur/Desktop/Dev/C++/ft_irc'
-clang++ -Wall -Werror -Wextra -std=c++98 -g src/utils/utils.o src/socket/socket.o src/client/client.o src/request/request.o src/response/response.o src/command/command.o src/command/exception.o main.cpp -o ft_irc -lpthread
-echo "Compiling server"
-make: Leaving directory `/Users/arthur/Desktop/Dev/C++/ft_irc'
- 

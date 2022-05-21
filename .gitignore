@@ -1,3 +1,7 @@
 
 # OBJECT FILE
 **/*.o
+ft_irc
+
+.vscode
+ft_irc.dSYM
