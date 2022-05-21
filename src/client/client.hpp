@@ -11,63 +11,33 @@
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
-#define CLIENT_HPP
+# define CLIENT_HPP
 
 #include "../irc.hpp"
 
+# define NICKNAME_LENGTH 9
+
 class Client
 {
-
-typedef std::pair<int, std::string> request_t;
-
 public:
-	class Request : public request_t
-	{
-	public:
-
-		typedef std::pair<std::string, std::vector<std::string> > Body;
-		
-		enum Type
-		{
-			QUIT,
-			NONE,
-			ERROR,
-			SUCCESS
-		};
-
-		Request();
-		explicit Request(int n, char *s);
-
-		request_t::first_type size() const;
-
-		Type type() const;
-		Body body() const;
-		
-		void set_type(Type t);
-
-	private:
-		Type _type;
-	};
-
 	Client(pollfd *pfd);
 
 	void disconnect();
-	int get_fd() const;
 	Request read();
+	void write(Response res);
 
-	bool	is_auth(std::string pass);
+	int get_fd() const;
 
-	static std::string			server_password;
+	bool is_auth();
+
+	std::string& operator[](const char* key);
+	std::string get_key(const char* key) const;
+
+	static std::string server_password;
 
 private:
-	pollfd								*_pfd;
+	pollfd *_pfd;
 	std::map<const char *, std::string> _data;
-	bool								_auth;
-
-	// std::string						_username;
-	// std::string				_nickname;
-	// std::string _channel;
-	// std::string _password;
 };
 
 #endif

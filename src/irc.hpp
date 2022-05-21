@@ -47,14 +47,37 @@
 #include <vector>
 #include <map>
 
-class Client;
-class Socket;
-class Command;
-
 #include "utils/utils.hpp"
-#include "command/command.hpp"
-#include "client/client.hpp"
+#include "request/request.hpp"
+#include "response/response.hpp"
+
+/**
+ * @brief 
+ * Forwards declaration
+ */
+
+class Socket;
+class Client;
+class Command;
+class Response;
+
 #include "socket/socket.hpp"
+#include "client/client.hpp"
+#include "command/command.hpp"
+#include "response/response.hpp"
+
+
+template <typename T>
+std::ostream& operator<<(std::ostream& output, const std::vector<T>& vec)
+{
+	for (size_t i = 0; i < vec.size(); i++)
+	{
+		output << "|" << vec[i] << "| ";
+		if (i != vec.size() - 1)
+			output << ", ";
+	}
+	return output;
+}
 
 
 #endif

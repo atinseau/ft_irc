@@ -16,7 +16,6 @@
 #include <vector>
 #include <iostream>
 
-
 std::vector<std::string> split(const char *str, char c);
 bool whitesapece(char c);
 

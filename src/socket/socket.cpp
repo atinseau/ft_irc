@@ -116,6 +116,7 @@ void Server::run(void)
 				}
 				catch (std::runtime_error &e)
 				{
+					ERROR(e.what());
 					_disconnect(i);
 					break;
 				}
@@ -134,14 +135,33 @@ void Server::_client_handler(int id)
 	do
 	{
 		Client &client = this->_client[id];
-		Client::Request req = client.read();
+		Request req = client.read();
 
-		if (req.type() != Client::Request::SUCCESS)
+		if (req.type() != Request::SUCCESS)
 			break;
 
-		Command cmd(client);
+		Request::Body body = req.body();
 
-		cmd[req.body().first];
+		Command cmd(client, _client);
+		
+		try
+		{
+			cmd[req.body()];
+		}
+		catch (Command::AuthException &e)
+		{
+			client.write(e.response());
+			_disconnect(id);
+		}
+		catch (Command::ResponseException &e)
+		{
+			client.write(e.response());
+		}
+		catch (std::runtime_error &e)
+		{
+			throw e;
+		}
+		
 
 	} while (true);
 }

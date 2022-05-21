@@ -36,7 +36,6 @@ public:
 	
 	void	run(void);
 
-
 private:
 	int					_port;
 	int					_sock_server;

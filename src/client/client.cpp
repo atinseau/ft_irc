@@ -14,7 +14,7 @@
 
 std::string Client::server_password = "";
 
-Client::Client(pollfd *pfd): _pfd(pfd), _auth(false)
+Client::Client(pollfd *pfd): _pfd(pfd)
 {
 	if (!_pfd)
 		return;
@@ -22,12 +22,13 @@ Client::Client(pollfd *pfd): _pfd(pfd), _auth(false)
 	INFO("Nouveau client " << _pfd->fd);
 
 	_data["USERNAME"] = "";
+	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
-	_data["CHANNEL"] = "";
 	_data["PASSWORD"] = "";
 }
 
-Client::Request Client::read()
+
+Request Client::read()
 {
 	Request req;
 
@@ -52,6 +53,12 @@ Client::Request Client::read()
 	return (req);
 }
 
+void Client::write(Response res)
+{
+	if (send(this->get_fd(), res.str().c_str(), res.str().size(), 0) < 0)
+		ERROR("Erreur lors de l'envoi de la requête");
+}
+
 void Client::disconnect()
 {
 	if (!_pfd)
@@ -61,22 +68,33 @@ void Client::disconnect()
 
 int Client::get_fd() const
 {
+	if (!_pfd)
+		return (-1);
 	return (_pfd->fd);
 }
 
-bool	Client::is_auth(std::string pass)
+std::string& Client::operator[](const char* key)
 {
-	(void)pass;
+	return (_data[key]);
+}
 
-	std::cout << Client::server_password << std::endl;
-	// if (_data["PASSWORD"] == pass && _data["USERNAME"] != ""
-	// 	&& _data["NICKNAME"] != "")
-	// {
-	// 	_auth = true;
-	// 	return (true);
-	// }
-	// return false;
-	return (false);
+std::string Client::get_key(const char* key) const
+{
+	return (_data.at(key));
+}
+
+bool	Client::is_auth()
+{
+	if (
+		_data["USERNAME"] == "" ||
+		_data["NICKNAME"] == "" ||
+		_data["PASSWORD"] == ""
+	)
+		return (false);
+
+	if (Client::server_password != _data["PASSWORD"])
+		return (false);
+	return (true);
 }
 
 

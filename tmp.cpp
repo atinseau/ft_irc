@@ -1,17 +1,17 @@
 
 #include <map>
 #include <iostream>
+#include <sstream>
+
+void test(std::ostringstream oss)
+{
+	std::cout << oss.str() << std::endl;
+}
 
 int main()
 {
 
-	std::map<std::string, std::string> map;
-
-	map["USERNAME"] = "a";
-	map["NICKNAME"] = "b";
-	map["CHANNEL"] = "c";
-
-	std::cout << map["OK"] << std::endl;
+	test(std::ostringstream() << "vye bye");
 
 	return (0);
 }
