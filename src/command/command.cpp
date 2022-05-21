@@ -2,13 +2,36 @@
 
 using namespace std;
 
-Command::command_t Command::parse(const std::string &str)
-{
-	vector<string> args = split(str.c_str(), ' ');
-	if (args.size() == 0)
-		throw std::runtime_error("La commande est vide, cas de figure non géré");
-	std::string cmd = args[0];
-	args.erase(args.begin());
-	return (std::make_pair(cmd, args));
+Command::Command(Client& client): _client(client) {}
 
+void Command::operator[](const std::string& cmd)
+{
+	(void) _client;
+
+	map_t::iterator it = _commands.find(cmd);
+
+	if (it != _commands.end())
+	{
+		INFO("Commande " << it->first << " trouvée");
+		std::cout << std::boolalpha;
+		std::cout << _client.is_auth("") << std::endl;
+	}
 }
+
+
+void Command::nick()
+{
+	std::cout << "nick" << std::endl;
+}
+
+Command::map_t Command::init()
+{
+	map_t map;
+
+	map["NICK"] = &Command::nick;
+
+	return (map);
+}
+
+Command::map_t Command::_commands = Command::init();
+

@@ -8,9 +8,19 @@ Client::request_t::first_type Client::Request::size() const
 	return (this->first);
 }
 
-const Client::request_t::second_type& Client::Request::body() const
+Client::Request::Body Client::Request::body() const
 {
-	return (this->second);
+	Body b;
+
+	std::vector<std::string> args = split(this->second.c_str(), ' ');
+	if (args.size() == 0)
+		throw std::runtime_error("La commande est vide, cas de figure non géré");
+	
+	b.first = args[0];
+	args.erase(args.begin());
+	(args.end() - 1)->pop_back();
+	b.second = args;
+	return (b);
 }
 
 Client::Request::Type Client::Request::type() const

@@ -33,6 +33,7 @@ Server::Server(std::string port, std::string password) : _password(password)
 		if (this->_port > 65536)
 			throw std::runtime_error("Port incorrecte");
 	}
+	Client::server_password = this->_password;
 	_init();
 }
 
@@ -109,8 +110,16 @@ void Server::run(void)
 			}
 			else
 			{
-				_client_handler(i);
-			}
+				try
+				{
+					_client_handler(i);
+				}
+				catch (std::runtime_error &e)
+				{
+					_disconnect(i);
+					break;
+				}
+			}	
 		}
 	} while (1);
 }
@@ -129,22 +138,10 @@ void Server::_client_handler(int id)
 
 		if (req.type() != Client::Request::SUCCESS)
 			break;
-	
-		// parrsing
-		// if (this->client[id].check_auth(this->_password) == false)
-		//{
-		//		_disconnect(id);
-		//		ERROR("Le client " << id << "a un moth de passe incorecte");
-		//}
-		// if (this->client[id].auth == true)
-		//		this->client[id].sand()
 
-		Command::command_t cmd = Command::parse(req.body());
+		Command cmd(client);
 
-		INFO("Commande recu: " << cmd.first);
-		for (std::vector<std::string>::iterator it = cmd.second.begin(); it != cmd.second.end(); it++)
-			INFO("Argument recu: " << *it);
-
+		cmd[req.body().first];
 
 	} while (true);
 }

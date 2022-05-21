@@ -5,16 +5,22 @@
 
 class Command
 {
+	typedef void (* func_t)(void); 
+	typedef std::map<std::string, func_t> map_t;
+
 public:
-	typedef std::pair<std::string, std::vector<std::string> > command_t;
 
-	Command();
+	Command(Client& client);
 
-	static command_t parse(const std::string& str);
+	void operator[](const std::string& cmd);
+
+	static void nick();
 
 private:
+	static map_t init();
+	static map_t _commands;
 
-
+	Client& _client;
 };
 
 #endif

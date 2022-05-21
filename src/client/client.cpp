@@ -12,6 +12,8 @@
 
 #include "client.hpp"
 
+std::string Client::server_password = "";
+
 Client::Client(pollfd *pfd): _pfd(pfd), _auth(false)
 {
 	if (!_pfd)
@@ -31,13 +33,13 @@ Client::Request Client::read()
 
 	char buffer[BUFFER_SIZE];
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
+
 	if (req.size() < 0)
 	{
 		if (errno != EWOULDBLOCK)
 			req.set_type(Request::ERROR);
 		return (req);
 	}
-
 	if (req.size() == 0)
 	{
 		req.set_type(Request::QUIT);
@@ -62,15 +64,19 @@ int Client::get_fd() const
 	return (_pfd->fd);
 }
 
-bool	Client::check_auth(std::string pass)
+bool	Client::is_auth(std::string pass)
 {
-	if (_data["PASSWORD"] == pass && _data["USERNAME"] != ""
-		&& _data["NICKNAME"] != "")
-	{
-		_auth = true;
-		return (true);
-	}
-	return false;
+	(void)pass;
+
+	std::cout << Client::server_password << std::endl;
+	// if (_data["PASSWORD"] == pass && _data["USERNAME"] != ""
+	// 	&& _data["NICKNAME"] != "")
+	// {
+	// 	_auth = true;
+	// 	return (true);
+	// }
+	// return false;
+	return (false);
 }
 
 

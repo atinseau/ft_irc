@@ -17,12 +17,16 @@
 
 class Client
 {
-public:
-	typedef std::pair<int, std::string> request_t;
 
+typedef std::pair<int, std::string> request_t;
+
+public:
 	class Request : public request_t
 	{
 	public:
+
+		typedef std::pair<std::string, std::vector<std::string> > Body;
+		
 		enum Type
 		{
 			QUIT,
@@ -35,9 +39,10 @@ public:
 		explicit Request(int n, char *s);
 
 		request_t::first_type size() const;
-		const request_t::second_type& body() const;
 
 		Type type() const;
+		Body body() const;
+		
 		void set_type(Type t);
 
 	private:
@@ -49,13 +54,14 @@ public:
 	void disconnect();
 	int get_fd() const;
 	Request read();
-	bool	check_auth(std::string pass);
+
+	bool	is_auth(std::string pass);
+
+	static std::string			server_password;
 
 private:
 	pollfd								*_pfd;
 	std::map<const char *, std::string> _data;
-
-
 	bool								_auth;
 
 	// std::string						_username;
