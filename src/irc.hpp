@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 10:54:51 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 12:09:03 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@
 
 class Socket;
 class Client;
-class Command;
 class Response;
+class Command;
 
 #include "socket/socket.hpp"
 #include "client/client.hpp"
