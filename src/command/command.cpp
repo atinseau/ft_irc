@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:38:48 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 17:07:43 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ using namespace std;
 
 Command::Command(Client& client, std::vector<Client>& clients): _client(client), _clients(clients) {}
 
-void Command::operator[](const Request::Body& body)
+void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& channels)
 {
 	(void) _client;
 	(void) _clients;
@@ -35,7 +35,7 @@ void Command::operator[](const Request::Body& body)
 		}
 		else
 			INFO("Authentifié");
-		it->second(Payload(_client, _clients, body));
+		it->second(Payload(_client, _clients, body, channels));
 		return;
 	}
 	ERROR("Commande " << body.first << " inconnue");
@@ -113,7 +113,18 @@ void Command::user(Payload p)
 
 void Command::join(Payload p)
 {
-	(void) p;
+	for (size_t i = 0; i < p.body.second.size(); i++)
+	{
+		if (p.body.second[i][0] == '#' && p.channels.find((p.body.second[i])) != p.channels.end())
+		{
+			SUCCESS("channel introuvable");
+			p.client.add_channel(&(p.channels[p.body.second[i]]));
+		}
+		else 
+		{
+			ERROR("channel introuvable");
+		}
+	}
 }
 
 Command::map_t Command::init()

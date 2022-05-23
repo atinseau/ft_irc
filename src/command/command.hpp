@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:10:36 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 17:04:24 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,13 @@ class Command
 {
 	struct Payload
 	{
-		Payload(Client& client, const std::vector<Client>& clients, const Request::Body& body);
+		Payload(Client& client, const std::vector<Client>& clients, const Request::Body& body, std::map<std::string, Channel>& channels);
 
 		Client &client;
 		const std::vector<Client>& clients;
 		const Request::Body &body;
+		std::map<std::string, Channel>& channels;
+		
 	};
 
 	typedef void (*func_t)(Payload);
@@ -32,7 +34,7 @@ class Command
 public:
 	Command(Client &client, std::vector<Client> &clients);
 
-	void operator[](const Request::Body &body);
+	void ex_cmd(const Request::Body &body, std::map<std::string, Channel>& channels);
 
 	static void nick(Payload p);
 	static void pass(Payload p);
@@ -64,6 +66,6 @@ private:
 
 	Client &_client;
 	std::vector<Client> &_clients;
-};
+}; 
 
 #endif

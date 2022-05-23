@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:10:43 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 16:53:34 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,3 +98,8 @@ bool	Client::is_auth()
 }
 
 
+void Client::add_channel(Channel* channel)
+{
+	_channels.push_back(channel);
+	INFO("Ajoue du channel");
+};

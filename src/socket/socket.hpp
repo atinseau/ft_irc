@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:18 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/19 09:17:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 17:58:48 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,17 @@ private:
 	int					_sock_server;
 	struct sockaddr_in6	_addr_server;
 
-	std::string			_password;
-	std::vector<pollfd>	_pfds;
-	std::vector<Client>	_client;
+	std::string						_password;
+	std::vector<pollfd>				_pfds;
+	std::vector<Client>				_client;
+	std::map<std::string, Channel>	_channels;
+	static int						_nb_channel;
 
-	void	_init();
-	void	_new_client(void);
-	void	_client_handler(int id);
-	void	_disconnect(int i);
-
+	void			_init();
+	void			_new_client(void);
+	void			_client_handler(int id);
+	void			_disconnect(int i);
+	std::string		_uu_id();
 	pollfd*	_create_pfd(int fd);
 };
 

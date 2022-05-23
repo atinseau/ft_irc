@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:38:03 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 18:04:22 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void Server::_client_handler(int id)
 		
 		try
 		{
-			cmd[req.body()];
+			cmd.ex_cmd(req.body(), _channels);
 		}
 		catch (Command::AuthException &e)
 		{
@@ -179,7 +179,12 @@ void Server::_new_client(void)
 		}
 		Client client(_create_pfd(fd));
 		this->_client.push_back(client);
+		std::string tmp = _uu_id();
+		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
+		this->_channels[tmp].add_client((this->_client.end()-1).base());
+		client.add_channel(&(this->_channels[tmp]));
 	} while (fd != -1);
+	this->_nb_channel++;
 }
 
 /**
@@ -215,3 +220,12 @@ void Server::_disconnect(int i)
 
 	SUCCESS("le client " << i << " a été deconnecté");
 }
+
+std::string		Server::_uu_id()
+{
+	std::string ret("#" + std::to_string(time(0)));
+	return (ret);
+}
+
+
+int Server::_nb_channel = 0;

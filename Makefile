@@ -10,6 +10,7 @@ LIB=	src/utils/utils.cpp \
 		src/client/client.cpp\
 		src/request/request.cpp \
 		src/response/response.cpp \
+		src/channel/channel.cpp \
 		$(COMMAND)
 
 

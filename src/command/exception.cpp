@@ -6,13 +6,13 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:32 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:10:33 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 15:41:30 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.hpp"
 
-Command::Payload::Payload(Client &client, const std::vector<Client>& clients, const Request::Body& body): client(client), clients(clients), body(body) {}
+Command::Payload::Payload(Client &client, const std::vector<Client>& clients, const Request::Body& body, std::map<std::string, Channel>& channels) : client(client), clients(clients), body(body), channels(channels) {}
 
 Command::ResponseException::ResponseException(Response res) : _res(res){}
 
