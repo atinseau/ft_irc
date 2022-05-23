@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:10:39 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 12:38:48 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,5 +127,4 @@ Command::map_t Command::init()
 
 	return (map);
 }
-
 Command::map_t Command::_commands = Command::init();

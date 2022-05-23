@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/19 17:50:25 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 12:38:03 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,12 +157,6 @@ void Server::_client_handler(int id)
 		{
 			client.write(e.response());
 		}
-		catch (std::runtime_error &e)
-		{
-			throw e;
-		}
-		
-
 	} while (true);
 }
 
@@ -221,94 +215,3 @@ void Server::_disconnect(int i)
 
 	SUCCESS("le client " << i << " a été deconnecté");
 }
-
-// previent le client de la fermeture, ferme le fd du client et suprime l element du tableau
-// void Server::closedAndPreventClient(int i)
-// {
-// 	send(this->_pfds[i].fd, "/end", sizeof("/end"), 0);
-// 	close(this->_pfds[i].fd);
-// 	std::cerr << VIOLET << "---SERVER---  Connection" << ROUGE << " closed " << VIOLET << "fd : " << this->_pfds[i].fd << BLANC << std::endl;
-// 	this->_pfds.erase((this->_pfds.begin() + i));
-// 	this->_client.erase((this->_client.begin() + i));
-// }
-
-// int Server::Reception(std::string *line, int *len, int i)
-// {
-// 	char buffer[1];
-// 	int rc = 0;
-
-// 	memset(&buffer, 0, 1);
-// 	while ((rc = recv(this->_pfds[i].fd, buffer, sizeof(char), 0)) >= 0)
-// 	{
-// 		if (buffer[0] == 13 || buffer[0] == 10)
-// 			buffer[0] = '\0';
-// 		(*line) += buffer[0];
-// 		*len += rc;
-// 		memset(&buffer, 0, 1);
-// 	}
-// 	std::cout << std::endl;
-// 	return (rc);
-// }
-
-// int Server::parsing(int i, std::string line)
-// {
-// 	if (this->_client[i].getIdentify() == false)
-// 		return (this->managementOrdered(i, line));
-// 	else if (this->_client[i].getIdentify() == true)
-// 		return (this->managementOrdered(i, line));
-// 	else if (this->_client[i].getIdentify() == true)
-// 		return (1);
-// 	// else if (this->_client[i].getIdentify() == true && line == "/end")
-// 	//	return (-1);
-// 	return (-1);
-// }
-
-// int Server::managementOrdered(int i, std::string line)
-// {
-// 	std::string cmd;
-// 	std::string parametre;
-// 	size_t y = 0;
-
-// 	for (y = 0; y < line.size(); y++)
-// 		if (whitesapece(line[y]) == true)
-// 			break;
-// 	char tmp[y];
-// 	line.copy(tmp, y, 0);
-// 	tmp[y] = '\0';
-// 	cmd = tmp;
-// 	while (whitesapece(line[y]) == true)
-// 		y++;
-// 	char tmp2[line.size() - y];
-// 	line.copy(tmp2, line.size() - y, y);
-// 	tmp2[line.size() - y] = '\0';
-// 	parametre = tmp2;
-// 	if (cmd == "PASS" && parametre == this->_password)
-// 		this->_client[i].setIdentify(true);
-// 	else if (cmd == "PASS" && parametre != this->_password)
-// 		return (-1);
-// 	else if (cmd == "USER")
-// 		this->_client[i].setUsername(parametre);
-// 	else if (cmd == "NICK")
-// 		this->_client[i].setNickname(parametre);
-// 	else if (cmd == "CHANNEL")
-// 	{
-// 		for (size_t x = 0; x < parametre.size(); x++)
-// 			if (parametre[x] < 48 || parametre[x] > 57)
-// 				return (-2);
-// 		this->_client[i].setChannel(std::atoi(parametre.c_str()));
-// 	}
-// 	else if (cmd == "MESSAGE")
-// 		return (1);
-// 	return (0);
-// }
-
-// void Server::printReception(int i, int len, std::string line)
-// {
-// 	std::cerr << BLEU << "------------------------------------------------" << BLANC << std::endl;
-// 	std::cerr << BLEU << "RECEPTION" << BLANC << std::endl;
-// 	std::cerr << BLEU << "Username  : " << this->_client[i].getUsername() << " Nickname  : " << this->_client[i].getNickname() << BLANC << std::endl;
-// 	std::cerr << BLEU << "Channel   : " << this->_client[i].getChannel() << " Fd        : " << this->_pfds[i].fd << BLANC << std::endl;
-// 	std::cerr << BLEU << "taille    : (" << len << "bits)" << BLANC << std::endl;
-// 	std::cerr << BLEU << "message   : " << line << BLANC << std::endl;
-// 	std::cerr << BLEU << "------------------------------------------------" << BLANC << std::endl;
-// }
