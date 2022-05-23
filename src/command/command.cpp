@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 17:07:43 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 18:06:09 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void Command::join(Payload p)
 	{
 		if (p.body.second[i][0] == '#' && p.channels.find((p.body.second[i])) != p.channels.end())
 		{
-			SUCCESS("channel introuvable");
+			SUCCESS("channel localiser");
 			p.client.add_channel(&(p.channels[p.body.second[i]]));
 		}
 		else 
