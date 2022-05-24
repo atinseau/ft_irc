@@ -64,13 +64,14 @@ void Command::nick(Payload p)
 
 	for (std::vector<Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
 	{
-		if (it->get_fd() > 0 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
+		if (it->get_fd() != -1 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
 		{
 			if (!p.client.is_auth())
 				throw AuthException(ERR_NICKNAMEINUSE(nickname));
 			throw ResponseException(ERR_NICKNAMEINUSE(nickname));
 		}
 	}
+
 
 	p.client["NICKNAME"] = nickname;
 	WARNING("Nickname is now: " << p.client["NICKNAME"]);

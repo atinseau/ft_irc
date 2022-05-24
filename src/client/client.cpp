@@ -101,5 +101,4 @@ bool	Client::is_auth()
 void Client::add_channel(Channel* channel)
 {
 	_channels.push_back(channel);
-	INFO("Ajoue du channel");
 };

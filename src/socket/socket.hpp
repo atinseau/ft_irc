@@ -51,7 +51,7 @@ private:
 	void			_new_client(void);
 	void			_client_handler(int id);
 	void			_disconnect(int i);
-	std::string		_uu_id();
+	std::string		_uuid();
 	pollfd*	_create_pfd(int fd);
 };
 

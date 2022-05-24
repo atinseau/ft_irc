@@ -178,11 +178,14 @@ void Server::_new_client(void)
 			break;
 		}
 		Client client(_create_pfd(fd));
+
 		this->_client.push_back(client);
-		std::string tmp = _uu_id();
+
+		std::string tmp = _uuid();
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client((this->_client.end()-1).base());
+		this->_channels[tmp].add_client((this->_client.end() - 1).base());
 		client.add_channel(&(this->_channels[tmp]));
+		
 	} while (fd != -1);
 	this->_nb_channel++;
 }
@@ -221,7 +224,7 @@ void Server::_disconnect(int i)
 	SUCCESS("le client " << i << " a été deconnecté");
 }
 
-std::string		Server::_uu_id()
+std::string		Server::_uuid()
 {
 	std::string ret("#" + std::to_string(time(0)));
 	return (ret);

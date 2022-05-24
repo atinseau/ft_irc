@@ -1,17 +1,14 @@
-
-#include <map>
+#include <sys/time.h>
 #include <iostream>
-#include <sstream>
-
-void test(std::ostringstream oss)
-{
-	std::cout << oss.str() << std::endl;
-}
 
 int main()
 {
 
-	test(std::ostringstream() << "vye bye");
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	std::cout << tv.tv_sec << "." << tv.tv_usec << std::endl;
 
 	return (0);
 }
