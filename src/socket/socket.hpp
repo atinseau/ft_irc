@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:18 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 17:58:48 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 18:52:05 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ private:
 	void			_client_handler(int id);
 	void			_disconnect(int i);
 	std::string		_uu_id();
-	pollfd*	_create_pfd(int fd);
+	pollfd*			_create_pfd(int fd);
 };
 
 

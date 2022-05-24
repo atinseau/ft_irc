@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 12:11:16 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 19:55:53 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@
 # define ERR_NONICKNAMEGIVEN RESPONSE("431", "*", "Aucun pseudo n'a été donné")
 # define ERR_NICKNAMEINUSE(USER) RESPONSE("433", USER, "Pseudo déjà utilisé")
 # define ERR_ERRONEUSNICKNAME(USER) RESPONSE("432", USER, "Pseudo invalide (contient des caractères invalides ou trop long)")
+# define ERR_PASSCHANNEL(USER) RESPONSE("0", USER, "Le mot de passe est incorrecte")
+# define ERR_CHANNELDOESNOTEXIST(USER) RESPONSE("0", USER, "Le channel rechercher n existe pas")
+# define ERR_CHANNELISNOTAVAILABLE(USER) RESPONSE("0", USER, "Le channel n est pas disponible")
 
 class Response
 {

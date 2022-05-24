@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 18:06:09 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 20:13:29 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& 
 	(void) _client;
 	(void) _clients;
 
+	INFO("on pass par ex_cmd");
 	map_t::iterator it = _commands.find(body.first);
 
 	if (it != _commands.end())
@@ -113,17 +114,37 @@ void Command::user(Payload p)
 
 void Command::join(Payload p)
 {
+	std::vector<std::string> body_channel;
+	std::vector<std::string> body_para;
+	SUCCESS("on a bien appeler join");
+	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
+	{
+		std::cout << "coucou" << std::endl;
+		if ((*it)[0] == '#')
+			body_channel.push_back(*it);
+		else 
+			body_para.push_back(*it);
+	}
 	for (size_t i = 0; i < p.body.second.size(); i++)
 	{
-		if (p.body.second[i][0] == '#' && p.channels.find((p.body.second[i])) != p.channels.end())
+		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
 			SUCCESS("channel localiser");
-			p.client.add_channel(&(p.channels[p.body.second[i]]));
+			char c = p.channels[body_channel[i]].get_mode();
+			if (c != 'i' && c != 'p' && c != 's')
+			{
+				if (c == 'k' && i < body_para.size()
+					&& body_para[i] == p.channels[body_channel[i]].get_password())
+					p.client.add_channel(&(p.channels[p.body.second[i]]));
+				else if (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password())
+					throw ResponseException(ERR_PASSCHANNEL(p.client.get_key("NICKNAME")));
+				else
+					p.client.add_channel(&(p.channels[p.body.second[i]]));
+			}
+			throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
 		}
-		else 
-		{
-			ERROR("channel introuvable");
-		}
+		else
+			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));
 	}
 }
 

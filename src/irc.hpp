@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 17:47:39 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 18:46:06 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 #include <map>
 #include <vector>
 #include <map>
-#include <ctime>
+#include <sys/time.h>
 
 #include "utils/utils.hpp"
 #include "request/request.hpp"
