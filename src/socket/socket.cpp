@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 18:04:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/23 19:59:45 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,10 @@ void Server::_disconnect(int i)
 
 std::string		Server::_uuid()
 {
-	std::string ret("#" + std::to_string(time(0)));
+	struct timeval tv;
+    gettimeofday(&tv, NULL);
+	std::string ret("#" + std::to_string(tv.tv_sec + tv.tv_usec));
+	std::cout << "id channel : " << ret << std::endl;
 	return (ret);
 }
 
