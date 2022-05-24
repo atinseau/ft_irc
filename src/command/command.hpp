@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 17:00:32 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 17:51:12 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Command
 	};
 
 	typedef void (*func_t)(Payload);
-	typedef bool (*func_t2)(Channel channel, std::vector<std::string> cmd);
+	typedef bool (*func_t2)(Channel channel, std::vector<std::string> cmd, Client &client);
 	typedef std::map<std::string, func_t> map_t;
 	
 
@@ -43,17 +43,17 @@ public:
 	static void user(Payload p);
 	static void join(Payload p);
 
-	// static bool mode_o(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_p(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_s(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_i(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_t(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_n(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_m(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_l(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_b(Channel channel, std::vector<std::string> cmd);
-	// static bool mode_v(Channel channel, std::vector<std::string> cmd);
-	static bool mode_k(Channel channel, std::vector<std::string> cmd);
+	static bool mode_o(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_p(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_s(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_i(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_t(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_n(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_m(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_l(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_b(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_v(Channel channel, std::vector<std::string> cmd, Client &client);
+	static bool mode_k(Channel channel, std::vector<std::string> cmd, Client &client);
 
 	class ResponseException : public std::exception
 	{
