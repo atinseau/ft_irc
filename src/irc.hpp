@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 18:46:06 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 10:26:49 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // # define BLEU_2 "\e[1;34m"
 
 #define SERVER_PORT 10000
-#define TIME 3 * 60 * 1000
+#define TIME 100 * 60 * 1000
 
 # define CLEAR "\e[0m"
 

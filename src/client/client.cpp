@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 16:53:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 10:48:16 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,22 @@ Request Client::read()
 	Request req;
 
 	char buffer[BUFFER_SIZE];
+
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
 
-	if (req.size() < 0)
+	if (req.first < 0)
 	{
 		if (errno != EWOULDBLOCK)
 			req.set_type(Request::ERROR);
 		return (req);
 	}
-	if (req.size() == 0)
+	if (req.first == 0)
 	{
 		req.set_type(Request::QUIT);
 		return (req);
 	}
 	
-	buffer[req.size()] = '\0';
+	buffer[req.first] = '\0';
 	req.second = buffer;
 	req.set_type(Request::SUCCESS);
 	return (req);
@@ -71,6 +72,11 @@ int Client::get_fd() const
 	if (!_pfd)
 		return (-1);
 	return (_pfd->fd);
+}
+
+pollfd* Client::get_pfd()
+{
+	return (_pfd);
 }
 
 std::string& Client::operator[](const char* key)

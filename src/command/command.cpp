@@ -45,108 +45,111 @@ void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& 
 
 void Command::nick(Payload p)
 {
-	if (p.body.second.size() == 0)
-	{
-		if (!p.client.is_auth())
-			throw AuthException(ERR_NONICKNAMEGIVEN); 
-		throw ResponseException(ERR_NONICKNAMEGIVEN);
-	}
+	(void)p;
+	// if (p.body.second.size() == 0)
+	// {
+	// 	if (!p.client.is_auth())
+	// 		throw AuthException(ERR_NONICKNAMEGIVEN); 
+	// 	throw ResponseException(ERR_NONICKNAMEGIVEN);
+	// }
 
-	std::string nickname = p.body.second[0];
-	if (nickname[0] == ':')
-		nickname.erase(0);
+	// std::string nickname = p.body.second[0];
+	// if (nickname[0] == ':')
+	// 	nickname.erase(0);
 
-	if (nickname.size() > NICKNAME_LENGTH) // todo: check if nickname is valid
-	{
-		if (!p.client.is_auth())
-			throw AuthException(ERR_ERRONEUSNICKNAME(nickname));
-		throw ResponseException(ERR_ERRONEUSNICKNAME(nickname));
-	}
+	// if (nickname.size() > NICKNAME_LENGTH) // todo: check if nickname is valid
+	// {
+	// 	if (!p.client.is_auth())
+	// 		throw AuthException(ERR_ERRONEUSNICKNAME(nickname));
+	// 	throw ResponseException(ERR_ERRONEUSNICKNAME(nickname));
+	// }
 
-	for (std::vector<Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
-	{
-		if (it->get_fd() != -1 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
-		{
-			if (!p.client.is_auth())
-				throw AuthException(ERR_NICKNAMEINUSE(nickname));
-			throw ResponseException(ERR_NICKNAMEINUSE(nickname));
-		}
-	}
+	// for (std::vector<Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
+	// {
+	// 	if (it->get_fd() != -1 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
+	// 	{
+	// 		if (!p.client.is_auth())
+	// 			throw AuthException(ERR_NICKNAMEINUSE(nickname));
+	// 		throw ResponseException(ERR_NICKNAMEINUSE(nickname));
+	// 	}
+	// }
 
 
-	p.client["NICKNAME"] = nickname;
-	WARNING("Nickname is now: " << p.client["NICKNAME"]);
+	// p.client["NICKNAME"] = nickname;
+	// WARNING("Nickname is now: " << p.client["NICKNAME"]);
 }
 
 void Command::pass(Payload p)
 {
-	if (p.client["PASSWORD"].size() > 0)
-	{
+	(void)p;
+	// if (p.client["PASSWORD"].size() > 0)
+	// {
 		
-		return;
-	}
-	if (p.body.second.size() > 1)
-	{
+	// 	return;
+	// }
+	// if (p.body.second.size() > 1)
+	// {
 		
-		return;
-	}
+	// 	return;
+	// }
 
-	if (p.body.second[0] != Client::server_password)
-	{
-		return;
-	}
+	// if (p.body.second[0] != Client::server_password)
+	// {
+	// 	return;
+	// }
 		
-	p.client["PASSWORD"] = p.body.second[0];
+	// p.client["PASSWORD"] = p.body.second[0];
 }
 
 void Command::user(Payload p)
 {
+	(void)p;
+	// if (p.body.second.size() != 4)
+	// {
+	// 	return;
+	// }
 
-	if (p.body.second.size() != 4)
-	{
-		return;
-	}
+	// p.client["USERNAME"] = p.body.second[0];
+	// p.client["REALNAME"] = p.body.second[3];
 
-	p.client["USERNAME"] = p.body.second[0];
-	p.client["REALNAME"] = p.body.second[3];
-
-	WARNING("Username is now: " << p.client["USERNAME"]);
+	// WARNING("Username is now: " << p.client["USERNAME"]);
 }
 
 void Command::join(Payload p)
 {
-	std::vector<std::string> body_channel;
-	std::vector<std::string> body_para;
-	SUCCESS("on a bien appeler join");
-	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
-	{
-		std::cout << "coucou" << std::endl;
-		if ((*it)[0] == '#')
-			body_channel.push_back(*it);
-		else 
-			body_para.push_back(*it);
-	}
-	for (size_t i = 0; i < p.body.second.size(); i++)
-	{
-		if (p.channels.find(body_channel[i]) != p.channels.end())
-		{
-			SUCCESS("channel localiser");
-			char c = p.channels[body_channel[i]].get_mode();
-			if (c != 'i' && c != 'p' && c != 's')
-			{
-				if (c == 'k' && i < body_para.size()
-					&& body_para[i] == p.channels[body_channel[i]].get_password())
-					p.client.add_channel(&(p.channels[p.body.second[i]]));
-				else if (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password())
-					throw ResponseException(ERR_PASSCHANNEL(p.client.get_key("NICKNAME")));
-				else
-					p.client.add_channel(&(p.channels[p.body.second[i]]));
-			}
-			throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
-		}
-		else
-			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));
-	}
+	(void)p;
+	// std::vector<std::string> body_channel;
+	// std::vector<std::string> body_para;
+	// SUCCESS("on a bien appeler join");
+	// for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
+	// {
+	// 	std::cout << "coucou" << std::endl;
+	// 	if ((*it)[0] == '#')
+	// 		body_channel.push_back(*it);
+	// 	else 
+	// 		body_para.push_back(*it);
+	// }
+	// for (size_t i = 0; i < p.body.second.size(); i++)
+	// {
+	// 	if (p.channels.find(body_channel[i]) != p.channels.end())
+	// 	{
+	// 		SUCCESS("channel localiser");
+	// 		char c = p.channels[body_channel[i]].get_mode();
+	// 		if (c != 'i' && c != 'p' && c != 's')
+	// 		{
+	// 			if (c == 'k' && i < body_para.size()
+	// 				&& body_para[i] == p.channels[body_channel[i]].get_password())
+	// 				p.client.add_channel(&(p.channels[p.body.second[i]]));
+	// 			else if (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password())
+	// 				throw ResponseException(ERR_PASSCHANNEL(p.client.get_key("NICKNAME")));
+	// 			else
+	// 				p.client.add_channel(&(p.channels[p.body.second[i]]));
+	// 		}
+	// 		throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
+	// 	}
+	// 	else
+	// 		throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));
+	// }
 }
 
 Command::map_t Command::init()

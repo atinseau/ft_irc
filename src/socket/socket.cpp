@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 19:59:45 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 10:47:55 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ Server::Server(std::string port, std::string password) : _password(password)
  */
 Server::~Server()
 {
-	for (std::vector<Client>::iterator it = _client.begin(); it != _client.end(); it++)
+	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		it->disconnect();
 	close(this->_sock_server);
 }
@@ -77,7 +77,6 @@ void Server::_init(void)
 	if ((rc = listen(this->_sock_server, 32)) < 0)
 		throw std::runtime_error("listen() failed");
 
-	this->_client.push_back(Client(NULL));
 	_create_pfd(this->_sock_server);
 
 	SUCCESS("Le server est lancé sur le port " << this->_port);
@@ -89,38 +88,32 @@ void Server::_init(void)
  */
 void Server::run(void)
 {
-	int rc, current_size;
+	int rc;
 	do
 	{
-		if ((rc = poll(&(*this->_pfds.begin()), this->_pfds.size(), TIME)) <= 0)
+		if ((rc = poll(this->_pfds.begin().base(), this->_pfds.size(), TIME)) <= 0)
 			throw std::runtime_error("poll() failed/timeout");
-		current_size = this->_pfds.size();
-		for (int i = 0; i < current_size; i++)
+
+		if (this->_pfds[0].revents & POLLIN)
+			_new_client();
+
+		for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
-			if (this->_pfds[i].revents == 0)
-				continue;
-			if (this->_pfds[i].revents != POLLIN)
-			{
-				_disconnect(i);
-				break;
-			}
-			if (this->_pfds[i].fd == this->_sock_server)
-			{
-				_new_client();
-			}
-			else
+			pollfd *pfd = it->get_pfd();
+
+			if (pfd->revents & POLLIN)
 			{
 				try
 				{
-					_client_handler(i);
+					_client_handler(*it);
 				}
 				catch (std::runtime_error &e)
 				{
 					ERROR(e.what());
-					_disconnect(i);
+					_disconnect(it);
 					break;
 				}
-			}	
+			}
 		}
 	} while (1);
 }
@@ -130,11 +123,11 @@ void Server::run(void)
  * Interception des message provenant des clients
  * @param id index du client dans le tableau de poll et du client
  */
-void Server::_client_handler(int id)
+void Server::_client_handler(Client &client)
 {
+
 	do
 	{
-		Client &client = this->_client[id];
 		Request req = client.read();
 
 		if (req.type() != Request::SUCCESS)
@@ -142,21 +135,24 @@ void Server::_client_handler(int id)
 
 		Request::Body body = req.body();
 
-		Command cmd(client, _client);
-		
-		try
-		{
-			cmd.ex_cmd(req.body(), _channels);
-		}
-		catch (Command::AuthException &e)
-		{
-			client.write(e.response());
-			_disconnect(id);
-		}
-		catch (Command::ResponseException &e)
-		{
-			client.write(e.response());
-		}
+		DEBUG("Commande: " << body.first);
+		DEBUG("Argument: " << body.second);
+
+		// Command cmd(client, _client);
+
+		// try
+		// {
+		// 	cmd.ex_cmd(req.body(), _channels);
+		// }
+		// catch (Command::AuthException &e)
+		// {
+		// 	client.write(e.response());
+		// 	_disconnect(id);
+		// }
+		// catch (Command::ResponseException &e)
+		// {
+		// 	client.write(e.response());
+		// }
 	} while (true);
 }
 
@@ -169,32 +165,31 @@ void Server::_client_handler(int id)
 void Server::_new_client(void)
 {
 	int fd;
-	do
-	{
+	// do
+	// {
 		if ((fd = accept(this->_sock_server, NULL, NULL)) < 0)
 		{
 			if (errno != EWOULDBLOCK)
 				throw std::runtime_error("accept() failed");
-			break;
+			return;
 		}
 		Client client(_create_pfd(fd));
+		this->_clients.push_back(client);
 
-		this->_client.push_back(client);
+		// std::string tmp = _uuid();
+		// this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
+		// this->_channels[tmp].add_client((this->_clients.end() - 1).base());
+		// client.add_channel(&(this->_channels[tmp]));
 
-		std::string tmp = _uuid();
-		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client((this->_client.end() - 1).base());
-		client.add_channel(&(this->_channels[tmp]));
-		
-	} while (fd != -1);
-	this->_nb_channel++;
+	// } while (fd != -1);
+	// this->_nb_channel++;
 }
 
 /**
  * @brief
  *
  * @param fd descripteur de fichier du client
- * @return pollfd* pour le poll
+ * @return pollfd pour le poll
  */
 pollfd *Server::_create_pfd(int fd)
 {
@@ -215,23 +210,28 @@ pollfd *Server::_create_pfd(int fd)
  * puis appelle le _disconnect du client
  * @param i index d'un client dans le tableau
  */
-void Server::_disconnect(int i)
+void Server::_disconnect(std::vector<Client>::iterator &it)
 {
-	_client[i].disconnect();
-	_client.erase((this->_client.begin() + i));
-	_pfds.erase(this->_pfds.begin() + i);
-
-	SUCCESS("le client " << i << " a été deconnecté");
+	it->disconnect();
+	SUCCESS("le client " << it->get_fd() << " a été deconnecté");
+	for (std::vector<pollfd>::iterator et = this->_pfds.begin(); et != this->_pfds.end(); et++)
+	{
+		if (et.base() == it->get_pfd())
+		{
+			this->_pfds.erase(et);
+			break;
+		}
+	}
+	_clients.erase(it);
 }
 
-std::string		Server::_uuid()
+std::string Server::_uuid()
 {
 	struct timeval tv;
-    gettimeofday(&tv, NULL);
+	gettimeofday(&tv, NULL);
 	std::string ret("#" + std::to_string(tv.tv_sec + tv.tv_usec));
 	std::cout << "id channel : " << ret << std::endl;
 	return (ret);
 }
-
 
 int Server::_nb_channel = 0;
