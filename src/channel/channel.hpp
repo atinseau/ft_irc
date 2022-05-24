@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:18:22 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:14:02 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 16:23:10 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ private :
 	std::string					_topic;
 	std::string					_password;
 	char						_mode;
-	
 };
 
 #endif

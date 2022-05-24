@@ -6,13 +6,13 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:18:15 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 17:05:43 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "channel.hpp"
 
-Channel::Channel(void) : _topic(""), _password(""), _mode('\0')
+Channel::Channel(void) : _topic(""), _password(""), _mode('k')
 {
 	(void)_mode;
 	(void)_topic;

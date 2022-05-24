@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:18 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 15:59:01 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 16:32:59 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,12 @@ private:
 	struct sockaddr_in6	_addr_server;
 
 	std::string						_password;
-	
 	std::vector<pollfd>				_pfds;
 	std::vector<Client>				_clients;
+	
 	std::map<std::string, Channel>	_channels;
+
+
 
 	void			_init();
 	void			_new_client(void);

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:20:50 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 17:15:39 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,18 +126,8 @@ void Command::join(Payload p)
 	{
 		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
-			SUCCESS("channel localiser");
-			char c = p.channels[body_channel[i]].get_mode();
-			if (c != 'i' && c != 'p' && c != 's')
-			{
-				if (c == 'k' && i < body_para.size()
-					&& body_para[i] == p.channels[body_channel[i]].get_password())
-					p.client.add_channel(&(p.channels[p.body.second[i]]));
-				else if (c == 'k' && (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password()))
-					throw ResponseException(ERR_PASSCHANNEL(p.client.get_key("NICKNAME")));
-				else
-					p.client.add_channel(&(p.channels[p.body.second[i]]));
-			}
+			if (_mode[p.channels.find(body_channel[i])->second.get_mode()](p.channels.find(body_channel[i])->second, body_para) == true)
+				p.client.add_channel(&(p.channels[p.body.second[i]]));
 			else
 				throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
 		}
@@ -146,7 +136,8 @@ void Command::join(Payload p)
 	}
 }
 
-Command::map_t Command::init()
+
+Command::map_t Command::init_cmd()
 {
 	map_t map;
 
@@ -157,4 +148,5 @@ Command::map_t Command::init()
 
 	return (map);
 }
-Command::map_t Command::_commands = Command::init();
+Command::map_t Command::_commands = Command::init_cmd();
+
