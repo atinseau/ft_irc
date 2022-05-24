@@ -20,14 +20,14 @@
 class Client
 {
 public:
-	Client(pollfd *pfd);
+	Client(pollfd pfd);
 
 	void disconnect();
 	Request read();
 	void write(Response res);
 
 	int get_fd() const;
-	pollfd* get_pfd();
+	pollfd get_pfd();
 
 	bool is_auth();
 
@@ -39,7 +39,7 @@ public:
 
 private:
 	std::vector<Channel *>				_channels;
-	pollfd								*_pfd;
+	pollfd								_pfd;
 	std::map<const char *, std::string>	_data;
 };
 

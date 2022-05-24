@@ -95,9 +95,7 @@ void Server::run(void)
 			throw std::runtime_error("poll() failed/timeout");
 
 		if (this->_pfds[0].revents & POLLIN)
-		{
 			_new_client();
-		}
 
 		for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
@@ -112,7 +110,6 @@ void Server::run(void)
 				break;
 			}
 		}
-
 	} while (1);
 }
 
@@ -194,7 +191,7 @@ void Server::_new_client(void)
  * @param fd descripteur de fichier du client
  * @return pollfd pour le poll
  */
-pollfd *Server::_create_pfd(int fd)
+pollfd Server::_create_pfd(int fd)
 {
 	pollfd pfd;
 
@@ -203,7 +200,7 @@ pollfd *Server::_create_pfd(int fd)
 	pfd.revents = 0;
 
 	this->_pfds.push_back(pfd);
-	return ((this->_pfds.end() - 1).base());
+	return (pfd);
 }
 
 /**
@@ -219,7 +216,7 @@ void Server::_disconnect(std::vector<Client>::iterator &it)
 	SUCCESS("le client " << it->get_fd() << " a été deconnecté");
 	for (std::vector<pollfd>::iterator et = this->_pfds.begin(); et != this->_pfds.end(); et++)
 	{
-		if (et.base() == it->get_pfd())
+		if (et->fd == it->get_fd())
 		{
 			this->_pfds.erase(et);
 			break;

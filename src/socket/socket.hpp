@@ -54,7 +54,7 @@ private:
 	void			_client_handler(Client& client);
 	void			_disconnect(std::vector<Client>::iterator& it);
 	std::string		_uuid();
-	pollfd*	_create_pfd(int fd);
+	pollfd			_create_pfd(int fd);
 };
 
 

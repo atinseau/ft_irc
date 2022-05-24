@@ -14,12 +14,9 @@
 
 std::string Client::server_password = "";
 
-Client::Client(pollfd *pfd): _pfd(pfd)
+Client::Client(pollfd pfd): _pfd(pfd)
 {
-	if (!_pfd)
-		return;
-	
-	INFO("Nouveau client " << _pfd->fd);
+	INFO("Nouveau client " << _pfd.fd);
 
 	_data["USERNAME"] = "";
 	_data["REALNAME"] = "";
@@ -62,19 +59,15 @@ void Client::write(Response res)
 
 void Client::disconnect()
 {
-	if (!_pfd)
-		return;
-	close(_pfd->fd);
+	close(_pfd.fd);
 }
 
 int Client::get_fd() const
 {
-	if (!_pfd)
-		return (-1);
-	return (_pfd->fd);
+	return (_pfd.fd);
 }
 
-pollfd* Client::get_pfd()
+pollfd Client::get_pfd()
 {
 	return (_pfd);
 }
