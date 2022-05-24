@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 20:13:29 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 16:20:50 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& 
 	(void) _client;
 	(void) _clients;
 
-	INFO("on pass par ex_cmd");
 	map_t::iterator it = _commands.find(body.first);
 
 	if (it != _commands.end())
@@ -65,13 +64,14 @@ void Command::nick(Payload p)
 
 	for (std::vector<Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
 	{
-		if (it->get_fd() > 0 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
+		if (it->get_fd() != -1 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
 		{
 			if (!p.client.is_auth())
 				throw AuthException(ERR_NICKNAMEINUSE(nickname));
 			throw ResponseException(ERR_NICKNAMEINUSE(nickname));
 		}
 	}
+
 
 	p.client["NICKNAME"] = nickname;
 	WARNING("Nickname is now: " << p.client["NICKNAME"]);
@@ -100,7 +100,6 @@ void Command::pass(Payload p)
 
 void Command::user(Payload p)
 {
-
 	if (p.body.second.size() != 4)
 	{
 		return;
@@ -116,10 +115,8 @@ void Command::join(Payload p)
 {
 	std::vector<std::string> body_channel;
 	std::vector<std::string> body_para;
-	SUCCESS("on a bien appeler join");
 	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
 	{
-		std::cout << "coucou" << std::endl;
 		if ((*it)[0] == '#')
 			body_channel.push_back(*it);
 		else 
@@ -136,12 +133,13 @@ void Command::join(Payload p)
 				if (c == 'k' && i < body_para.size()
 					&& body_para[i] == p.channels[body_channel[i]].get_password())
 					p.client.add_channel(&(p.channels[p.body.second[i]]));
-				else if (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password())
+				else if (c == 'k' && (i >= body_para.size() || body_para[i] != p.channels[body_channel[i]].get_password()))
 					throw ResponseException(ERR_PASSCHANNEL(p.client.get_key("NICKNAME")));
 				else
 					p.client.add_channel(&(p.channels[p.body.second[i]]));
 			}
-			throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
+			else
+				throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
 		}
 		else
 			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));

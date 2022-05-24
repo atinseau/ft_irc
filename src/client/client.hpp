@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:53:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 19:50:41 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 15:47:09 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,27 @@
 class Client
 {
 public:
-	Client(pollfd *pfd);
+	Client(pollfd pfd);
 
 	void disconnect();
 	Request read();
 	void write(Response res);
 
 	int get_fd() const;
+	pollfd get_pfd();
 
 	bool is_auth();
 
 	std::string& operator[](const char* key);
 	std::string get_key(const char* key) const;
 	void add_channel(Channel* channel);
+	void	print_channel();
 
 	static std::string server_password;
 
 private:
 	std::vector<Channel *>				_channels;
-	pollfd								*_pfd;
+	pollfd								_pfd;
 	std::map<const char *, std::string>	_data;
 };
 

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/23 16:53:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/24 16:18:40 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,9 @@
 
 std::string Client::server_password = "";
 
-Client::Client(pollfd *pfd): _pfd(pfd)
+Client::Client(pollfd pfd): _pfd(pfd)
 {
-	if (!_pfd)
-		return;
-	
-	INFO("Nouveau client " << _pfd->fd);
+	INFO("Nouveau client " << _pfd.fd);
 
 	_data["USERNAME"] = "";
 	_data["REALNAME"] = "";
@@ -33,21 +30,22 @@ Request Client::read()
 	Request req;
 
 	char buffer[BUFFER_SIZE];
+
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
 
-	if (req.size() < 0)
+	if (req.first < 0)
 	{
 		if (errno != EWOULDBLOCK)
 			req.set_type(Request::ERROR);
 		return (req);
 	}
-	if (req.size() == 0)
+	if (req.first == 0)
 	{
 		req.set_type(Request::QUIT);
 		return (req);
 	}
 	
-	buffer[req.size()] = '\0';
+	buffer[req.first] = '\0';
 	req.second = buffer;
 	req.set_type(Request::SUCCESS);
 	return (req);
@@ -61,16 +59,17 @@ void Client::write(Response res)
 
 void Client::disconnect()
 {
-	if (!_pfd)
-		return;
-	close(_pfd->fd);
+	close(_pfd.fd);
 }
 
 int Client::get_fd() const
 {
-	if (!_pfd)
-		return (-1);
-	return (_pfd->fd);
+	return (_pfd.fd);
+}
+
+pollfd Client::get_pfd()
+{
+	return (_pfd);
 }
 
 std::string& Client::operator[](const char* key)
@@ -97,9 +96,15 @@ bool	Client::is_auth()
 	return (true);
 }
 
+void Client::print_channel()
+{
+	INFO("liste channel du client \"" << this->get_key("NICKNAME") << "\" : ");
+	for(size_t i = 0; i < _channels.size(); i++)
+		INFO("\tchannel : " << _channels[i]->get_topic());
+}
 
 void Client::add_channel(Channel* channel)
 {
 	_channels.push_back(channel);
-	INFO("Ajoue du channel");
-};
+	print_channel();
+}
