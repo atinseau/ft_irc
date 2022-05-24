@@ -95,26 +95,24 @@ void Server::run(void)
 			throw std::runtime_error("poll() failed/timeout");
 
 		if (this->_pfds[0].revents & POLLIN)
+		{
 			_new_client();
+		}
 
 		for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
-			pollfd *pfd = it->get_pfd();
-
-			if (pfd->revents & POLLIN)
+			try
 			{
-				try
-				{
-					_client_handler(*it);
-				}
-				catch (std::runtime_error &e)
-				{
-					ERROR(e.what());
-					_disconnect(it);
-					break;
-				}
+				_client_handler(*it);
+			}
+			catch (std::runtime_error &e)
+			{
+				ERROR(e.what());
+				_disconnect(it);
+				break;
 			}
 		}
+
 	} while (1);
 }
 
@@ -125,13 +123,18 @@ void Server::run(void)
  */
 void Server::_client_handler(Client &client)
 {
-
 	do
 	{
 		Request req = client.read();
 
+		std::cout << req.size() << std::endl;
+
 		if (req.type() != Request::SUCCESS)
+		{
+			if (req.type() != Request::NONE)
+				throw std::runtime_error("Deconnexion");
 			break;
+		}
 
 		Request::Body body = req.body();
 
@@ -165,8 +168,8 @@ void Server::_client_handler(Client &client)
 void Server::_new_client(void)
 {
 	int fd;
-	// do
-	// {
+	do
+	{
 		if ((fd = accept(this->_sock_server, NULL, NULL)) < 0)
 		{
 			if (errno != EWOULDBLOCK)
@@ -181,7 +184,7 @@ void Server::_new_client(void)
 		// this->_channels[tmp].add_client((this->_clients.end() - 1).base());
 		// client.add_channel(&(this->_channels[tmp]));
 
-	// } while (fd != -1);
+	} while (fd != -1);
 	// this->_nb_channel++;
 }
 
