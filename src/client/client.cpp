@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:18:40 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 08:11:58 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,12 @@ std::string Client::get_key(const char* key) const
 {
 	return (_data.at(key));
 }
+
+std::vector<Channel *>	Client::get_channel()
+{
+	return (this->_channels);
+}
+
 
 bool	Client::is_auth()
 {

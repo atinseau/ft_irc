@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:33:54 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 08:30:54 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ void Server::_client_handler(std::vector<Client>::iterator& it)
 		}
 		catch (Command::ResponseException &e)
 		{
+			WARNING("Commande non executer");
 			client.write(e.response());
 		}
 	} while (true);

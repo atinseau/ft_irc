@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 17:44:15 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 08:30:04 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,17 @@ void Command::join(Payload p)
 	{
 		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
-			if (_mode[p.channels.find(body_channel[i])->second.get_mode()](p.channels.find(body_channel[i])->second, body_para, p.client) == true)
-				p.client.add_channel(&(p.channels[p.body.second[i]]));
-			else
-				throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
+			for (size_t x = 0; x < p.client.get_channel().size(); x++)
+			{
+				std::string channel = (*(p.client.get_channel().begin()+x))->get_topic();
+				if (p.channels.find(channel) != p.channels.end())
+					throw ResponseException(ERR_CHANNELISALRAIDYCONNECTED(p.client.get_key("NICKNAME")));
+			}
+			std::vector<char> mode = p.channels.find(body_channel[i])->second.get_mode();
+			for (size_t y = 0; y < (mode).size() ; y++)
+				if (_mode[mode[y]](p.channels.find(body_channel[i])->second, body_para, p.client) != true)
+					throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
+			p.client.add_channel(&(p.channels[p.body.second[i]]));
 		}
 		else
 			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));

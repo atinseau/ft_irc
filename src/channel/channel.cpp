@@ -6,18 +6,15 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 17:32:46 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 07:53:36 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "channel.hpp"
 
-Channel::Channel(void) : _topic(""), _password(""), _mode('k'), _max_client(-1)
+Channel::Channel(void) : _topic(""), _password(""), _max_client(-1)
 {
-	(void)_mode;
-	(void)_topic;
-	(void)_password;
-	(void)_black_list;
+	_mode.push_back('k');
 }
 
 void	Channel::set_topic(std::string uuid)
