@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 08:11:58 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 18:12:16 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@ std::string Client::server_password = "";
 
 Client::Client(pollfd pfd): _pfd(pfd)
 {
-	INFO("Nouveau client " << _pfd.fd);
+	SUCCESS("Nouveau client " << _pfd.fd);
 
 	_data["USERNAME"] = "";
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
+	_mode.insert(std::pair<char,bool>('i',false));
+	_mode.insert(std::pair<char,bool>('s',false));
+	_mode.insert(std::pair<char,bool>('w',false));
+	_mode.insert(std::pair<char,bool>('o',true));
 }
 
 
@@ -82,11 +86,15 @@ std::string Client::get_key(const char* key) const
 	return (_data.at(key));
 }
 
-std::vector<Channel *>	Client::get_channel()
+std::map<std::string, Channel&>&	Client::get_channels()
 {
 	return (this->_channels);
 }
 
+std::map<char,bool>					Client::get_mode()
+{
+	return (this->_mode);
+}
 
 bool	Client::is_auth()
 {
@@ -105,12 +113,11 @@ bool	Client::is_auth()
 void Client::print_channel()
 {
 	INFO("liste channel du client \"" << this->get_key("NICKNAME") << "\" : ");
-	for(size_t i = 0; i < _channels.size(); i++)
-		INFO("\tchannel : " << _channels[i]->get_topic());
+	for(std::map<std::string, Channel&>::iterator it = _channels.begin(); it != _channels.end(); it++)
+		INFO("\tchannel : " << it->first);
 }
 
-void Client::add_channel(Channel* channel)
+void Client::add_channels(std::pair<std::string , Channel& > channel)
 {
-	_channels.push_back(channel);
-	print_channel();
+	_channels.insert(channel);
 }

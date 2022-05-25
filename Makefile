@@ -3,7 +3,7 @@ CC=clang++
 FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 
 COMMAND=	src/command/command.cpp \
-			src/command/mode.cpp\
+			src/channel/mode.cpp\
 			src/command/exception.cpp
 
 LIB=	src/utils/utils.cpp \
@@ -21,7 +21,7 @@ SERVER_SRCS= main.cpp
 SERVER_NAME=ft_irc
 
 %.o:%.cpp
-	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c  $< -o $@
 	@echo "Compiling $<"
 
 $(SERVER_NAME): $(OBJS_LIB)

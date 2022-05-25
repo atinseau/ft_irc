@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 10:26:49 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 14:50:17 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,16 @@
  */
 
 class Socket;
+class Channel;
 class Client;
 class Response;
 class Command;
-class Channel;
 
 #include "socket/socket.hpp"
 #include "client/client.hpp"
 #include "channel/channel.hpp"
-#include "command/command.hpp"
 #include "response/response.hpp"
+#include "command/command.hpp"
 
 
 template <typename T>

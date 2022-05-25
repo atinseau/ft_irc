@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 08:30:54 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 12:32:31 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ void Server::_client_handler(std::vector<Client>::iterator& it)
 		try
 		{
 			cmd.ex_cmd(req.body(), _channels);
+			_print_channel();
 		}
 		catch (Command::AuthException &e)
 		{
@@ -174,8 +175,7 @@ void Server::_new_client(void)
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
 		this->_channels[tmp].add_client((this->_clients.end() - 1).base());
 		this->_channels[tmp].set_topic(tmp);
-		(this->_clients.end()-1).base()->add_channel(&(this->_channels[tmp]));
-
+		(this->_clients.end()-1).base()->add_channels(std::pair<std::string, Channel&>(tmp,this->_channels[tmp]));
 	} while (fd != -1);
 }
 
@@ -231,7 +231,6 @@ void			Server::_print_channel()
 {
 	for(std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
-		INFO("Channel : " << it->first);
 		this->_channels[it->first].print_clients();
 	}
 }

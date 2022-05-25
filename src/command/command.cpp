@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 08:30:04 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 19:05:37 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,26 +122,32 @@ void Command::join(Payload p)
 		else 
 			body_para.push_back(*it);
 	}
-	for (size_t i = 0; i < p.body.second.size(); i++)
+	for (size_t i = 0; i < body_channel.size(); i++)
 	{
 		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
-			for (size_t x = 0; x < p.client.get_channel().size(); x++)
+			if (p.client.get_channels().find(body_channel[i])->first != p.client.get_channels().end()->first)
+				throw ResponseException(ERR_CHANNELISALRAIDYCONNECTED(p.client.get_key("NICKNAME")));
+			std::map<char,bool> mode = p.channels.find(body_channel[i])->second.get_mode();
+			for (std::map<char,bool>::iterator it = mode.begin(); it != mode.end() ; it++)
 			{
-				std::string channel = (*(p.client.get_channel().begin()+x))->get_topic();
-				if (p.channels.find(channel) != p.channels.end())
-					throw ResponseException(ERR_CHANNELISALRAIDYCONNECTED(p.client.get_key("NICKNAME")));
+				if (it->second == true)
+					if (p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client) != true)
+						throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
 			}
-			std::vector<char> mode = p.channels.find(body_channel[i])->second.get_mode();
-			for (size_t y = 0; y < (mode).size() ; y++)
-				if (_mode[mode[y]](p.channels.find(body_channel[i])->second, body_para, p.client) != true)
-					throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
-			p.client.add_channel(&(p.channels[p.body.second[i]]));
+			p.client.add_channels(std::pair<std::string, Channel&>(p.body.second[i],p.channels[p.body.second[i]]));
+			p.channels[p.body.second[i]].add_client(&p.client);
 		}
 		else
 			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));
 	}
 }
+
+void Command::mode(Payload p)
+{
+	(void)p;
+}
+
 
 
 Command::map_t Command::init_cmd()
@@ -152,7 +158,7 @@ Command::map_t Command::init_cmd()
 	map["PASS"] = &Command::pass;
 	map["USER"] = &Command::user;
 	map["JOIN"] = &Command::join;
-
+	map["MODE"] = &Command::mode;
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();

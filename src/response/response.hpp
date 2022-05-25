@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 08:23:47 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/25 16:50:26 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,15 @@
 # define ERR_NICKNAMEINUSE(USER) RESPONSE("433", USER, "Pseudo déjà utilisé")
 # define ERR_ERRONEUSNICKNAME(USER) RESPONSE("432", USER, "Pseudo invalide (contient des caractères invalides ou trop long)")
 
-
+//JOIN
+# define ERR_CLIENTDOESNOTHAVERIGHT(USER) RESPONSE("0", USER, "Vous n avez pas les droit necessaire")
 # define ERR_PASSCHANNEL(USER) RESPONSE("0", USER, "Le mot de passe est incorrecte")
 # define ERR_CHANNELDOESNOTEXIST(USER) RESPONSE("0", USER, "Le channel rechercher n existe pas")
 # define ERR_CHANNELISNOTAVAILABLE(USER) RESPONSE("0", USER, "Le channel n est pas disponible")
 # define ERR_CHANNELISALRAIDYCONNECTED(USER) RESPONSE("0", USER, "Vous etes deja connecter a se channel")
+
+//MODE
+# define ERR_PARAMETREINCORRECTE(USER) RESPONSE("0", USER, "Vos parametre sont incorrecte")
 
 class Response
 {
