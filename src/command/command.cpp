@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 12:40:02 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 15:50:33 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void Command::join(Payload p)
 			for (std::map<char,bool>::iterator it = mode.begin(); it != mode.end() ; it++)
 				p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client);
 			p.client.add_channels(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]));
-			p.channels[p.body.second[i]].add_client(&p.client);
+			p.channels[p.body.second[i]].add_client(p.client);
 			//envoy la preponce RPL_TOPIC et RPL_NAMREPLY
 		}
 		else

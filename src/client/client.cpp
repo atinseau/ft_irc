@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 12:39:17 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 14:55:34 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ void Client::write(Response res)
 
 void Client::disconnect(std::map<std::string, Channel> *channels)
 {
-	this->disconnect_channel(channels->begin(), channels);
+	std::string id_channel = this->get_channels().begin()->first;
+	Channel *channel = this->get_channels().begin()->second;
+	this->disconnect_channel(id_channel, channel , channels);
+	
 	close(_pfd.fd);
 }
 
@@ -123,14 +126,14 @@ void Client::add_channels(std::pair<std::string , Channel*> channel)
 	_channels.insert(channel);
 }
 
-void		Client::disconnect_channel(std::map<std::string, Channel>::iterator it, std::map<std::string, Channel> *all_channels)
+void		Client::disconnect_channel(std::string id_channel, Channel *channel, std::map<std::string, Channel> *all_channels)
 {
 	int res;
 	if (all_channels->size() == 0)
 		return ;
-	res = it->second.sup_client(this->_pfd.fd);
-	if (this->_channels.size() != 0 &&  this->_channels.find(it->first) != this->_channels.end())
-		this->_channels.erase(this->_channels.find(it->first));
+	res = channel->sup_client(this->_pfd.fd);
+	if (this->_channels.size() != 0 &&  this->_channels.find(id_channel) != this->_channels.end())
+		this->_channels.erase(this->_channels.find(id_channel));
 	if (all_channels->size() > 0 && res == 0)
-		all_channels->erase(all_channels->find(it->first));
+		all_channels->erase(all_channels->find(id_channel));
 }

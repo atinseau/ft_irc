@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 12:40:21 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 15:52:52 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,10 @@ void Server::run(void)
 			throw std::runtime_error("poll() failed/timeout");
 
 		if (this->_pfds[0].revents & POLLIN)
+		{
 			_new_client();
+
+		}
 
 		for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
@@ -175,7 +178,7 @@ void Server::_new_client(void)
 
 		std::string tmp = _uuid();
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client(&this->_clients.back());
+		this->_channels[tmp].add_client(this->_clients.back());
 		this->_channels[tmp].set_topic(tmp);
 		this->_clients.back().add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]));
 	} while (fd != -1);
