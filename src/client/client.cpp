@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 18:12:16 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 12:39:17 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ void Client::write(Response res)
 		ERROR("Erreur lors de l'envoi de la requête");
 }
 
-void Client::disconnect()
+void Client::disconnect(std::map<std::string, Channel> *channels)
 {
+	this->disconnect_channel(channels->begin(), channels);
 	close(_pfd.fd);
 }
 
@@ -86,7 +87,7 @@ std::string Client::get_key(const char* key) const
 	return (_data.at(key));
 }
 
-std::map<std::string, Channel&>&	Client::get_channels()
+std::map<std::string, Channel*>&	Client::get_channels()
 {
 	return (this->_channels);
 }
@@ -113,11 +114,23 @@ bool	Client::is_auth()
 void Client::print_channel()
 {
 	INFO("liste channel du client \"" << this->get_key("NICKNAME") << "\" : ");
-	for(std::map<std::string, Channel&>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
 		INFO("\tchannel : " << it->first);
 }
 
-void Client::add_channels(std::pair<std::string , Channel& > channel)
+void Client::add_channels(std::pair<std::string , Channel*> channel)
 {
 	_channels.insert(channel);
+}
+
+void		Client::disconnect_channel(std::map<std::string, Channel>::iterator it, std::map<std::string, Channel> *all_channels)
+{
+	int res;
+	if (all_channels->size() == 0)
+		return ;
+	res = it->second.sup_client(this->_pfd.fd);
+	if (this->_channels.size() != 0 &&  this->_channels.find(it->first) != this->_channels.end())
+		this->_channels.erase(this->_channels.find(it->first));
+	if (all_channels->size() > 0 && res == 0)
+		all_channels->erase(all_channels->find(it->first));
 }

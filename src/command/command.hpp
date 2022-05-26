@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 15:15:11 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 08:00:52 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ public:
 	static void user(Payload p);
 	static void join(Payload p);
 	static void mode(Payload p);
-
-
 
 	class ResponseException : public std::exception
 	{

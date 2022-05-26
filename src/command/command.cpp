@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 19:05:37 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 12:40:02 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ void Command::user(Payload p)
 
 void Command::join(Payload p)
 {
+	if (p.body.second.size() == 1 && p.body.second.begin()->size() == 1)
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
 	std::vector<std::string> body_channel;
 	std::vector<std::string> body_para;
 	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
@@ -127,19 +129,16 @@ void Command::join(Payload p)
 		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
 			if (p.client.get_channels().find(body_channel[i])->first != p.client.get_channels().end()->first)
-				throw ResponseException(ERR_CHANNELISALRAIDYCONNECTED(p.client.get_key("NICKNAME")));
+				throw ResponseException(ERR_TOOMANYCHANNELS(p.client.get_key("NICKNAME")));
 			std::map<char,bool> mode = p.channels.find(body_channel[i])->second.get_mode();
 			for (std::map<char,bool>::iterator it = mode.begin(); it != mode.end() ; it++)
-			{
-				if (it->second == true)
-					if (p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client) != true)
-						throw ResponseException(ERR_CHANNELISNOTAVAILABLE(p.client.get_key("NICKNAME")));
-			}
-			p.client.add_channels(std::pair<std::string, Channel&>(p.body.second[i],p.channels[p.body.second[i]]));
+				p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client);
+			p.client.add_channels(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]));
 			p.channels[p.body.second[i]].add_client(&p.client);
+			//envoy la preponce RPL_TOPIC et RPL_NAMREPLY
 		}
 		else
-			throw ResponseException(ERR_CHANNELDOESNOTEXIST(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME")));
 	}
 }
 

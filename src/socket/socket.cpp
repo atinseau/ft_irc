@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 12:32:31 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 12:40:21 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ Server::Server(std::string port, std::string password) : _password(password)
 Server::~Server()
 {
 	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
-		it->disconnect();
+		it->disconnect(&this->_channels);
 	close(this->_sock_server);
 }
 
@@ -136,7 +136,7 @@ void Server::_client_handler(std::vector<Client>::iterator& it)
 		try
 		{
 			cmd.ex_cmd(req.body(), _channels);
-			_print_channel();
+			// un if temporaire a retirer plus tard
 		}
 		catch (Command::AuthException &e)
 		{
@@ -145,6 +145,8 @@ void Server::_client_handler(std::vector<Client>::iterator& it)
 		}
 		catch (Command::ResponseException &e)
 		{
+			if (req.body().first == "JOIN")
+				_print_channel();
 			WARNING("Commande non executer");
 			client.write(e.response());
 		}
@@ -173,9 +175,9 @@ void Server::_new_client(void)
 
 		std::string tmp = _uuid();
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client((this->_clients.end() - 1).base());
+		this->_channels[tmp].add_client(&this->_clients.back());
 		this->_channels[tmp].set_topic(tmp);
-		(this->_clients.end()-1).base()->add_channels(std::pair<std::string, Channel&>(tmp,this->_channels[tmp]));
+		this->_clients.back().add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]));
 	} while (fd != -1);
 }
 
@@ -206,7 +208,8 @@ pollfd Server::_create_pfd(int fd)
  */
 void Server::_disconnect(std::vector<Client>::iterator &it)
 {
-	it->disconnect();
+	
+	it->disconnect(&this->_channels);
 	SUCCESS("le client " << it->get_fd() << " a été deconnecté");
 	for (std::vector<pollfd>::iterator et = this->_pfds.begin(); et != this->_pfds.end(); et++)
 	{
@@ -234,5 +237,3 @@ void			Server::_print_channel()
 		this->_channels[it->first].print_clients();
 	}
 }
-
-

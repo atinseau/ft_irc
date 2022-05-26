@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:18 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/24 16:32:59 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 09:52:47 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ private:
 	void			_print_channel();
 	std::string		_uuid();
 	pollfd			_create_pfd(int fd);
+	void			_sup_channel(std::string channel);
 };
 
 

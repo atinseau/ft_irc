@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exception.cpp                                      :+:      :+:    :+:   */
+/*   exception_mode.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:32 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/25 19:02:26 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 08:36:05 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,4 @@ Response& Channel::ResponseException::response()
 {
 	return (_res);
 }
-Command::AuthException::AuthException(Response res) : ResponseException(res) {}
+Channel::AuthException::AuthException(Response res) : ResponseException(res) {}
