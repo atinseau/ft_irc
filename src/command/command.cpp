@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 15:50:33 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 17:22:07 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-Command::Command(Client& client, std::vector<Client>& clients): _client(client), _clients(clients) {}
+Command::Command(Client& client, std::map<int,Client> &clients): _client(client), _clients(clients) {}
 
 void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& channels)
 {
@@ -22,7 +22,6 @@ void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& 
 	(void) _clients;
 
 	map_t::iterator it = _commands.find(body.first);
-
 	if (it != _commands.end())
 	{
 		if (!_client.is_auth())
@@ -62,9 +61,9 @@ void Command::nick(Payload p)
 		throw ResponseException(ERR_ERRONEUSNICKNAME(nickname));
 	}
 
-	for (std::vector<Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
+	for (std::map<int,Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
 	{
-		if (it->get_fd() != -1 && it.base() != &p.client && it->get_key("NICKNAME") == nickname)
+		if (it->second.get_fd() != -1 && &it->second != &p.client && it->second.get_key("NICKNAME") == nickname)
 		{
 			if (!p.client.is_auth())
 				throw AuthException(ERR_NICKNAMEINUSE(nickname));
@@ -134,7 +133,7 @@ void Command::join(Payload p)
 			for (std::map<char,bool>::iterator it = mode.begin(); it != mode.end() ; it++)
 				p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client);
 			p.client.add_channels(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]));
-			p.channels[p.body.second[i]].add_client(p.client);
+			p.channels[p.body.second[i]].add_client(&p.client);
 			//envoy la preponce RPL_TOPIC et RPL_NAMREPLY
 		}
 		else

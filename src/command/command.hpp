@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 08:00:52 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 17:06:39 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ class Command
 {
 	struct Payload
 	{
-		Payload(Client& client, const std::vector<Client>& clients, const Request::Body& body, std::map<std::string, Channel>& channels);
+		Payload(Client& client, const std::map<int,Client> &clients, const Request::Body& body, std::map<std::string, Channel>& channels);
 
 		Client &client;
-		const std::vector<Client>& clients;
+		const std::map<int,Client> &clients;
 		const Request::Body &body;
 		std::map<std::string, Channel>& channels;
 		
@@ -31,7 +31,7 @@ class Command
 	typedef void (*func_t)(Payload);
 	typedef std::map<std::string, func_t> map_t;
 public:
-	Command(Client &client, std::vector<Client> &clients);
+	Command(Client &client, std::map<int,Client> &clients);
 
 	void ex_cmd(const Request::Body &body, std::map<std::string, Channel>& channels);
 
@@ -66,7 +66,7 @@ private:
 	
 
 	Client &_client;
-	std::vector<Client> &_clients;
+	std::map<int,Client> &_clients;
 }; 
 
 #endif

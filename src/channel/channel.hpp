@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:18:22 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 15:47:43 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 17:18:04 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ class Channel
 public :
 	Channel(void);
 	~Channel(void){};
-	void					add_client(Client client);
+	void					add_client(Client *client);
 	void					set_topic(std::string uuid);
 	size_t					sup_client(int cfd);
 	std::map<char,bool>		get_mode(){return (_mode);};
 	size_t					get_max_client(){return (_max_client);};
 	std::vector<Client*>	get_black_liste(){return (_black_list);};
-	std::map<int, Client>	get_clients(){return (_clients);};
+	std::map<int, Client*>	get_clients(){return (_clients);};
 	std::string				get_topic(){return (_topic);};
 	std::string				get_password(){return (_password);};
 	void					print_clients();
@@ -64,7 +64,7 @@ public :
 	};
 
 private :
-	std::map<int, Client>		_clients;
+	std::map<int, Client*>		_clients;
 	std::vector<Client*>		_black_list;
 	std::string					_topic;
 	std::string					_password;

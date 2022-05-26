@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 15:52:52 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 17:20:35 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ Server::Server(std::string port, std::string password) : _password(password)
  */
 Server::~Server()
 {
-	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
-		it->disconnect(&this->_channels);
+	for (std::map<int,Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		it->second.disconnect(&this->_channels);
 	close(this->_sock_server);
 }
 
@@ -100,16 +100,16 @@ void Server::run(void)
 
 		}
 
-		for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		for (std::map<int,Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
 			try
 			{
-				_client_handler(it);
+				_client_handler(it->second);
 			}
 			catch (std::runtime_error &e)
 			{
 				ERROR(e.what());
-				_disconnect(it);
+				_disconnect(it->second);
 				break;
 			}
 		}
@@ -121,9 +121,9 @@ void Server::run(void)
  * Interception des message provenant des clients
  * @param id index du client dans le tableau de poll et du client
  */
-void Server::_client_handler(std::vector<Client>::iterator& it)
+void Server::_client_handler(Client& it)
 {
-	Client &client = *it;
+	Client &client = it;
 	do
 	{
 		Request req = client.read();
@@ -174,13 +174,13 @@ void Server::_new_client(void)
 			return;
 		}
 		Client client(_create_pfd(fd));
-		this->_clients.push_back(client);
+		this->_clients.insert(std::pair<int,Client>(fd,client));
 
 		std::string tmp = _uuid();
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client(this->_clients.back());
+		this->_channels[tmp].add_client(&this->_clients.find(fd)->second);
 		this->_channels[tmp].set_topic(tmp);
-		this->_clients.back().add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]));
+		this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]));
 	} while (fd != -1);
 }
 
@@ -209,20 +209,20 @@ pollfd Server::_create_pfd(int fd)
  * puis appelle le _disconnect du client
  * @param i index d'un client dans le tableau
  */
-void Server::_disconnect(std::vector<Client>::iterator &it)
+void Server::_disconnect(Client& it)
 {
 	
-	it->disconnect(&this->_channels);
-	SUCCESS("le client " << it->get_fd() << " a été deconnecté");
+	it.disconnect(&this->_channels);
+	SUCCESS("le client " << it.get_fd() << " a été deconnecté");
 	for (std::vector<pollfd>::iterator et = this->_pfds.begin(); et != this->_pfds.end(); et++)
 	{
-		if (et->fd == it->get_fd())
+		if (et->fd == it.get_fd())
 		{
 			this->_pfds.erase(et);
 			break;
 		}
 	}
-	_clients.erase(it);
+	_clients.erase(_clients.find(it.get_fd()));
 }
 
 std::string Server::_uuid()
