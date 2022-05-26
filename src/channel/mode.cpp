@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 16:43:14 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 08:34:30 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 18:19:49 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void Channel::join_o(Channel &channel, std::vector<std::string>& cmd, std::vecto
 	(void)client;
 	if (channel.get_mode()['o'] == true)
 		if (client.get_mode()['o'] == false)
-			return ;
 			throw ResponseException(ERR_BADCHANMASK(client.get_key("NICKNAME")));
 		
 }
@@ -34,8 +33,7 @@ void Channel::join_psi(Channel &channel, std::vector<std::string>& cmd, std::vec
 	(void)para;
 	(void)client;
 	if (channel.get_mode()['p'] == true || channel.get_mode()['s'] == true || channel.get_mode()['i'] == true)
-			return ;
-		//throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME")));
+		throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME")));
 }
 void Channel::join_t(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client)
 {
@@ -71,9 +69,7 @@ void Channel::join_l(Channel &channel, std::vector<std::string>& cmd, std::vecto
 		return ;
 	size_t i = -1;
 	if (channel.get_max_client() != i && channel.get_max_client() >= channel.get_clients().size())
-			return ;
-		
-		//throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME")));
+		throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME")));
 }
 void Channel::join_b(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client)
 {
@@ -86,9 +82,7 @@ void Channel::join_b(Channel &channel, std::vector<std::string>& cmd, std::vecto
 	{
 		std::string nickName = (*(channel.get_black_liste().begin() + i))->get_key("NICKNAME");
 		if (nickName == client.get_key("NICKNAME"))
-			return ;
-			
-			//throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME")));
+			throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME")));
 	}
 }
 void Channel::join_v(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client)
@@ -112,7 +106,7 @@ void Channel::join_k(Channel &channel, std::vector<std::string>& cmd, std::vecto
 		if (*it == channel.get_password())
 			return ;
 	}
-	//throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME")));
+	throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME")));
 }
 
 std::map<char, Channel::func_t1> Channel::init_mode_join()

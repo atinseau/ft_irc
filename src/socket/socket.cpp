@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 17:20:35 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/26 19:01:14 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,6 @@ void Server::_client_handler(Client& it)
 		{
 			if (req.body().first == "JOIN")
 				_print_channel();
-			WARNING("Commande non executer");
 			client.write(e.response());
 		}
 	} while (true);
