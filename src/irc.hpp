@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 08:30:59 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:45:07 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@
  * @brief 
  * Forwards declaration
  */
-
+class Response;
+class ResponseException;
+class AuthException;
 class Socket;
 class Channel;
 class Client;

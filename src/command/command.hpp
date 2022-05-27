@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 17:06:39 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:49:48 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,6 @@ public:
 	static void user(Payload p);
 	static void join(Payload p);
 	static void mode(Payload p);
-
-	class ResponseException : public std::exception
-	{
-	public:
-		ResponseException(Response res);
-		~ResponseException() throw();
-
-		virtual const char *what() const throw();
-		Response &response();
-
-	protected:
-		Response _res;
-	};
-
-	class AuthException : public ResponseException
-	{
-	public:
-		AuthException(Response res);
-	};
 
 private:
 	static map_t init_cmd();

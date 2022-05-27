@@ -4,7 +4,6 @@ FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 
 COMMAND=	src/command/command.cpp \
 			src/command/exception.cpp\
-			src/channel/exception_mode.cpp\
 			src/channel/mode.cpp\
 
 LIB=	src/utils/utils.cpp \

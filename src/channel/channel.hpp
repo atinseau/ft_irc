@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:18:22 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 17:18:04 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:51:46 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,6 @@ public :
 	static void join_v(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);
 	static void join_k(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);
 	static std::map<char, func_t1> _mode_join;
-
-	class ResponseException : public std::exception
-	{
-	public:
-		ResponseException(Response res);
-		~ResponseException() throw();
-
-		virtual const char *what() const throw();
-		Response &response();
-
-	protected:
-		Response _res;
-	};
-
-	class AuthException : public ResponseException
-	{
-	public:
-		AuthException(Response res);
-	};
 
 private :
 	std::map<int, Client*>		_clients;

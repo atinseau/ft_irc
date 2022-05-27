@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 19:05:55 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:43:02 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@
 # define RPL_TOPIC(USER) RESPONSE("310", USER, "Vous etes bien connecter au canal")
 # define RPL_NAMREPLY(USER) RESPONSE("311", USER, "Bien venue dans ce cannal")
 
-
 class Response
 {
 	public:
@@ -48,5 +47,23 @@ class Response
 	private:
 		std::string _str;
 };
+
+class ResponseException : public std::exception
+{
+public:
+	ResponseException(Response res);
+	~ResponseException() throw();
+	virtual const char *what() const throw();
+	Response &response();
+protected:
+	Response _res;
+};
+
+class AuthException : public ResponseException
+{
+public:
+	AuthException(Response res);
+};
+
 
 #endif

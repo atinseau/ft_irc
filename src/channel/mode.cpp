@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 16:43:14 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 18:19:49 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:54:32 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void Channel::join_o(Channel &channel, std::vector<std::string>& cmd, std::vecto
 }
 void Channel::join_psi(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client)
 {
-	//cannal priver 
+	//cannal priver secret et canal sous invitation
 	(void)channel;
 	(void)cmd;
 	(void)para;
@@ -106,7 +106,7 @@ void Channel::join_k(Channel &channel, std::vector<std::string>& cmd, std::vecto
 		if (*it == channel.get_password())
 			return ;
 	}
-	throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME")));
+	throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME")));
 }
 
 std::map<char, Channel::func_t1> Channel::init_mode_join()

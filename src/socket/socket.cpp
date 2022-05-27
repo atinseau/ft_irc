@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 19:01:14 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 08:42:41 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,12 +141,12 @@ void Server::_client_handler(Client& it)
 			cmd.ex_cmd(req.body(), _channels);
 			// un if temporaire a retirer plus tard
 		}
-		catch (Command::AuthException &e)
+		catch (AuthException &e)
 		{
 			client.write(e.response());
 			_disconnect(it);
 		}
-		catch (Command::ResponseException &e)
+		catch (ResponseException &e)
 		{
 			if (req.body().first == "JOIN")
 				_print_channel();
