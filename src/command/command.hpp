@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 08:49:48 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 09:26:48 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ public:
 	static void pass(Payload p);
 	static void user(Payload p);
 	static void join(Payload p);
+	static void part(Payload p);
 	static void mode(Payload p);
 
 private:

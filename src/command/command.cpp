@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 19:06:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 09:44:43 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,24 @@ void Command::join(Payload p)
 	}
 }
 
+void Command::part(Payload p)
+{
+	if (p.body.second.size() == 1 && p.body.second.begin()->size() == 1)
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
+	std::vector<std::string> body_channel;
+	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
+		if ((*it)[0] == '#')
+			body_channel.push_back(*it);
+	for (size_t i = 0; i < body_channel.size(); i++)
+	{
+		if (p.channels.find(*(body_channel.begin()+ i)) == p.channels.end())
+			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME")));
+		if (p.client.get_channels().find(*(body_channel.begin()+ i)) == p.client.get_channels().end())
+			throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME")));
+		p.client.disconnect_channel(p.client.get_channels().find(*(body_channel.begin()+ i))->second , &p.channels);
+	}
+}
+
 void Command::mode(Payload p)
 {
 	(void)p;
@@ -157,6 +175,7 @@ Command::map_t Command::init_cmd()
 	map["PASS"] = &Command::pass;
 	map["USER"] = &Command::user;
 	map["JOIN"] = &Command::join;
+	map["PART"] = &Command::part;
 	map["MODE"] = &Command::mode;
 	return (map);
 }

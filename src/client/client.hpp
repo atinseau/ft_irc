@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:53:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 14:55:43 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/27 09:35:59 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ public:
 	Client(pollfd pfd);
 
 	void								disconnect(std::map<std::string, Channel> *Channels);
-	void								disconnect_channel(std::string id_channel, Channel *channel, std::map<std::string, Channel> *all_channels);
+	void								disconnect_channel(Channel *channel, std::map<std::string, Channel> *all_channels);
 	Request								read();
 	void								write(Response res);
 
