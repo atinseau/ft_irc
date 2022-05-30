@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 16:43:14 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 08:54:32 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 12:02:00 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Channel::join_o(Channel &channel, std::vector<std::string>& cmd, std::vecto
 	(void)para;
 	(void)client;
 	if (channel.get_mode()['o'] == true)
-		if (client.get_mode()['o'] == false)
+		if (client.get_mode(&channel)['o'] == false)
 			throw ResponseException(ERR_BADCHANMASK(client.get_key("NICKNAME")));
 		
 }

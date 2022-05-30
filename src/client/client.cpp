@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 09:35:50 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 12:24:38 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ Client::Client(pollfd pfd): _pfd(pfd)
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
-	_mode.insert(std::pair<char,bool>('i',false));
-	_mode.insert(std::pair<char,bool>('s',false));
-	_mode.insert(std::pair<char,bool>('w',false));
-	_mode.insert(std::pair<char,bool>('o',true));
+	add_mode(_channels.begin()->second);
 }
 
 
@@ -97,9 +94,9 @@ std::map<std::string, Channel*>&	Client::get_channels()
 	return (this->_channels);
 }
 
-std::map<char,bool>					Client::get_mode()
+std::map<char,bool>		Client::get_mode(Channel* channel)
 {
-	return (this->_mode);
+	return (this->_modes[channel]);
 }
 
 bool	Client::is_auth()
@@ -123,9 +120,19 @@ void Client::print_channel()
 		INFO("\tchannel : " << it->first);
 }
 
+void Client::print_mode_by_channel(Channel *channel)
+{
+	for (std::map<char, bool>::iterator it = _modes.find(channel)->second.begin(); it != _modes.find(channel)->second.end(); it++)
+	{
+		if (it->second == true)
+			INFO("\t\tmode : " << it->first);
+	}
+}
+
 void Client::add_channels(std::pair<std::string , Channel*> channel)
 {
 	_channels.insert(channel);
+	add_mode(channel.second);
 }
 
 void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel> *all_channels)
@@ -135,7 +142,20 @@ void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel
 		return ;
 	res = channel->sup_client(this->_pfd.fd);
 	if (this->_channels.size() != 0 &&  this->_channels.find(channel->get_topic()) != this->_channels.end())
+	{
 		this->_channels.erase(this->_channels.find(channel->get_topic()));
+		this->_modes.erase(this->_modes.find(channel));
+	}
 	if (all_channels->size() > 0 && res == 0)
 		all_channels->erase(all_channels->find(channel->get_topic()));
+}
+
+void		Client::add_mode(Channel *channel)
+{
+	std::map<char,bool>	mode_tmp;
+	mode_tmp.insert(std::pair<char,bool>('i',false));
+	mode_tmp.insert(std::pair<char,bool>('s',false));
+	mode_tmp.insert(std::pair<char,bool>('w',false));
+	mode_tmp.insert(std::pair<char,bool>('o',true));
+	_modes.insert(std::pair<Channel*, std::map<char,bool> >(channel, mode_tmp));
 }

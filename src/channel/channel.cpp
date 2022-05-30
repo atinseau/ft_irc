@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 17:19:51 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 12:25:03 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,11 @@ void					Channel::print_clients()
 	if (this->_clients.size() == 0)
 		return ;
 	for(std::map<int, Client*>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
 		INFO("\tclient : " << it->second->get_fd());
+		it->second->print_mode_by_channel(this);
+	}
+
 }
 
 void	Channel::add_client(Client *client)
