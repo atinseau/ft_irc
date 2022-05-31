@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 11:57:33 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 15:16:45 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void Command::nick(Payload p)
 	if (p.body.second.size() == 0)
 	{
 		if (!p.client.is_auth())
-			throw AuthException(ERR_NONICKNAMEGIVEN); 
-		throw ResponseException(ERR_NONICKNAMEGIVEN);
+			throw AuthException(ERR_NONICKNAMEGIVEN(p.client.get_key("NICKNAME"))); 
+		throw ResponseException(ERR_NONICKNAMEGIVEN(p.client.get_key("NICKNAME")));
 	}
 
 	std::string nickname = p.body.second[0];
@@ -77,8 +77,8 @@ void Command::nick(Payload p)
 	if (nickname.size() > NICKNAME_LENGTH) // todo: check if nickname is valid
 	{
 		if (!p.client.is_auth())
-			throw AuthException(ERR_ERRONEUSNICKNAME(nickname));
-		throw ResponseException(ERR_ERRONEUSNICKNAME(nickname));
+			throw AuthException(ERR_ERRONEUSNICKNAME(nickname, nickname));
+		throw ResponseException(ERR_ERRONEUSNICKNAME(nickname, nickname));
 	}
 
 	for (std::map<int,Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
@@ -86,8 +86,8 @@ void Command::nick(Payload p)
 		if (it->second.get_fd() != -1 && &it->second != &p.client && it->second.get_key("NICKNAME") == nickname)
 		{
 			if (!p.client.is_auth())
-				throw AuthException(ERR_NICKNAMEINUSE(nickname));
-			throw ResponseException(ERR_NICKNAMEINUSE(nickname));
+				throw AuthException(ERR_NICKNAMEINUSE(nickname, nickname));
+			throw ResponseException(ERR_NICKNAMEINUSE(nickname, nickname));
 		}
 	}
 
@@ -133,7 +133,7 @@ void Command::user(Payload p)
 void Command::join(Payload p)
 {
 	if (p.body.second.size() == 1 && p.body.second.begin()->size() == 1)
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	std::vector<std::string> body_channel;
 	std::vector<std::string> body_para;
 	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
@@ -148,7 +148,7 @@ void Command::join(Payload p)
 		if (p.channels.find(body_channel[i]) != p.channels.end())
 		{
 			if (p.client.get_channels().find(body_channel[i])->first != p.client.get_channels().end()->first)
-				throw ResponseException(ERR_TOOMANYCHANNELS(p.client.get_key("NICKNAME")));
+				throw ResponseException(ERR_TOOMANYCHANNELS(p.client.get_key("NICKNAME"), p.channels.find(body_channel[i])->first));
 			std::map<char,bool> mode = p.channels.find(body_channel[i])->second.get_mode();
 			for (std::map<char,bool>::iterator it = mode.begin(); it != mode.end() ; it++)
 				p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client);
@@ -160,14 +160,14 @@ void Command::join(Payload p)
 			p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), return_str_client_channel(channel, p.client))).response());
 		}
 		else
-			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(p.body.second[i])->first));
 	}
 }
 
 void Command::part(Payload p)
 {
 	if (p.body.second.size() == 1 && p.body.second.begin()->size() == 1)
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	std::vector<std::string> body_channel;
 	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
 		if ((*it)[0] == '#')
@@ -175,9 +175,9 @@ void Command::part(Payload p)
 	for (size_t i = 0; i < body_channel.size(); i++)
 	{
 		if (p.channels.find(*(body_channel.begin()+ i)) == p.channels.end())
-			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(*(body_channel.begin()+ i))->first));
 		if (p.client.get_channels().find(*(body_channel.begin()+ i)) == p.client.get_channels().end())
-			throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(*(body_channel.begin()+ i))->first));
 		p.client.disconnect_channel(p.client.get_channels().find(*(body_channel.begin()+ i))->second , &p.channels);
 	}
 }
@@ -187,12 +187,12 @@ void Command::topic(Payload p)
 {
 	Channel *channel;
 	if (p.body.second.begin() == p.body.second.end() || (*p.body.second.begin())[0] != '#')
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	if (p.client.get_channels().find(*p.body.second.begin()) == p.client.get_channels().end())
-		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	channel = p.client.get_channels().find(*p.body.second.begin())->second;
 	if (channel->get_mode()['t'] == true && p.client.get_mode(channel)['o'] == false)
-		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	if (p.body.second.begin()+1 != p.body.second.end())
 		channel->set_topic(*(p.body.second.begin()+1));
 	else
@@ -264,24 +264,24 @@ void Command::invite(Payload p)
 {
 	std::map<int,Client>::iterator it = p.clients.begin();
 	if (*p.body.second.begin() == "\0")
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	for (; it != p.clients.end(); it++)
 		if (it->second.get_key("NICKNAME") == *p.body.second.begin())
 			break ;
 	if (it == p.clients.end())
-		throw ResponseException(ERR_NOSUCHNICK(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"),"l inviter n existe pas"));
 	if (p.client.get_channels().find(*(p.body.second.begin() + 1)) != p.client.get_channels().end())
 	{
 		if (p.channels.find(*(p.body.second.begin() + 1))->second.get_mode()['i'] == true
 		&& p.client.get_mode(&p.channels.find(*(p.body.second.begin() + 1))->second)['o'] == false)
-			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), ));
 		if (it->second.get_channels().find(*(p.body.second.begin() + 1)) != it->second.get_channels().end())
-			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME")));
+			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), it->second.get_channels().find(*(p.body.second.begin() + 1))->first));
 		it->second.add_channels(std::pair<std::string, Channel*>(p.client.get_channels().find(*(p.body.second.begin() + 1))->first , &p.channels[*(p.body.second.begin() + 1)]));
 		p.client.get_channels()[*(p.body.second.begin() + 1)]->add_client(&it->second);
 	}
 	else if (p.channels.find(*(p.body.second.begin() + 1)) != p.channels.end()) 
-		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME")));
+		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(*(p.body.second.begin() + 1))->first));
 	else
 	{
 		p.channels.insert(std::pair<std::string, Channel>(*(p.body.second.begin() + 1), Channel()));
@@ -291,6 +291,42 @@ void Command::invite(Payload p)
 	}
 	p.client.write(ResponseException(RPL_INVITING(p.client.get_key("NICKNAME"))).response());
 	
+}
+
+void Command::kick(Payload p)
+{
+	std::vector<Channel*> channels;
+	std::vector<Client*> clients;
+	std::vector<std::string>::const_iterator it = p.body.second.begin();
+	
+	for (; it != p.body.second.end(); it++)
+	{
+		if ((*it)[0] == '#')
+		{
+			if (p.channels.find(*it) == p.channels.end())
+				throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), *it));
+			if (p.client.get_channels().find(*it) == p.client.get_channels().end())
+				throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), *it));
+			if (p.client.get_mode(&p.channels[*it])['o'] == false)
+				throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), *it));
+			channels.push_back(&p.channels[*it]);
+		}
+		else
+			break;
+	}
+	for (; it != p.body.second.end(); it++)
+	{
+		for (std::map<int,Client>::iterator it_cli = p.clients.begin(); it_cli != p.clients.end(); it_cli++)
+			if (it_cli->second.get_key("NICKNAME") == *it)
+				clients.push_back(&it_cli->second);
+	}
+	if (channels.size() != clients.size())
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	for (size_t i = 0; i < clients.size(); i++)
+	{
+		(*(clients.begin() + i))->disconnect_channel((*(channels.begin() + i)), &p.channels);
+		(*(clients.begin() + i))->write(ResponseException(RPL_INVITING((*(clients.begin() + i))->get_key("NICKNAME"))).response());
+	}
 }
 
 void Command::mode(Payload p)
@@ -315,6 +351,7 @@ Command::map_t Command::init_cmd()
 	map["NAMES"] = &Command::names;
 	map["LIST"] = &Command::list;
 	map["INVITE"] = &Command::invite;
+	map["KICK"] = &Command::kick;
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();
