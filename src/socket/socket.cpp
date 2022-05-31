@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 17:29:15 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 16:10:22 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ void Server::run(void)
 		if (this->_pfds[0].revents & POLLIN)
 		{
 			_new_client();
-
 		}
 
 		for (std::map<int,Client>::iterator it = _clients.begin(); it != _clients.end(); it++)

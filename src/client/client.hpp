@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:53:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 17:32:00 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 16:21:38 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ private:
 	std::map<Channel*, std::map<char,bool> >	_modes;
 	pollfd										_pfd;
 	std::map<const char *, std::string>			_data;
-	//std::map<char,bool>						_mode;
 };
 
 #endif

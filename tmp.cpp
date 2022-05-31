@@ -14,16 +14,20 @@ int main()
 	//std::cout << &test.begin() << std::endl;
 	std::cout << test.begin().base() << std::endl;
 	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
+	std::cout << "capacity : "  << test.capacity() << std::endl;
+	
 	test.push_back(i);
 	//std::cout << &test.begin() << std::endl;
 	std::cout << test.begin().base() << std::endl;
 	std::cout << (test.end() - 1).base() << std::endl << std::endl;
-
+	std::cout << "capacity : "  << test.capacity() << std::endl;
 	test.push_back(y);
 	//std::cout << &test.begin() << std::endl;
 	std::cout << test.begin().base() << std::endl;
 	std::cout << (test.end() - 2).base() << std::endl;
 	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
+	std::cout << "capacity : "  << test.capacity() << std::endl;
+
 	test.push_back(v);
 	//std::cout << &test.begin() << std::endl;
 	std::cout << test.begin().base() << std::endl;
@@ -31,5 +35,15 @@ int main()
 	std::cout << (test.end() - 2).base() << std::endl;
 	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
 
+	std::cout << "capacity : "  << test.capacity() << std::endl;
+
+	test.push_back(v);
+	//std::cout << &test.begin() << std::endl;
+	std::cout << test.begin().base() << std::endl;
+	std::cout << (test.end() - 3).base() << std::endl;
+	std::cout << (test.end() - 2).base() << std::endl;
+	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
+
+	std::cout << "capacity : "  << test.capacity() << std::endl;
 	return (0);
 }

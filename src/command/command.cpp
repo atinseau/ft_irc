@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 15:38:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 16:12:57 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ void Command::quit(Payload p)
 	}
 	else
 		p.client.write(ResponseException(RPL_MESSAGEEND(p.client.get_key("NICKNAME"), "\0")).response());
-	p.client.disconnect(&p.channels);
+	throw runtime_error("sorti du client");
 }
 
 void Command::names(Payload p)
