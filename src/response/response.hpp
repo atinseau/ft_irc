@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 09:42:49 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:02:04 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,22 @@
 # define ERR_BADCHANNELKEY(USER) RESPONSE("445", USER, "Vous n avais pas le bon code")
 # define ERR_TOOMANYCHANNELS(USER) RESPONSE("446", USER, "Vous etes deja connecter a se channel") 
 # define ERR_BADCHANMASK(USER) RESPONSE("447", USER, "Mauvais masque")
-# define RPL_TOPIC(USER) RESPONSE("310", USER, "Vous etes bien connecter au canal")
-# define RPL_NAMREPLY(USER) RESPONSE("311", USER, "Bien venue dans ce cannal")
+//# define RPL_TOPIC(USER) RESPONSE("310", USER, "Vous etes bien connecter au canal")
 
 //part
-
 # define ERR_NOTONCHANNEL(USER) RESPONSE("451", USER, "Vous N etes pas sur ce channel") 
 
+//TOPIC
+# define RPL_TOPIC(USER, TOPIC) RESPONSE("310", USER, "Sujet : " + TOPIC)
+# define RPL_NOTOPIC(USER) RESPONSE("310", USER, "Ce canal n as pas de sujet")
+# define ERR_CHANOPRIVSNEEDED(USER) RESPONSE("410", USER, "Vous n avez pas les droit d acces")
+
+//QUIT
+# define RPL_MESSAGEEND(USER, MESSAGEEND) RESPONSE("310", USER, " " + MESSAGEEND)
+
+//NAMES
+# define RPL_NAMREPLY(USER, NAME) RESPONSE("310", USER, " " +  NAME)
+# define RPL_ENDOFNAMES(USER) RESPONSE("310", USER, "\tfin des nom")
 
 
 class Response

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 16:43:14 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 12:02:00 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 16:56:45 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,3 +128,12 @@ std::map<char, Channel::func_t1> Channel::init_mode_join()
 	return (map);
 }
 std::map<char, Channel::func_t1> Channel::_mode_join = Channel::init_mode_join();
+
+
+void	Channel::set_mode(char choose, char mode)
+{
+	if (choose == '-')
+		this->_mode[mode] = false;
+	else 
+		this->_mode[mode] = true;
+}

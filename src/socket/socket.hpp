@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:18 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/26 16:56:13 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:06:06 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Server
 public:
 	Server(std::string port, std::string password);
 	~Server(void);
+	
 	
 	void	run(void);
 

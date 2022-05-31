@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 12:25:03 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 17:34:17 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	Channel::set_topic(std::string uuid)
 	this->_topic = uuid;
 }
 
-void					Channel::print_clients()
+void					Channel::print_clients(std::string name_channel)
 {
-	INFO("Client du channel \"" << this->get_topic() << "\"");
+	INFO("Client du channel \"" << name_channel << "\" sujet : " << this->get_topic());
 	if (this->_clients.size() == 0)
 		return ;
 	for(std::map<int, Client*>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)

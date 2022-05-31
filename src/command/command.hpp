@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 09:26:48 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:21:26 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,17 @@ public:
 
 	void ex_cmd(const Request::Body &body, std::map<std::string, Channel>& channels);
 
+
+	static std::string		return_str_client_channel(std::map<std::string, Channel*> channels, Client &client);
 	static void nick(Payload p);
 	static void pass(Payload p);
 	static void user(Payload p);
 	static void join(Payload p);
 	static void part(Payload p);
 	static void mode(Payload p);
+	static void topic(Payload p);
+	static void quit(Payload p);
+	static void names(Payload p);
 
 private:
 	static map_t init_cmd();

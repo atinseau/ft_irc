@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 09:46:15 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 17:29:15 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,6 @@ void			Server::_print_channel()
 {
 	for(std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
-		this->_channels[it->first].print_clients();
+		this->_channels[it->first].print_clients(it->first);
 	}
 }

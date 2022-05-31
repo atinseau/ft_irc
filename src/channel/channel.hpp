@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:18:22 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/27 08:51:46 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/30 17:33:44 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ public :
 	std::map<int, Client*>	get_clients(){return (_clients);};
 	std::string				get_topic(){return (_topic);};
 	std::string				get_password(){return (_password);};
-	void					print_clients();
+	void					print_clients(std::string name_channel);
+	void					set_mode(char choose, char mode);
 
 	static void join_o(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);
 	static void join_psi(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);
