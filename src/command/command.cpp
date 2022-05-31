@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:37:46 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:41:49 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,8 +256,9 @@ void Command::list(Payload p)
 			continue ;
 		str += " : " + it->second->get_topic();
 	}
-	p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), str)).response());
-	p.client.write(ResponseException(RPL_ENDOFNAMES(p.client.get_key("NICKNAME"))).response());
+	p.client.write(ResponseException(RPL_LISTSTART(p.client.get_key("NICKNAME"))).response());
+	p.client.write(ResponseException(RPL_LIST(p.client.get_key("NICKNAME"), str)).response());
+	p.client.write(ResponseException(RPL_LISTEND(p.client.get_key("NICKNAME"))).response());
 }
 
 

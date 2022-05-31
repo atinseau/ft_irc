@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:02:04 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:41:18 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,11 @@
 //NAMES
 # define RPL_NAMREPLY(USER, NAME) RESPONSE("310", USER, " " +  NAME)
 # define RPL_ENDOFNAMES(USER) RESPONSE("310", USER, "\tfin des nom")
+
+//LIST
+# define RPL_LISTSTART(USER) RESPONSE("310", USER, "\tdebut de la liste")
+# define RPL_LIST(USER, NAME) RESPONSE("310", USER, " " +  NAME)
+# define RPL_LISTEND(USER) RESPONSE("310", USER, "\tfin de la liste")
 
 
 class Response
