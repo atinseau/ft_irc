@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 15:16:45 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 15:38:22 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,11 +315,9 @@ void Command::kick(Payload p)
 			break;
 	}
 	for (; it != p.body.second.end(); it++)
-	{
 		for (std::map<int,Client>::iterator it_cli = p.clients.begin(); it_cli != p.clients.end(); it_cli++)
 			if (it_cli->second.get_key("NICKNAME") == *it)
 				clients.push_back(&it_cli->second);
-	}
 	if (channels.size() != clients.size())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	for (size_t i = 0; i < clients.size(); i++)
