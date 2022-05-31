@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:32:05 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 11:10:14 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ class Command
 {
 	struct Payload
 	{
-		Payload(Client& client, const std::map<int,Client> &clients, const Request::Body& body, std::map<std::string, Channel>& channels);
+		Payload(Client& client, std::map<int,Client> &clients, const Request::Body& body, std::map<std::string, Channel>& channels);
 
 		Client &client;
-		const std::map<int,Client> &clients;
+		std::map<int,Client> &clients;
 		const Request::Body &body;
 		std::map<std::string, Channel>& channels;
 		
@@ -47,6 +47,7 @@ public:
 	static void quit(Payload p);
 	static void names(Payload p);
 	static void list(Payload p);
+	static void invite(Payload p);
 
 private:
 	static map_t init_cmd();

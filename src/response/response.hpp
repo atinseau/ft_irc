@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:41:18 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 11:56:51 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@
 # define RPL_LISTSTART(USER) RESPONSE("310", USER, "\tdebut de la liste")
 # define RPL_LIST(USER, NAME) RESPONSE("310", USER, " " +  NAME)
 # define RPL_LISTEND(USER) RESPONSE("310", USER, "\tfin de la liste")
+
+//INVITE
+# define ERR_USERONCHANNEL(USER) RESPONSE("470", USER, "Le client est deja sur ce channel")
+# define ERR_NOSUCHNICK(USER) RESPONSE("470", USER, "Le client n existe pas")
+# define RPL_INVITING(USER) RESPONSE("370", USER, "Le client est bien viter")
 
 
 class Response
