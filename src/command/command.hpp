@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:21:26 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:32:05 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ public:
 	static void topic(Payload p);
 	static void quit(Payload p);
 	static void names(Payload p);
+	static void list(Payload p);
 
 private:
 	static map_t init_cmd();

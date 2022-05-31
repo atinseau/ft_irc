@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 10:26:28 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/05/31 10:37:46 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,27 @@ void Command::ex_cmd(const Request::Body& body, std::map<std::string, Channel>& 
 	ERROR("Commande " << body.first << " inconnue");
 }
 
+std::string		Command::return_str_client_channel(std::map<std::string, Channel*> channels, Client &client)
+{
+	std::string str;
+	for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		if (client.get_channels().find(it->first) == client.get_channels().end() && 
+			(channels.find(it->first)->second->get_mode()['p'] == true || channels.find(it->first)->second->get_mode()['s'] == true))
+			continue ;
+		str += "\t\tChannel ";
+		str += it->first;
+		str+= " : ";
+		std::map<int, Client*> channel_tmp = it->second->get_clients();
+		for (std::map<int, Client*>::iterator it_cli = channel_tmp.begin(); it_cli != channel_tmp.end(); it_cli++)
+		{
+			if (it_cli->second->get_mode(it->second)['i'] == true)
+				continue ;
+			str += " " + it_cli->second->get_key("NICKNAME") + " ";
+		}
+	}
+	return (str);
+}
 
 void Command::nick(Payload p)
 {
@@ -202,41 +223,43 @@ void Command::names(Payload p)
 {
 	std::map<std::string, Channel *> channel;
 	if (*p.body.second.begin() == "\0")
-	{
 		for (std::map<std::string, Channel>::iterator it_cha = p.channels.begin(); it_cha != p.channels.end(); it_cha++)
 			channel.insert(std::pair<std::string, Channel*>(it_cha->first,&(it_cha->second)));
-	}
 	else
-	{
 		for (std::vector<const std::string>::iterator it_bod = p.body.second.begin(); it_bod != p.body.second.end(); it_bod++)
 			if (p.channels.find(*it_bod) != p.channels.end())
 				channel.insert(std::pair<std::string, Channel*>(p.channels.find(*it_bod)->first,&(p.channels.find(*it_bod)->second)));
-	}
 	p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), return_str_client_channel(channel, p.client))).response());
 	p.client.write(ResponseException(RPL_ENDOFNAMES(p.client.get_key("NICKNAME"))).response());
 }
 
-std::string		Command::return_str_client_channel(std::map<std::string, Channel*> channels, Client &client)
+void Command::list(Payload p)
 {
 	std::string str;
-	for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+	std::map<std::string, Channel *> channel;
+	if (*p.body.second.begin() == "\0")
+		for (std::map<std::string, Channel>::iterator it_cha = p.channels.begin(); it_cha != p.channels.end(); it_cha++)
+			channel.insert(std::pair<std::string, Channel*>(it_cha->first,&(it_cha->second)));
+	else
+		for (std::vector<const std::string>::iterator it_bod = p.body.second.begin(); it_bod != p.body.second.end(); it_bod++)
+			if (p.channels.find(*it_bod) != p.channels.end())
+				channel.insert(std::pair<std::string, Channel*>(p.channels.find(*it_bod)->first,&(p.channels.find(*it_bod)->second)));
+	for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
 	{
-		if (client.get_channels().find(it->first) == client.get_channels().end() && 
-			(channels.find(it->first)->second->get_mode()['p'] == true || channels.find(it->first)->second->get_mode()['s'] == true))
+		if (p.client.get_channels().find(it->first) == p.client.get_channels().end() && 
+			(p.channels.find(it->first)->second.get_mode()['s'] == true))
 			continue ;
 		str += "\t\tChannel ";
 		str += it->first;
-		str+= " : ";
-		std::map<int, Client*> channel_tmp = it->second->get_clients();
-		for (std::map<int, Client*>::iterator it_cli = channel_tmp.begin(); it_cli != channel_tmp.end(); it_cli++)
-		{
-			if (it_cli->second->get_mode(it->second)['i'] == true)
-				continue ;
-			str += " " + it_cli->second->get_key("NICKNAME") + " ";
-		}
+		if (p.client.get_channels().find(it->first) == p.client.get_channels().end() && 
+			(p.channels.find(it->first)->second.get_mode()['p'] == true))
+			continue ;
+		str += " : " + it->second->get_topic();
 	}
-	return (str);
+	p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), str)).response());
+	p.client.write(ResponseException(RPL_ENDOFNAMES(p.client.get_key("NICKNAME"))).response());
 }
+
 
 void Command::mode(Payload p)
 {
@@ -258,6 +281,7 @@ Command::map_t Command::init_cmd()
 	map["TOPIC"] = &Command::topic;
 	map["QUIT"] = &Command::quit;
 	map["NAMES"] = &Command::names;
+	map["LIST"] = &Command::list;
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();
