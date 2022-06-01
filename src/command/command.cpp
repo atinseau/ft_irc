@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 16:12:57 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 09:20:53 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,14 @@ std::string		Command::return_str_client_channel(std::map<std::string, Channel*> 
 		}
 	}
 	return (str);
+}
+
+Client *Command::get_client_by_nickname(std::string nickname, std::map<int, Client> &clients)
+{
+	for (std::map<int,Client>::iterator it_cli = clients.begin(); it_cli != clients.end(); it_cli++)
+		if (it_cli->second.get_key("NICKNAME") == nickname)
+			return (&it_cli->second);
+	return (&clients.end()->second);
 }
 
 void Command::nick(Payload p)
@@ -262,32 +270,30 @@ void Command::list(Payload p)
 
 void Command::invite(Payload p)
 {
-	std::map<int,Client>::iterator it = p.clients.begin();
 	if (*p.body.second.begin() == "\0")
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
-	for (; it != p.clients.end(); it++)
-		if (it->second.get_key("NICKNAME") == *p.body.second.begin())
-			break ;
-	if (it == p.clients.end())
+	
+	Client *cli = get_client_by_nickname(*p.body.second.begin(), p.clients);
+	if (cli == &p.clients.end()->second)
 		throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"),"l inviter n existe pas"));
 	if (p.client.get_channels().find(*(p.body.second.begin() + 1)) != p.client.get_channels().end())
 	{
 		if (p.channels.find(*(p.body.second.begin() + 1))->second.get_mode()['i'] == true
 		&& p.client.get_mode(&p.channels.find(*(p.body.second.begin() + 1))->second)['o'] == false)
 			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), ));
-		if (it->second.get_channels().find(*(p.body.second.begin() + 1)) != it->second.get_channels().end())
-			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), it->second.get_channels().find(*(p.body.second.begin() + 1))->first));
-		it->second.add_channels(std::pair<std::string, Channel*>(p.client.get_channels().find(*(p.body.second.begin() + 1))->first , &p.channels[*(p.body.second.begin() + 1)]));
-		p.client.get_channels()[*(p.body.second.begin() + 1)]->add_client(&it->second);
+		if (cli->get_channels().find(*(p.body.second.begin() + 1)) != cli->get_channels().end())
+			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), cli->get_channels().find(*(p.body.second.begin() + 1))->first));
+		cli->add_channels(std::pair<std::string, Channel*>(p.client.get_channels().find(*(p.body.second.begin() + 1))->first , &p.channels[*(p.body.second.begin() + 1)]));
+		p.client.get_channels()[*(p.body.second.begin() + 1)]->add_client(cli);
 	}
 	else if (p.channels.find(*(p.body.second.begin() + 1)) != p.channels.end()) 
 		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(*(p.body.second.begin() + 1))->first));
 	else
 	{
 		p.channels.insert(std::pair<std::string, Channel>(*(p.body.second.begin() + 1), Channel()));
-		p.channels[*(p.body.second.begin() + 1)].add_client(&it->second);
+		p.channels[*(p.body.second.begin() + 1)].add_client(cli);
 		p.channels[*(p.body.second.begin() + 1)].set_topic(*(p.body.second.begin() + 1));
-		it->second.add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]));
+		cli->add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]));
 	}
 	p.client.write(ResponseException(RPL_INVITING(p.client.get_key("NICKNAME"))).response());
 	
@@ -315,9 +321,11 @@ void Command::kick(Payload p)
 			break;
 	}
 	for (; it != p.body.second.end(); it++)
-		for (std::map<int,Client>::iterator it_cli = p.clients.begin(); it_cli != p.clients.end(); it_cli++)
-			if (it_cli->second.get_key("NICKNAME") == *it)
-				clients.push_back(&it_cli->second);
+	{
+			Client *cli = get_client_by_nickname(*it, p.clients);
+			if (cli != &p.clients.end()->second)
+				clients.push_back(cli);
+	}
 	if (channels.size() != clients.size())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	for (size_t i = 0; i < clients.size(); i++)
@@ -325,6 +333,30 @@ void Command::kick(Payload p)
 		(*(clients.begin() + i))->disconnect_channel((*(channels.begin() + i)), &p.channels);
 		(*(clients.begin() + i))->write(ResponseException(RPL_INVITING((*(clients.begin() + i))->get_key("NICKNAME"))).response());
 	}
+}
+
+void Command::privmsg(Payload p)
+{
+	std::vector<Client *>	list_client;
+	std::vector<Channel *>	list_channel;
+	std::string				msg;
+	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it != p.body.second.end(); it++)
+	{
+		if ((*it)[0] == '#')
+			list_channel.push_back(&p.channels.find(*it)->second);
+		else if (get_client_by_nickname(*it, p.clients) != &p.clients.end()->second)
+			list_client.push_back(get_client_by_nickname(*it, p.clients));
+		else
+			msg += " " + *it;
+	}
+	if (list_client.size() == 0 && list_channel.size() == 0 && msg.size() == 0)
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	else if (list_client.size() == 0 && list_channel.size() == 0)
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	for (std::vector<Client *>::iterator it = list_client.begin(); it != list_client.end(); it++)
+		(*it)->write(ResponseException(RPL_MSGPRV((*it)->get_key("NICKNAME"),p.client.get_key("NICKNAME"),msg)).response());
+	for (std::vector<Channel *>::iterator it = list_channel.begin(); it != list_channel.end(); it++)
+		(*it)->send_msg_all_client(&p.client, msg);
 }
 
 void Command::mode(Payload p)
@@ -350,6 +382,7 @@ Command::map_t Command::init_cmd()
 	map["LIST"] = &Command::list;
 	map["INVITE"] = &Command::invite;
 	map["KICK"] = &Command::kick;
+	map["PRIVMSG"] = &Command::privmsg;
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();

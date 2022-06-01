@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 17:34:17 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 09:38:12 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,22 @@ size_t		Channel::sup_client(int fd)
 }
 
 
+void			Channel::send_msg_all_client(Client *client, std::string msg)
+{
+	for (std::map<int, Client*>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		std::map<int, Client *>::iterator it_cli = this->_clients.begin();
+		for (; it_cli != this->_clients.end(); it_cli++)
+		{
+			if (it_cli->second->get_key("NICKNAME") == client->get_key("NICKNAME"))
+				continue ;
+		}
+		if (it_cli == this->_clients.end()
+		&& (this->_mode['p'] == true || this->_mode['s'] == true || this->_mode['i'] == true || this->_mode['n'] == true || this->_mode['m'] == true || this->_mode['b'] == true))
+			throw ResponseException(ERR_USERSDONTMATCH(client->get_key("NICKNAME"))); 
+		it->second->write(ResponseException(RPL_MSGPRV(it->second->get_key("NICKNAME") , client->get_key("NICKNAME"), msg)).response());
+	}
+}
 
 
 

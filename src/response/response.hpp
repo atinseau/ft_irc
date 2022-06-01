@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 15:21:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 08:19:50 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@
 # define ERR_UMODEUNKNOWNFLAG(USER) RESPONSE("501", USER, ":Unknown MODE flag")
 # define ERR_USERSDONTMATCH(USER) RESPONSE("502", USER, ":Cant change mode for other users")
 
+
 # define RPL_TOPIC(USER, TOPIC) RESPONSE("310", USER, "Sujet : " + TOPIC)
 # define RPL_NOTOPIC(USER) RESPONSE("310", USER, "Ce canal n as pas de sujet")
 # define RPL_MESSAGEEND(USER, MESSAGEEND) RESPONSE("310", USER, " " + MESSAGEEND)
@@ -76,6 +77,7 @@
 # define RPL_LISTEND(USER) RESPONSE("310", USER, "\tfin de la liste")
 # define RPL_INVITING(USER) RESPONSE("370", USER, "Le client est bien viter")
 
+# define RPL_MSGPRV(USER, DE, MSG) RESPONSE("100", USER,  "Le client <" + DE + "> vous envoy : " + MSG)
 class Response
 {
 	public:

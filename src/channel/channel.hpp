@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:18:22 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 17:33:44 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 08:13:24 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ public :
 	std::string				get_password(){return (_password);};
 	void					print_clients(std::string name_channel);
 	void					set_mode(char choose, char mode);
+	void					send_msg_all_client(Client *client, std::string msg);
 
 	static void join_o(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);
 	static void join_psi(Channel &channel, std::vector<std::string>& cmd, std::vector<std::string>& para, Client &client);

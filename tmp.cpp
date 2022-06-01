@@ -1,49 +1,57 @@
 #include <sys/time.h>
 #include <iostream>
 #include <vector>
+#include <map>
 
 int main()
 {
-	int x = 1;
-	int i = 2;
-	int y = 3;
-	int v = 4;
+	std::pair<int,char> a(1,'a');
+	std::pair<int,char> b(2,'a');
+	std::pair<int,char> c(3,'a');
+	std::pair<int,char> d(4,'a');
+	std::pair<int,char> e(5,'a');
 
-	std::vector<int> test;
-	test.push_back(x);
-	//std::cout << &test.begin() << std::endl;
-	std::cout << test.begin().base() << std::endl;
-	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
-	std::cout << "capacity : "  << test.capacity() << std::endl;
+	std::map<int, char> test;
+	test.insert(a);
+	for (std::map<int,char>::iterator it= test.begin(); it != test.end(); it++)
+	{
+		std::cout << "first  : " << &(it->first) << std::endl;
+		std::cout << "second : " << it->second << std::endl;
+	}
+	std::cout << std::endl;
+	test.insert(b);
+	for (std::map<int,char>::iterator it= test.begin(); it != test.end(); it++)
+	{
+		std::cout << "first  : " << &(it->first) << std::endl;
+		std::cout << "second : " << &(it->second) << std::endl;
+	}
+	std::cout << std::endl;
+
+	test.insert(c);
+	for (std::map<int,char>::iterator it= test.begin(); it != test.end(); it++)
+	{
+		std::cout << "first  : " << &(it->first) << std::endl;
+		std::cout << "second : " << &(it->second) << std::endl;
+	}
+	std::cout << std::endl;
+
+	test.insert(d);
+	for (std::map<int,char>::iterator it= test.begin(); it != test.end(); it++)
+	{
+		std::cout << "first  : " << &(it->first) << std::endl;
+		std::cout << "second : " << &(it->second) << std::endl;
+	}
+	std::cout << std::endl;
+
+	test.insert(e);
+	for (std::map<int,char>::iterator it= test.begin(); it != test.end(); it++)
+	{
+		std::cout << "first  : " << &(it->first) << std::endl;
+		std::cout << "second : " << &(it->second) << std::endl;
+	}
+
+
+
 	
-	test.push_back(i);
-	//std::cout << &test.begin() << std::endl;
-	std::cout << test.begin().base() << std::endl;
-	std::cout << (test.end() - 1).base() << std::endl << std::endl;
-	std::cout << "capacity : "  << test.capacity() << std::endl;
-	test.push_back(y);
-	//std::cout << &test.begin() << std::endl;
-	std::cout << test.begin().base() << std::endl;
-	std::cout << (test.end() - 2).base() << std::endl;
-	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
-	std::cout << "capacity : "  << test.capacity() << std::endl;
-
-	test.push_back(v);
-	//std::cout << &test.begin() << std::endl;
-	std::cout << test.begin().base() << std::endl;
-	std::cout << (test.end() - 3).base() << std::endl;
-	std::cout << (test.end() - 2).base() << std::endl;
-	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
-
-	std::cout << "capacity : "  << test.capacity() << std::endl;
-
-	test.push_back(v);
-	//std::cout << &test.begin() << std::endl;
-	std::cout << test.begin().base() << std::endl;
-	std::cout << (test.end() - 3).base() << std::endl;
-	std::cout << (test.end() - 2).base() << std::endl;
-	std::cout << (test.end() - 1).base() << std::endl<< std::endl;
-
-	std::cout << "capacity : "  << test.capacity() << std::endl;
 	return (0);
 }
