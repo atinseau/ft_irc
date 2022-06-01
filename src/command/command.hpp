@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 08:45:15 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 17:28:43 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ public:
 	static void invite(Payload p);
 	static void kick(Payload p);
 	static void privmsg(Payload p);
+	static void oper(Payload p);
 
 private:
 	static map_t init_cmd();

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/30 17:31:40 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 17:22:05 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ std::map<std::string, Channel*>&	Client::get_channels()
 	return (this->_channels);
 }
 
-std::map<char,bool>		Client::get_mode(Channel* channel)
+bool			Client::get_opperator(Channel* channel)
 {
-	return (this->_modes[channel]);
+	return (this->_opperator[channel]);
 }
 
 bool	Client::is_auth()
@@ -122,11 +122,7 @@ void Client::print_channel()
 
 void Client::print_mode_by_channel(Channel *channel)
 {
-	for (std::map<char, bool>::iterator it = _modes.find(channel)->second.begin(); it != _modes.find(channel)->second.end(); it++)
-	{
-		if (it->second == true)
-			INFO("\t\tmode : " << it->first);
-	}
+	INFO("\t\tmode : " << _opperator[channel]);
 }
 
 void Client::add_channels(std::pair<std::string , Channel*> channel)
@@ -144,7 +140,7 @@ void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel
 	if (this->_channels.size() != 0 &&  this->_channels.find(channel->get_topic()) != this->_channels.end())
 	{
 		this->_channels.erase(this->_channels.find(channel->get_topic()));
-		this->_modes.erase(this->_modes.find(channel));
+		this->_opperator.erase(this->_opperator.find(channel));
 	}
 	if (all_channels->size() > 0 && res == 0)
 		all_channels->erase(all_channels->find(channel->get_topic()));
@@ -152,10 +148,5 @@ void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel
 
 void		Client::add_mode(Channel *channel)
 {
-	std::map<char,bool>	mode_tmp;
-	mode_tmp.insert(std::pair<char,bool>('i',false));
-	mode_tmp.insert(std::pair<char,bool>('s',false));
-	mode_tmp.insert(std::pair<char,bool>('w',false));
-	mode_tmp.insert(std::pair<char,bool>('o',true));
-	_modes.insert(std::pair<Channel*, std::map<char,bool> >(channel, mode_tmp));
+	_opperator.insert(std::pair<Channel*, bool>(channel, false));
 }

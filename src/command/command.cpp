@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 09:20:53 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 17:15:26 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ std::string		Command::return_str_client_channel(std::map<std::string, Channel*> 
 		std::map<int, Client*> channel_tmp = it->second->get_clients();
 		for (std::map<int, Client*>::iterator it_cli = channel_tmp.begin(); it_cli != channel_tmp.end(); it_cli++)
 		{
-			if (it_cli->second->get_mode(it->second)['i'] == true)
-				continue ;
 			str += " " + it_cli->second->get_key("NICKNAME") + " ";
 		}
 	}
@@ -199,7 +197,7 @@ void Command::topic(Payload p)
 	if (p.client.get_channels().find(*p.body.second.begin()) == p.client.get_channels().end())
 		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	channel = p.client.get_channels().find(*p.body.second.begin())->second;
-	if (channel->get_mode()['t'] == true && p.client.get_mode(channel)['o'] == false)
+	if (channel->get_mode()['t'] == true && p.client.get_opperator(channel) == false)
 		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	if (p.body.second.begin()+1 != p.body.second.end())
 		channel->set_topic(*(p.body.second.begin()+1));
@@ -279,7 +277,7 @@ void Command::invite(Payload p)
 	if (p.client.get_channels().find(*(p.body.second.begin() + 1)) != p.client.get_channels().end())
 	{
 		if (p.channels.find(*(p.body.second.begin() + 1))->second.get_mode()['i'] == true
-		&& p.client.get_mode(&p.channels.find(*(p.body.second.begin() + 1))->second)['o'] == false)
+		&& p.client.get_opperator(&p.channels.find(*(p.body.second.begin() + 1))->second) == false)
 			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), ));
 		if (cli->get_channels().find(*(p.body.second.begin() + 1)) != cli->get_channels().end())
 			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), cli->get_channels().find(*(p.body.second.begin() + 1))->first));
@@ -313,7 +311,7 @@ void Command::kick(Payload p)
 				throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), *it));
 			if (p.client.get_channels().find(*it) == p.client.get_channels().end())
 				throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), *it));
-			if (p.client.get_mode(&p.channels[*it])['o'] == false)
+			if (p.client.get_opperator(&p.channels[*it]) == false)
 				throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), *it));
 			channels.push_back(&p.channels[*it]);
 		}

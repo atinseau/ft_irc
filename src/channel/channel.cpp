@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 09:38:12 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 17:19:12 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,9 @@ Channel::Channel(void) :  _topic(""), _password(""), _max_client(-1)
 	//_mode.push_back('k');
 	_mode.insert(std::pair<char,bool>('o',false));
 	_mode.insert(std::pair<char,bool>('p',false));
-	_mode.insert(std::pair<char,bool>('s',false));
 	_mode.insert(std::pair<char,bool>('i',false));
 	_mode.insert(std::pair<char,bool>('t',false));
-	_mode.insert(std::pair<char,bool>('n',false));
-	_mode.insert(std::pair<char,bool>('m',false));
 	_mode.insert(std::pair<char,bool>('l',false));
-	_mode.insert(std::pair<char,bool>('b',false));
-	_mode.insert(std::pair<char,bool>('v',false));
 	_mode.insert(std::pair<char,bool>('k',true));
 }
 
@@ -72,7 +67,7 @@ void			Channel::send_msg_all_client(Client *client, std::string msg)
 				continue ;
 		}
 		if (it_cli == this->_clients.end()
-		&& (this->_mode['p'] == true || this->_mode['s'] == true || this->_mode['i'] == true || this->_mode['n'] == true || this->_mode['m'] == true || this->_mode['b'] == true))
+		&& (this->_mode['p'] == true ||  this->_mode['i'] == true))
 			throw ResponseException(ERR_USERSDONTMATCH(client->get_key("NICKNAME"))); 
 		it->second->write(ResponseException(RPL_MSGPRV(it->second->get_key("NICKNAME") , client->get_key("NICKNAME"), msg)).response());
 	}
