@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 17:15:26 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/01 18:39:40 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,7 +360,34 @@ void Command::privmsg(Payload p)
 void Command::mode(Payload p)
 {
 	(void)p;
-	
+	Channel *channel;
+	char choose;
+	std::string mode;
+	std::vector<std::string> para;
+	std::vector<std::string>::const_iterator tmp = p.body.second.begin();
+	size_t nb_para = 0;
+	if ((*tmp)[0] != '#')
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	if (p.channels.find(*tmp) == p.channels.end())
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	channel = &p.channels[*tmp];
+	if (p.client.get_channels().find(*tmp) == p.client.get_channels().end())
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	tmp++;
+	if ((*tmp)[0] != '-' && (*tmp)[0] != '+')
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+	choose = (*tmp)[0];
+	mode = &((*tmp)[1]);
+	for (; tmp != p.body.second.end(); tmp++)
+		para.push_back(*tmp);
+	for (int i = 0; mode[i] != '\0'; i++)
+	{
+		if (nb_para > para.size())
+			throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+		//channel._mode_mode[mode[i]](channel, choose, mode, para[nb_para],p.client, p.clients, p.channels);
+		if (choose == '+' && (mode[i] == 'o' || mode[i] == 'l' || mode[i] == 'k'))
+			nb_para++;
+	}
 }
 
 
