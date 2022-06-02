@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/31 16:10:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/02 15:25:09 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void Server::_new_client(void)
 		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
 		this->_channels[tmp].add_client(&this->_clients.find(fd)->second);
 		this->_channels[tmp].set_topic(tmp);
-		this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]));
+		this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]), true);
 	} while (fd != -1);
 }
 

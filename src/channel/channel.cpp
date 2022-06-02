@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 14:20:08 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 17:19:12 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/02 14:32:51 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,14 @@ void	Channel::set_topic(std::string uuid)
 
 void					Channel::print_clients(std::string name_channel)
 {
+	std::string tmp;
+
+	for (std::map<char, bool>::iterator it = _mode.begin(); it != _mode.end(); it++)
+		if (it->second == true)
+			tmp += it->first;
 	INFO("Client du channel \"" << name_channel << "\" sujet : " << this->get_topic());
+	INFO("mode : " << tmp);
+	
 	if (this->_clients.size() == 0)
 		return ;
 	for(std::map<int, Client*>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)

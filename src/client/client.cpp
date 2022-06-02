@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:09 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 17:22:05 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/02 15:24:59 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Client::Client(pollfd pfd): _pfd(pfd)
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
-	add_mode(_channels.begin()->second);
+	add_mode(_channels.begin()->second, true);
 }
 
 
@@ -122,13 +122,17 @@ void Client::print_channel()
 
 void Client::print_mode_by_channel(Channel *channel)
 {
-	INFO("\t\tmode : " << _opperator[channel]);
+	if (_opperator[channel] == true)
+		INFO("\t\tmode : " << "true");
+	else if (_opperator[channel] == false)
+		INFO("\t\tmode : " << "false");
+
 }
 
-void Client::add_channels(std::pair<std::string , Channel*> channel)
+void Client::add_channels(std::pair<std::string , Channel*> channel, bool choix)
 {
 	_channels.insert(channel);
-	add_mode(channel.second);
+	add_mode(channel.second, choix);
 }
 
 void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel> *all_channels)
@@ -146,7 +150,13 @@ void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel
 		all_channels->erase(all_channels->find(channel->get_topic()));
 }
 
-void		Client::add_mode(Channel *channel)
+void		Client::add_mode(Channel *channel, bool choi)
 {
-	_opperator.insert(std::pair<Channel*, bool>(channel, false));
+	_opperator.insert(std::pair<Channel*, bool>(channel, choi));
+}
+
+void		Client::set_opperator(Channel *channel, bool choose)
+{
+	if (_opperator.find(channel) != _opperator.end())
+		_opperator.find(channel)->second = choose;
 }

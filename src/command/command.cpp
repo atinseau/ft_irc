@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 18:39:40 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/02 16:05:13 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,8 @@ void Command::join(Payload p)
 	{
 		if ((*it)[0] == '#')
 			body_channel.push_back(*it);
+		else if (it == p.body.second.begin())
+			throw ResponseException(ERR_TOOMANYCHANNELS(p.client.get_key("NICKNAME"), "coucou"));
 		else 
 			body_para.push_back(*it);
 	}
@@ -160,13 +162,20 @@ void Command::join(Payload p)
 				p.channels.find(body_channel[i])->second._mode_join[it->first](p.channels.find(body_channel[i])->second, body_channel, body_para, p.client);
 			std::map<std::string, Channel*> channel;
 			channel.insert(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]));
-			p.client.add_channels(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]));
+			p.client.add_channels(std::pair<std::string, Channel*>(p.body.second[i],&p.channels[p.body.second[i]]), false);
 			p.channels[p.body.second[i]].add_client(&p.client);
 			p.client.write(ResponseException(RPL_TOPIC(p.client.get_key("NICKNAME"),p.channels.find(body_channel[i])->second.get_topic())).response());
 			p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), return_str_client_channel(channel, p.client))).response());
 		}
 		else
-			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), p.channels.find(p.body.second[i])->first));
+		{
+			p.channels.insert(std::pair<std::string, Channel>(body_channel[i], Channel()));
+			p.channels[body_channel[i]].add_client(&p.client);
+			p.channels[body_channel[i]].set_topic(body_channel[i]);
+			p.client.add_channels(std::pair<std::string, Channel*>(body_channel[i],&p.channels[body_channel[i]]), true);
+			p.client.write(ResponseException(RPL_TOPIC(p.client.get_key("NICKNAME"),p.channels.find(body_channel[i])->second.get_topic())).response());
+			p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), "coucou")).response());
+		}
 	}
 }
 
@@ -178,6 +187,8 @@ void Command::part(Payload p)
 	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it < p.body.second.end(); it++)
 		if ((*it)[0] == '#')
 			body_channel.push_back(*it);
+	if (body_channel.size() == 0)
+		throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), "\0"));
 	for (size_t i = 0; i < body_channel.size(); i++)
 	{
 		if (p.channels.find(*(body_channel.begin()+ i)) == p.channels.end())
@@ -281,7 +292,7 @@ void Command::invite(Payload p)
 			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), ));
 		if (cli->get_channels().find(*(p.body.second.begin() + 1)) != cli->get_channels().end())
 			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), cli->get_channels().find(*(p.body.second.begin() + 1))->first));
-		cli->add_channels(std::pair<std::string, Channel*>(p.client.get_channels().find(*(p.body.second.begin() + 1))->first , &p.channels[*(p.body.second.begin() + 1)]));
+		cli->add_channels(std::pair<std::string, Channel*>(p.client.get_channels().find(*(p.body.second.begin() + 1))->first , &p.channels[*(p.body.second.begin() + 1)]), false);
 		p.client.get_channels()[*(p.body.second.begin() + 1)]->add_client(cli);
 	}
 	else if (p.channels.find(*(p.body.second.begin() + 1)) != p.channels.end()) 
@@ -291,7 +302,7 @@ void Command::invite(Payload p)
 		p.channels.insert(std::pair<std::string, Channel>(*(p.body.second.begin() + 1), Channel()));
 		p.channels[*(p.body.second.begin() + 1)].add_client(cli);
 		p.channels[*(p.body.second.begin() + 1)].set_topic(*(p.body.second.begin() + 1));
-		cli->add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]));
+		cli->add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]), false);
 	}
 	p.client.write(ResponseException(RPL_INVITING(p.client.get_key("NICKNAME"))).response());
 	
@@ -371,6 +382,8 @@ void Command::mode(Payload p)
 	if (p.channels.find(*tmp) == p.channels.end())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	channel = &p.channels[*tmp];
+	if (p.client.get_opperator(channel) == false)
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	if (p.client.get_channels().find(*tmp) == p.client.get_channels().end())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	tmp++;
@@ -378,14 +391,15 @@ void Command::mode(Payload p)
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	choose = (*tmp)[0];
 	mode = &((*tmp)[1]);
+	tmp++;
 	for (; tmp != p.body.second.end(); tmp++)
 		para.push_back(*tmp);
 	for (int i = 0; mode[i] != '\0'; i++)
 	{
 		if (nb_para > para.size())
 			throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
-		//channel._mode_mode[mode[i]](channel, choose, mode, para[nb_para],p.client, p.clients, p.channels);
-		if (choose == '+' && (mode[i] == 'o' || mode[i] == 'l' || mode[i] == 'k'))
+		channel->_mode_mode[mode[i]](channel, choose, mode[i], para[nb_para],&p.client, &p.clients, &p.channels);
+		if (mode[i] == 'o' || (choose == '+' && (mode[i] == 'l' || mode[i] == 'k')))
 			nb_para++;
 	}
 }
@@ -395,11 +409,11 @@ Command::map_t Command::init_cmd()
 {
 	map_t map;
 
-	map["NICK"] = &Command::nick;
-	map["PASS"] = &Command::pass;
-	map["USER"] = &Command::user;
-	map["JOIN"] = &Command::join;
-	map["PART"] = &Command::part;
+	map["NICK"] = &Command::nick;//
+	map["PASS"] = &Command::pass;//
+	map["USER"] = &Command::user;//
+	map["JOIN"] = &Command::join;//
+	map["PART"] = &Command::part;//
 	map["MODE"] = &Command::mode;
 	map["TOPIC"] = &Command::topic;
 	map["QUIT"] = &Command::quit;

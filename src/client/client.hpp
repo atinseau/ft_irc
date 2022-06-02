@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:53:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 17:22:11 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/02 15:25:54 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ public:
 	std::string&						operator[](const char* key);
 	std::string							get_key(const char* key) const;
 	void								print_channel();
-	void 								add_channels(std::pair<std::string , Channel* > channel);
-	void								add_mode(Channel *channel);
+	void 								add_channels(std::pair<std::string , Channel* > channel, bool choix);
+	void								add_mode(Channel *channel, bool choi);
 	void 								print_mode_by_channel(Channel *channel);
+	void								set_opperator(Channel *channel, bool choose);
 
 	static std::string server_password;
 private:
