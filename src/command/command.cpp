@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 14:13:46 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 14:40:31 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,10 @@ std::string		Command::return_str_client_channel(std::map<std::string, Channel*> 
 Client *Command::get_client_by_nickname(std::string nickname, std::map<int, Client> &clients)
 {
 	for (std::map<int,Client>::iterator it_cli = clients.begin(); it_cli != clients.end(); it_cli++)
+	{
 		if (it_cli->second.get_key("NICKNAME") == nickname)
 			return (&it_cli->second);
+	}
 	return (&clients.end()->second);
 }
 
@@ -286,14 +288,12 @@ void Command::invite(Payload p)
 {
 	if (*p.body.second.begin() == "\0")
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
-	
 	Client *cli = get_client_by_nickname(*p.body.second.begin(), p.clients);
 	if (cli == &p.clients.end()->second)
-		throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"),"l inviter n existe pas"));
+		throw ResponseException(ERR_NOTHISUSER(*p.body.second.begin()));
 	if (p.client.get_channels().find(*(p.body.second.begin() + 1)) != p.client.get_channels().end())
 	{
-		if (p.channels.find(*(p.body.second.begin() + 1))->second.get_mode()['i'] == true
-		&& p.client.get_opperator(&p.channels.find(*(p.body.second.begin() + 1))->second) == false)
+		if (p.client.get_opperator(&p.channels.find(*(p.body.second.begin() + 1))->second) == false)
 			throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), ));
 		if (cli->get_channels().find(*(p.body.second.begin() + 1)) != cli->get_channels().end())
 			throw ResponseException(ERR_USERONCHANNEL(p.client.get_key("NICKNAME"), cli->get_channels().find(*(p.body.second.begin() + 1))->first));
@@ -307,7 +307,7 @@ void Command::invite(Payload p)
 		p.channels.insert(std::pair<std::string, Channel>(*(p.body.second.begin() + 1), Channel()));
 		p.channels[*(p.body.second.begin() + 1)].add_client(cli);
 		p.channels[*(p.body.second.begin() + 1)].set_topic(*(p.body.second.begin() + 1));
-		cli->add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]), false);
+		cli->add_channels(std::pair<std::string, Channel*>(*(p.body.second.begin() + 1), &p.channels[*(p.body.second.begin() + 1)]), true);
 	}
 	p.client.write(ResponseException(RPL_INVITING(p.client.get_key("NICKNAME"))).response());
 	

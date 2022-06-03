@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/01 08:19:50 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 14:40:03 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # define ERR_BADCHANMASK(USER) RESPONSE("447", USER, "Mauvais masque")
 
 
-
+# define ERR_NOTHISUSER(USER) RESPONSE("403", USER,"<" + USER + ">" + ":is not on this server")
 # define ERR_NOSUCHCHANNEL(USER, CHANNEL) RESPONSE("403", USER,"<" + CHANNEL + ">" + ":No such channel")
 # define ERR_CANNOTSENDTOCHAN(USER, CHANNEL) RESPONSE("404", USER,"<" + CHANNEL + ">" + ":Cannot send to channel")
 # define ERR_TOOMANYCHANNELS(USER, CHANNEL) RESPONSE("405", USER, "<" + CHANNEL + ">" + ":You have joined too many channels")
