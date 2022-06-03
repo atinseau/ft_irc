@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/02 16:05:13 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 14:13:46 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,8 @@ void Command::topic(Payload p)
 	if (p.client.get_channels().find(*p.body.second.begin()) == p.client.get_channels().end())
 		throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	channel = p.client.get_channels().find(*p.body.second.begin())->second;
+	if (p.client.get_opperator(channel) == false)
+		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), channel->get_topic()));
 	if (channel->get_mode()['t'] == true && p.client.get_opperator(channel) == false)
 		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), p.client.get_channels().find(*p.body.second.begin())->first));
 	if (p.body.second.begin()+1 != p.body.second.end())
@@ -223,16 +225,19 @@ void Command::topic(Payload p)
 
 void Command::quit(Payload p)
 {
+	std::cout << "ici3 : " << std::endl;
 	if (p.body.second.begin() != p.body.second.end())
 	{
 		std::string message_fin;
 		for (std::vector<const std::string>::iterator it = p.body.second.begin(); it != p.body.second.end(); it++)
 			message_fin += (*it);
+		std::cout << "ici2 : " << std::endl;
 		p.client.write(ResponseException(RPL_MESSAGEEND(p.client.get_key("NICKNAME"), message_fin)).response());
 	}
 	else
 		p.client.write(ResponseException(RPL_MESSAGEEND(p.client.get_key("NICKNAME"), "\0")).response());
-	throw runtime_error("sorti du client");
+	std::cout << "ici1 : " << std::endl;
+	//p.client.disconnect(&p.channels);
 }
 
 void Command::names(Payload p)
@@ -383,7 +388,7 @@ void Command::mode(Payload p)
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	channel = &p.channels[*tmp];
 	if (p.client.get_opperator(channel) == false)
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
+		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), channel->get_topic()));
 	if (p.client.get_channels().find(*tmp) == p.client.get_channels().end())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
 	tmp++;
@@ -394,6 +399,7 @@ void Command::mode(Payload p)
 	tmp++;
 	for (; tmp != p.body.second.end(); tmp++)
 		para.push_back(*tmp);
+	para.push_back("\0");
 	for (int i = 0; mode[i] != '\0'; i++)
 	{
 		if (nb_para > para.size())
