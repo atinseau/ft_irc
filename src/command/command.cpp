@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 19:44:27 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 19:47:22 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void Command::join(Payload p)
 			p.channels[body_channel[i]].set_topic(body_channel[i]);
 			p.client.add_channels(std::pair<std::string, Channel*>(body_channel[i],&p.channels[body_channel[i]]), true);
 			p.client.write(ResponseException(RPL_TOPIC(p.client.get_key("NICKNAME"),p.channels.find(body_channel[i])->second.get_topic())).response());
-			p.client.write(ResponseException(RPL_NAMREPLY(p.client.get_key("NICKNAME"), "coucou")).response());
+			p.client.write(ResponseException(RPL_NEWCANAL(p.client.get_key("NICKNAME"), body_channel[i] )).response());
 		}
 	}
 }
