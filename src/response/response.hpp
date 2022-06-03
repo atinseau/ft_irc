@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 16:53:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 17:50:58 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@
 # define RPL_LISTEND(USER) RESPONSE("310", USER, "\tfin de la liste")
 # define RPL_INVITING(USER) RESPONSE("370", USER, "Vaux channel au on etait modifier...")
 # define RPL_MOUVMODE(USER, CHANNEL, MODE) RESPONSE("370", USER, "<" + USER + "> A changer les mode " + MODE + " sur le channel <" + CHANNEL + ">")
-# define RPL_MOUVKICK(USER, CLIENT, CHANNEL) RESPONSE("370", USER, "<" + USER + "> a renvoyer " + CLIENT + " du channel <" + CHANNEL + ">")
+# define RPL_MOUVKICK(USER, CLIENT, CHANNEL) RESPONSE("371", USER, "<" + USER + "> a renvoyer " + CLIENT + " du channel <" + CHANNEL + ">")
+# define RPL_MOUVPART(USER, CHANNEL) RESPONSE("372", USER, "<" + USER + "> est sorti du channal <" + CHANNEL + ">")
 
 # define RPL_MSGPRV(USER, DE, MSG) RESPONSE("100", USER,  "Le client <" + DE + "> vous envoy : " + MSG)
 class Response

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 17:44:29 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 19:44:27 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,12 +194,15 @@ void Command::part(Payload p)
 		if ((*it)[0] == '#')
 			body_channel.push_back(*it);
 	body_channel.push_back("\0");
-	for (size_t i = 0; i < body_channel.size(); i++)
+	for (size_t i = 0; i < body_channel.size() - 1; i++)
 	{
 		if (p.channels.find(*(body_channel.begin()+ i)) == p.channels.end())
 			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"),*(body_channel.begin()+ i)));
 		if (p.client.get_channels().find(*(body_channel.begin()+ i)) == p.client.get_channels().end())
 			throw ResponseException(ERR_NOTONCHANNEL(p.client.get_key("NICKNAME"), *(body_channel.begin()+ i)));
+		std::map<int, Client*> tmp = p.channels.find(*(body_channel.begin()+ i))->second.get_clients();
+		for (std::map<int, Client*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+			it->second->write(ResponseException(RPL_MOUVPART(p.client.get_key("NICKNAME"),*(body_channel.begin()+ i))).response());
 		p.client.disconnect_channel(p.client.get_channels().find(*(body_channel.begin()+ i))->second , &p.channels);
 	}
 }
@@ -341,7 +344,7 @@ void Command::kick(Payload p)
 	for (size_t i = 0; i < clients.size(); i++, it_name++)
 	{
 		std::map<int, Client*> tmp_cli = (*(channels.begin() + i))->get_clients() ;
-		for (std::map<int, Client*>::iterator it = tmp_cli.begin(); it != tmp_cli.end(); it++, it_name)
+		for (std::map<int, Client*>::iterator it = tmp_cli.begin(); it != tmp_cli.end(); it++)
 			it->second->write(ResponseException(RPL_MOUVKICK(p.client.get_key("NICKNAME"), (*(clients.begin() + i))->get_key("NICKNAME"), *it_name)).response());
 		(*(clients.begin() + i))->disconnect_channel((*(channels.begin() + i)), &p.channels);
 	}
