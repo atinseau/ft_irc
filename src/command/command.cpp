@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 17:41:44 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/03 17:44:29 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,12 +337,11 @@ void Command::kick(Payload p)
 	}
 	if (channels.size() != clients.size() || channels.size() == 0 || clients.size() == 0)
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), p.body.first));
-	for (size_t i = 0; i < clients.size(); i++)
+	std::vector<std::string>::iterator it_name = name_cha.begin();
+	for (size_t i = 0; i < clients.size(); i++, it_name++)
 	{
-		//(*(clients.begin() + i))->write(ResponseException(RPL_INVITING((*(clients.begin() + i))->get_key("NICKNAME"))).response());
 		std::map<int, Client*> tmp_cli = (*(channels.begin() + i))->get_clients() ;
-		std::vector<std::string>::iterator it_name = name_cha.begin();
-		for (std::map<int, Client*>::iterator it = tmp_cli.begin(); it != tmp_cli.end(); it++, it_name++)
+		for (std::map<int, Client*>::iterator it = tmp_cli.begin(); it != tmp_cli.end(); it++, it_name)
 			it->second->write(ResponseException(RPL_MOUVKICK(p.client.get_key("NICKNAME"), (*(clients.begin() + i))->get_key("NICKNAME"), *it_name)).response());
 		(*(clients.begin() + i))->disconnect_channel((*(channels.begin() + i)), &p.channels);
 	}
