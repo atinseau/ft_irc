@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/02 15:25:09 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/06 08:27:39 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,6 @@ void Server::_client_handler(Client& it)
 		}
 		catch (ResponseException &e)
 		{
-			if (req.body().first == "JOIN")
-				_print_channel();
 			client.write(e.response());
 		}
 	} while (true);
@@ -231,10 +229,4 @@ std::string Server::_uuid()
 	return (ret);
 }
 
-void			Server::_print_channel()
-{
-	for(std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
-	{
-		this->_channels[it->first].print_clients(it->first);
-	}
-}
+

@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:38 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 19:47:22 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/06 08:28:18 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,6 +419,13 @@ void Command::mode(Payload p)
 		it->second->write(ResponseException(RPL_MOUVMODE(p.client.get_key("NICKNAME"), p.channels.find(*p.body.second.begin())->first , mode)).response());
 }
 
+void Command::info(Payload p)
+{
+	for(std::map<std::string, Channel>::iterator it = p.channels.begin(); it != p.channels.end(); it++)
+	{
+		p.channels[it->first].print_clients(it->first);
+	}
+}
 
 Command::map_t Command::init_cmd()
 {
@@ -436,6 +443,7 @@ Command::map_t Command::init_cmd()
 	map["INVITE"] = &Command::invite;
 	map["KICK"] = &Command::kick;
 	map["PRIVMSG"] = &Command::privmsg;
+	map["INFO"] = &Command::info;
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();
