@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/02 08:07:09 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/06 08:26:24 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ public:
 	static void kick(Payload p);
 	static void privmsg(Payload p);
 	static void oper(Payload p);
+	static void info(Payload p);
 
 	static void help(Payload p);
 

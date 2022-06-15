@@ -6,7 +6,7 @@
 /*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:52:33 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/05/18 09:52:34 by mbonnet          ###   ########.fr       */
+/*   Updated: 2022/06/06 08:30:52 by mbonnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ int main(int ac, const char **av, const char **envp)
 	try
 	{
 		if (ac != 3)
-			app("10000", "root");
+		{
+			std::cout << "Argument incorecte ! <port> <password>" << std::endl;
+			return (1);
+		}
 		else 
 		{
 			port = av[1];
