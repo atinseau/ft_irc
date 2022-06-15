@@ -428,6 +428,8 @@ Command::map_t Command::init_cmd()
 	map["INVITE"] = &Command::invite;
 	map["KICK"] = &Command::kick;
 	map["PRIVMSG"] = &Command::privmsg;
+	map["HELP"] = &Command::help;
+	
 	return (map);
 }
 Command::map_t Command::_commands = Command::init_cmd();

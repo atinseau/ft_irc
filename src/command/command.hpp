@@ -53,6 +53,8 @@ public:
 	static void privmsg(Payload p);
 	static void oper(Payload p);
 
+	static void help(Payload p);
+
 private:
 	static map_t init_cmd();
 	static map_t _commands;

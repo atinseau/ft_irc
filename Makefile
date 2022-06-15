@@ -3,6 +3,7 @@ CC=clang++
 FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 
 COMMAND=	src/command/command.cpp \
+			src/command/extended.cpp \
 			src/command/exception.cpp\
 			src/channel/mode.cpp\
 
