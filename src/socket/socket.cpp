@@ -44,8 +44,8 @@ Server::Server(std::string port, std::string password) : _password(password)
  */
 Server::~Server()
 {
-	for (std::map<int,Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
-		it->second.disconnect(&this->_channels);
+	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		it->second.disconnect();
 	close(this->_sock_server);
 }
 
@@ -99,16 +99,16 @@ void Server::run(void)
 			_new_client();
 		}
 
-		for (std::map<int,Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		{
 			try
 			{
-				_client_handler(it->second);
+				_client_handler(it);
 			}
 			catch (std::runtime_error &e)
 			{
 				ERROR(e.what());
-				_disconnect(it->second);
+				_disconnect(it);
 				break;
 			}
 		}
@@ -120,9 +120,9 @@ void Server::run(void)
  * Interception des message provenant des clients
  * @param id index du client dans le tableau de poll et du client
  */
-void Server::_client_handler(Client& it)
+void Server::_client_handler(std::map<int, Client>::iterator& it)
 {
-	Client &client = it;
+	Client &client = it->second;
 	do
 	{
 		Request req = client.read();
@@ -133,21 +133,23 @@ void Server::_client_handler(Client& it)
 			break;
 		}
 
-		Request::Body body = req.body();
-		Command cmd(client, _clients);
-		try
+		if (req.is_ready())
 		{
-			cmd.ex_cmd(req.body(), _channels);
-			// un if temporaire a retirer plus tard
-		}
-		catch (AuthException &e)
-		{
-			client.write(e.response());
-			_disconnect(it);
-		}
-		catch (ResponseException &e)
-		{
-			client.write(e.response());
+			Command cmd(client, _clients);
+			try
+			{
+				cmd.ex_cmd(req.body());
+			}
+			catch (AuthException &e)
+			{
+				client.write(e.response());
+				_disconnect(it);
+			}
+			catch (ResponseException &e)
+			{
+				client.write(e.response());
+			}
+			// DEBUG(req.body());
 		}
 	} while (true);
 }
@@ -170,16 +172,17 @@ void Server::_new_client(void)
 			return;
 		}
 		Client client(_create_pfd(fd));
-		this->_clients.insert(std::pair<int,Client>(fd,client));
+		this->_clients.insert(std::pair<int, Client>(fd, client));
 
-		std::string tmp = _uuid();
-		this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
-		this->_channels[tmp].add_client(&this->_clients.find(fd)->second);
-		this->_channels[tmp].set_topic(tmp);
-		this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel*>(tmp,&this->_channels[tmp]), true);
+		// std::string tmp = _uuid();
+		
+		// this->_channels.insert(std::pair<std::string, Channel>(tmp, Channel()));
+		// this->_channels[tmp].add_client(&this->_clients.find(fd)->second);
+		// this->_channels[tmp].set_topic(tmp);
+		// this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel *>(tmp, &this->_channels[tmp]), true);
 	} while (fd != -1);
 }
-
+#
 /**
  * @brief
  *
@@ -205,20 +208,19 @@ pollfd Server::_create_pfd(int fd)
  * puis appelle le _disconnect du client
  * @param i index d'un client dans le tableau
  */
-void Server::_disconnect(Client& it)
+void Server::_disconnect(std::map<int, Client>::iterator& it)
 {
-	
-	it.disconnect(&this->_channels);
-	SUCCESS("le client " << it.get_fd() << " a été deconnecté");
+	it->second.disconnect();
 	for (std::vector<pollfd>::iterator et = this->_pfds.begin(); et != this->_pfds.end(); et++)
 	{
-		if (et->fd == it.get_fd())
+		if (et->fd == it->second.get_fd())
 		{
 			this->_pfds.erase(et);
 			break;
 		}
 	}
-	_clients.erase(_clients.find(it.get_fd()));
+	SUCCESS("le client " << it->second.get_fd() << " a été deconnecté");
+	this->_clients.erase(it);
 }
 
 std::string Server::_uuid()
@@ -228,5 +230,3 @@ std::string Server::_uuid()
 	std::string ret("#" + std::to_string(tv.tv_sec + tv.tv_usec));
 	return (ret);
 }
-
-

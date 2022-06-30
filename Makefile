@@ -3,9 +3,7 @@ CC=clang++
 FLAGS=-Wall -Werror -Wextra -std=c++98 -g
 
 COMMAND=	src/command/command.cpp \
-			src/command/extended.cpp \
-			src/command/exception.cpp\
-			src/channel/mode.cpp\
+			src/command/extended.cpp 
 
 LIB=	src/utils/utils.cpp \
 		src/socket/socket.cpp\
@@ -21,7 +19,9 @@ OBJS_LIB=$(LIB:.cpp=.o)
 SERVER_SRCS= main.cpp
 SERVER_NAME=ft_irc
 
-%.o:%.cpp
+OBJS_DIR=build
+
+$(OBJS_DIR)/%.o:%.cpp
 	@$(CC) $(FLAGS) -c  $< -o $@
 	@echo "Compiling $<"
 

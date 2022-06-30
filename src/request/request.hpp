@@ -37,11 +37,14 @@ public:
 
 	Type type() const;
 	Body body() const;
+	bool is_ready() const;
 
 	void set_type(Type t);
+	void set_ready(bool b);
 
 private:
 	Type _type;
+	bool _ready;
 };
 
 

@@ -81,7 +81,7 @@
 # define RPL_MOUVPART(USER, CHANNEL) RESPONSE("372", USER, "<" + USER + "> est sorti du channal <" + CHANNEL + ">")
 # define RPL_NEWCANAL(USER, CHANNEL) RESPONSE("372", USER, "<" + USER + "> est connecter au channel <" + CHANNEL + "> nouvelement construit")
 
-# define RPL_MSGPRV(USER, DE, MSG) RESPONSE("100", USER,  "De <" + DE + "> : " + MSG)
+# define RPL_MSGPRV(FROM, TO, MSG) std::string(":") + FROM + "!" + FROM + "@" + "localhost\n" + "PRIVMSG " + TO + " :" + MSG
 
 class Response
 {

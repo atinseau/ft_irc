@@ -14,7 +14,7 @@
 
 std::string Client::server_password = "";
 
-Client::Client(pollfd pfd): _pfd(pfd)
+Client::Client(pollfd pfd) : _pfd(pfd)
 {
 	SUCCESS("Nouveau client " << _pfd.fd);
 
@@ -22,15 +22,20 @@ Client::Client(pollfd pfd): _pfd(pfd)
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
-	add_mode(_channels.begin()->second, true);
 }
 
+Client::~Client() 
+{
+	
+}
 
 Request Client::read()
 {
 	Request req;
 
 	char buffer[BUFFER_SIZE];
+
+	static std::string chunk;
 
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
 
@@ -45,9 +50,20 @@ Request Client::read()
 		req.set_type(Request::QUIT);
 		return (req);
 	}
-	
 	buffer[req.first] = '\0';
-	req.second = buffer;
+
+	chunk += buffer;
+	req.second = chunk;
+
+	if (chunk.back() == '\n')
+	{
+		chunk.clear();
+		req.set_ready(true);
+		req.second.pop_back();
+		if (isspace(req.second.back()))
+			req.second.pop_back();
+	}
+
 	req.set_type(Request::SUCCESS);
 	return (req);
 }
@@ -58,14 +74,8 @@ void Client::write(Response res)
 		ERROR("Erreur lors de l'envoi de la requête");
 }
 
-void Client::disconnect(std::map<std::string, Channel> *channels)
+void Client::disconnect()
 {
-	while (this->_channels.begin() != this->_channels.end())
-	{
-		std::string id_channel = this->get_channels().begin()->first;
-		Channel *channel = this->get_channels().begin()->second;
-		this->disconnect_channel(channel , channels);
-	}
 	close(_pfd.fd);
 }
 
@@ -79,33 +89,23 @@ pollfd Client::get_pfd()
 	return (_pfd);
 }
 
-std::string& Client::operator[](const char* key)
+std::string &Client::operator[](const char *key)
 {
 	return (_data[key]);
 }
 
-std::string Client::get_key(const char* key) const
+std::string Client::get_key(const char *key) const
 {
 	return (_data.at(key));
 }
 
-std::map<std::string, Channel*>&	Client::get_channels()
-{
-	return (this->_channels);
-}
 
-bool			Client::get_opperator(Channel* channel)
-{
-	return (this->_opperator[channel]);
-}
-
-bool	Client::is_auth()
+bool Client::is_auth()
 {
 	if (
 		_data["USERNAME"] == "" ||
 		_data["NICKNAME"] == "" ||
-		_data["PASSWORD"] == ""
-	)
+		_data["PASSWORD"] == "")
 		return (false);
 
 	if (Client::server_password != _data["PASSWORD"])
@@ -113,50 +113,3 @@ bool	Client::is_auth()
 	return (true);
 }
 
-void Client::print_channel()
-{
-	INFO("liste channel du client \"" << this->get_key("NICKNAME") << "\" : ");
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
-		INFO("\tchannel : " << it->first);
-}
-
-void Client::print_mode_by_channel(Channel *channel)
-{
-	if (_opperator[channel] == true)
-		INFO("\t\tmode : " << "true");
-	else if (_opperator[channel] == false)
-		INFO("\t\tmode : " << "false");
-
-}
-
-void Client::add_channels(std::pair<std::string , Channel*> channel, bool choix)
-{
-	_channels.insert(channel);
-	add_mode(channel.second, choix);
-}
-
-void		Client::disconnect_channel(Channel *channel, std::map<std::string, Channel> *all_channels)
-{
-	int res;
-	if (all_channels->size() == 0)
-		return ;
-	res = channel->sup_client(this->_pfd.fd);
-	if (this->_channels.size() != 0 &&  this->_channels.find(channel->get_topic()) != this->_channels.end())
-	{
-		this->_channels.erase(this->_channels.find(channel->get_topic()));
-		this->_opperator.erase(this->_opperator.find(channel));
-	}
-	if (all_channels->size() > 0 && res == 0)
-		all_channels->erase(all_channels->find(channel->get_topic()));
-}
-
-void		Client::add_mode(Channel *channel, bool choi)
-{
-	_opperator.insert(std::pair<Channel*, bool>(channel, choi));
-}
-
-void		Client::set_opperator(Channel *channel, bool choose)
-{
-	if (_opperator.find(channel) != _opperator.end())
-		_opperator.find(channel)->second = choose;
-}

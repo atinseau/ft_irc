@@ -44,20 +44,15 @@ private:
 
 	std::string						_password;
 	std::vector<pollfd>				_pfds;
-	//std::vector<Client>				_clients;
 	std::map<int,Client>			_clients;
-	std::map<std::string, Channel>	_channels;
-
 
 
 	void			_init();
 	void			_new_client(void);
-	void			_client_handler(Client& it);
-	void			_disconnect(Client& it);
-	void			_print_channel();
+	void			_client_handler(std::map<int, Client>::iterator& it);
+	void			_disconnect(std::map<int, Client>::iterator& it);
 	std::string		_uuid();
 	pollfd			_create_pfd(int fd);
-	void			_sup_channel(std::string channel);
 };
 
 
