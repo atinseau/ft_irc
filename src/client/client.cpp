@@ -12,22 +12,21 @@
 
 #include "client.hpp"
 
-std::string Client::server_password = "";
-
-Client::Client(pollfd pfd) : _pfd(pfd)
+Client::Client(pollfd pfd) : _pfd(pfd), _state(IS_NOT_AUTH)
 {
-	SUCCESS("Nouveau client " << _pfd.fd);
+	WARNING(pfd.fd << " - Nouveau client crée, en attente d'authentification....");
+
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
 
 	_data["USERNAME"] = "";
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
+	_data["TIME"] = std::to_string(tv.tv_sec);
 }
 
-Client::~Client() 
-{
-	
-}
+Client::~Client() {}
 
 Request Client::read()
 {
@@ -38,7 +37,6 @@ Request Client::read()
 	static std::string chunk;
 
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
-
 	if (req.first < 0)
 	{
 		if (errno != EWOULDBLOCK)
@@ -51,10 +49,8 @@ Request Client::read()
 		return (req);
 	}
 	buffer[req.first] = '\0';
-
 	chunk += buffer;
 	req.second = chunk;
-
 	if (chunk.back() == '\n')
 	{
 		chunk.clear();
@@ -63,7 +59,6 @@ Request Client::read()
 		if (isspace(req.second.back()))
 			req.second.pop_back();
 	}
-
 	req.set_type(Request::SUCCESS);
 	return (req);
 }
@@ -99,7 +94,6 @@ std::string Client::get_key(const char *key) const
 	return (_data.at(key));
 }
 
-
 bool Client::is_auth()
 {
 	if (
@@ -108,8 +102,34 @@ bool Client::is_auth()
 		_data["PASSWORD"] == "")
 		return (false);
 
-	if (Client::server_password != _data["PASSWORD"])
+	if (Server::password != _data["PASSWORD"])
 		return (false);
 	return (true);
 }
 
+void Client::set_state(ClientState state)
+{
+	this->_state = state;
+}
+
+ClientState Client::get_state() const
+{
+	return this->_state;
+}
+
+std::vector<std::string> Client::get_info(bool print) const
+{
+	std::vector<std::string> infos;
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	int diff_time = tv.tv_sec - std::atoi(get_key("TIME").c_str());
+	infos.push_back("Surnom du client: " + get_key("NICKNAME"));
+	infos.push_back("Nom d'utilisateur du client: " + get_key("USERNAME"));
+	infos.push_back("Connecté depuis: " + std::to_string(diff_time) + " secondes");
+	if (print)
+	{
+		for (std::vector<std::string>::iterator it = infos.begin(); it != infos.end(); it++)
+			DEBUG(*it);
+	}
+	return !print ? infos : std::vector<std::string>();
+}

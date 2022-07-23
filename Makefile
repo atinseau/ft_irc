@@ -1,27 +1,40 @@
 
 CC=clang++
-FLAGS=-Wall -Werror -Wextra -std=c++98 -g
+EXTRA_FLAGS=-Wall -Werror -Wextra
+FLAGS=-std=c++98 -g
 
-COMMAND=	src/command/command.cpp \
-			src/command/extended.cpp 
+COMMAND= $(addprefix command/, \
+			command.cpp \
+			$(addprefix commands/, \
+				help.cpp \
+				nick.cpp \
+				pass.cpp \
+				user.cpp \
+				info.cpp \
+				privmsg.cpp \
+				quit.cpp \
+				join.cpp \
+			) \
+		)
 
-LIB=	src/utils/utils.cpp \
-		src/socket/socket.cpp\
-		src/client/client.cpp\
-		src/request/request.cpp \
-		src/response/response.cpp \
-		src/channel/channel.cpp \
-		$(COMMAND)
-
+LIB= $(addprefix src/, \
+		utils/utils.cpp \
+		socket/socket.cpp\
+		client/client.cpp\
+		client/utils.cpp \
+		request/request.cpp \
+		request/utils.cpp \
+		response/response.cpp \
+		channel/channel.cpp \
+		$(COMMAND) \
+	)
 
 OBJS_LIB=$(LIB:.cpp=.o)
 
 SERVER_SRCS= main.cpp
 SERVER_NAME=ft_irc
 
-OBJS_DIR=build
-
-$(OBJS_DIR)/%.o:%.cpp
+%.o:%.cpp
 	@$(CC) $(FLAGS) -c  $< -o $@
 	@echo "Compiling $<"
 
@@ -42,5 +55,7 @@ fclean: clean
 
 re: fclean all
 
+run: all
+	@./$(SERVER_NAME) 10000 06112001
 
 .DEFAULT_GOAL:=all

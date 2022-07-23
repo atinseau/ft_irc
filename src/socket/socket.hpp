@@ -18,34 +18,36 @@
 #define BUFFER_SIZE 512
 
 /**
- * @brief 
+ * @brief
  * Pas de Kamelcase pour les fonctions !
- * exemple: 
+ * exemple:
  * 		- get_fd()
  * 		- get_channel()
  * invalide:
  * 		- GetFd()
  * 		- GetChannel()
  */
-
 class Server
 {
 public:
 	Server(std::string port, std::string password);
 	~Server(void);
-	
-	
+
+
 	void	run(void);
 
+	static std::map<int, Client>	clients;
+	static std::map<std::string, Channel> channels;
+	static std::string				password;
+	static std::string 				name;
+
+	static int						port;
+	static struct sockaddr_in6		address;
+
 private:
-	int					_port;
-	int					_sock_server;
-	struct sockaddr_in6	_addr_server;
-
-	std::string						_password;
+	
+	int								_sock_server;
 	std::vector<pollfd>				_pfds;
-	std::map<int,Client>			_clients;
-
 
 	void			_init();
 	void			_new_client(void);

@@ -12,19 +12,15 @@
 
 #include "utils.hpp"
 
-bool whitesapece(char c)
-{
-	if (c <= 32 && c >= 28)
-		return (true);
-	return (false);
-}
-
 std::vector<std::string> split(const char *str, char c)
 {
 	std::vector<std::string> res;
-
 	int i = 0;
 	int cursor = 0;
+
+	if (!str)
+		return (res);
+
 	while(1)
 	{
 		if (str[i] == c || str[i] == '\0')
@@ -38,4 +34,16 @@ std::vector<std::string> split(const char *str, char c)
 		i++;
 	}
 	return res;
+}
+
+std::string join(const std::vector<std::string>& vec, const char* sep, size_t offset)
+{
+	std::string res;
+	for (size_t i = offset; i < vec.size(); i++)
+	{
+		res += vec[i];
+		if (i != vec.size() - 1)
+			res += sep;
+	}
+	return (res);
 }

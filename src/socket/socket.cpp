@@ -1,16 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   socket.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/18 09:52:15 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/06 08:27:39 by mbonnet          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "socket.hpp"
+
+std::map<int, Client> Server::clients = std::map<int, Client>();
+std::map<std::string, Channel> Server::channels = std::map<std::string, Channel>();
+std::string Server::password = "";
+std::string Server::name = "ft_irc";
+int Server::port = 0;
+struct sockaddr_in6 Server::address = {};
 
 /**
  * @brief
@@ -21,7 +16,7 @@
  * @param port
  * @param password
  */
-Server::Server(std::string port, std::string password) : _password(password)
+Server::Server(std::string port, std::string password)
 {
 	for (size_t i = 0; i < port.size(); i++)
 	{
@@ -29,11 +24,11 @@ Server::Server(std::string port, std::string password) : _password(password)
 			throw std::runtime_error("Port incorrecte");
 		if (i > 5)
 			throw std::runtime_error("Port incorrecte");
-		this->_port = atoi(port.c_str());
-		if (this->_port > 65536)
+		Server::port = atoi(port.c_str());
+		if (Server::port > 65536)
 			throw std::runtime_error("Port incorrecte");
 	}
-	Client::server_password = this->_password;
+	Server::password = password;
 	_init();
 }
 
@@ -44,7 +39,7 @@ Server::Server(std::string port, std::string password) : _password(password)
  */
 Server::~Server()
 {
-	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::map<int, Client>::iterator it = Server::clients.begin(); it != Server::clients.end(); it++)
 		it->second.disconnect();
 	close(this->_sock_server);
 }
@@ -67,20 +62,21 @@ void Server::_init(void)
 	if ((rc = ioctl(this->_sock_server, FIONBIO, (char *)&on)) < 0)
 		throw std::runtime_error("ioctl() failed");
 
-	memset(&this->_addr_server, 0, sizeof(this->_addr_server));
-	this->_addr_server.sin6_family = AF_INET6;
-	memcpy(&this->_addr_server.sin6_addr, &in6addr_any, sizeof(in6addr_any));
-	this->_addr_server.sin6_port = htons(this->_port);
+	memset(&Server::address, 0, sizeof(Server::address));
+	Server::address.sin6_family = AF_INET6;
+	memcpy(&Server::address.sin6_addr, &in6addr_any, sizeof(in6addr_any));
+	Server::address.sin6_port = htons(Server::port);
 
-	if ((rc = bind(this->_sock_server, (struct sockaddr *)&this->_addr_server, sizeof(this->_addr_server))) < 0)
+	if ((rc = bind(this->_sock_server, (struct sockaddr *)&Server::address, sizeof(Server::address))) < 0)
 		throw std::runtime_error("bind() failed");
 	if ((rc = listen(this->_sock_server, 32)) < 0)
 		throw std::runtime_error("listen() failed");
 
 	_create_pfd(this->_sock_server);
 
-	SUCCESS("Le server est lancé sur le port " << this->_port);
+	SUCCESS("Le server est lancé sur le port " << Server::port);
 }
+
 
 /**
  * @brief
@@ -91,15 +87,13 @@ void Server::run(void)
 	int rc;
 	do
 	{
-		if ((rc = poll(this->_pfds.begin().base(), this->_pfds.size(), TIME)) <= 0)
+		if ((rc = poll(&this->_pfds[0], this->_pfds.size(), TIME)) <= 0)
 			throw std::runtime_error("poll() failed/timeout");
 
 		if (this->_pfds[0].revents & POLLIN)
-		{
 			_new_client();
-		}
 
-		for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		for (std::map<int, Client>::iterator it = Server::clients.begin(); it != Server::clients.end(); it++)
 		{
 			try
 			{
@@ -107,12 +101,11 @@ void Server::run(void)
 			}
 			catch (std::runtime_error &e)
 			{
-				ERROR(e.what());
 				_disconnect(it);
 				break;
 			}
 		}
-	} while (1);
+	} while (true);
 }
 
 /**
@@ -126,6 +119,7 @@ void Server::_client_handler(std::map<int, Client>::iterator& it)
 	do
 	{
 		Request req = client.read();
+
 		if (req.type() != Request::SUCCESS)
 		{
 			if (req.type() != Request::NONE)
@@ -135,21 +129,17 @@ void Server::_client_handler(std::map<int, Client>::iterator& it)
 
 		if (req.is_ready())
 		{
-			Command cmd(client, _clients);
+			Command cmd(client);
 			try
 			{
-				cmd.ex_cmd(req.body());
-			}
-			catch (AuthException &e)
-			{
-				client.write(e.response());
-				_disconnect(it);
+				cmd.exec(req.body());
 			}
 			catch (ResponseException &e)
 			{
 				client.write(e.response());
+				if (dynamic_cast<AuthException*>(&e))
+					throw std::runtime_error(e.response().str());
 			}
-			// DEBUG(req.body());
 		}
 	} while (true);
 }
@@ -172,7 +162,7 @@ void Server::_new_client(void)
 			return;
 		}
 		Client client(_create_pfd(fd));
-		this->_clients.insert(std::pair<int, Client>(fd, client));
+		Server::clients.insert(std::pair<int, Client>(fd, client));
 
 		// std::string tmp = _uuid();
 		
@@ -182,7 +172,7 @@ void Server::_new_client(void)
 		// this->_clients.find(fd)->second.add_channels(std::pair<std::string, Channel *>(tmp, &this->_channels[tmp]), true);
 	} while (fd != -1);
 }
-#
+
 /**
  * @brief
  *
@@ -206,7 +196,6 @@ pollfd Server::_create_pfd(int fd)
  * Gestion de la deconnexion d un client
  * Ferme le fd et suprime l element du tableau
  * puis appelle le _disconnect du client
- * @param i index d'un client dans le tableau
  */
 void Server::_disconnect(std::map<int, Client>::iterator& it)
 {
@@ -219,8 +208,8 @@ void Server::_disconnect(std::map<int, Client>::iterator& it)
 			break;
 		}
 	}
-	SUCCESS("le client " << it->second.get_fd() << " a été deconnecté");
-	this->_clients.erase(it);
+	INFO("le client " << it->second.get_fd() << " a été deconnecté");
+	Server::clients.erase(it);
 }
 
 std::string Server::_uuid()

@@ -1,7 +1,24 @@
+#!/bin/bash
 
+let i=0
 
+nc -c localhost 10000 <<EOF
 
-echo "NICK arthur\nUSER arhutr 0 * arthur" | nc -c localhost 10000
+NICK thomas
+
+USER thomas * 0 thomas
+
+PASS 06112001
+
+HELP
+
+INFO
+
+PRIVMSG arthur salut mon gars ! 
+
+EOF
+
+# NICK arthur\nUSER arhutr 0 * arthu" | nc -c localhost 10000
 
 # while true
 # do

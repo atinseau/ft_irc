@@ -21,16 +21,11 @@ request_t::first_type Request::size() const
 	return (this->first);
 }
 
-Request::Body Request::body() const
+
+
+std::vector<Request::Body> Request::body() const
 {
-	Body b;
-	std::vector<std::string> args = split(this->second.c_str(), ' ');
-	if (args.size() == 0)
-		throw std::runtime_error("La commande est vide, cas de figure non géré");
-	b.first = args[0];
-	args.erase(args.begin());
-	b.second = args;
-	return (b);
+	return (get_bodies(this->second));
 }
 
 Request::Type Request::type() const

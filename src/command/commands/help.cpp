@@ -1,5 +1,4 @@
-#include "command.hpp"
-
+#include "../command.hpp"
 
 void Command::help(Payload p)
 {
@@ -26,6 +25,6 @@ void Command::help(Payload p)
 	};
 
 	for (size_t i = 0; i < sizeof(msg) / sizeof(char*); i++)
-		client.write(RESPONSE("371", username, msg[i]));
+		client.write(RPL_INFO(username, msg[i]));
 	
 }

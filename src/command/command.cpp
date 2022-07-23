@@ -14,94 +14,41 @@
 
 using namespace std;
 
-Command::Payload::Payload(Client &client, std::map<int, Client> &clients, const Request::Body &body) : client(client),
-																									   clients(clients),
-																									   body(body)
+Command::Payload::Payload(Client &client, const Request::Body &body) : client(client), body(body)
 {}
 
-Command::Command(Client &client, std::map<int, Client> &clients) : _client(client), _clients(clients) {}
+Command::Command(Client &client) : _client(client)
+{}
 
-void Command::ex_cmd(const Request::Body &body)
+void Command::exec(const std::vector<Request::Body> &bodies)
+{
+	for (std::vector<Request::Body>::const_iterator it = bodies.begin(); it != bodies.end(); it++)
+		_exec(*it);
+}
+
+void Command::_exec(const Request::Body &body)
 {
 	map_t::iterator it = _commands.find(body.first);
 	if (it != _commands.end())
 	{
 		if (!_client.is_auth())
 		{
-			if (it->first != "PASS" && it->first != "NICK" && it->first != "USER")
+			if (it->first != "PASS" && it->first != "NICK" && it->first != "USER" && it->first != "QUIT")
 			{
 				ERROR("Commande non autorisée");
 				return;
 			}
 		}
-		else
-			INFO("Authentifié");
-		it->second(Payload(_client, _clients, body));
-		return;
-	}
-	ERROR("Commande " << body.first << " inconnue");
-}
-
-void Command::nick(Payload p)
-{
-	if (p.body.second.size() == 0)
-	{
-		if (!p.client.is_auth())
-			throw AuthException(ERR_NONICKNAMEGIVEN(p.client.get_key("NICKNAME")));
-		throw ResponseException(ERR_NONICKNAMEGIVEN(p.client.get_key("NICKNAME")));
-	}
-
-	std::string nickname = p.body.second[0];
-	if (nickname[0] == ':')
-		nickname.erase(0);
-
-	if (nickname.size() > NICKNAME_LENGTH) // todo: check if nickname is valid
-	{
-		if (!p.client.is_auth())
-			throw AuthException(ERR_ERRONEUSNICKNAME(nickname, nickname));
-		throw ResponseException(ERR_ERRONEUSNICKNAME(nickname, nickname));
-	}
-
-	for (std::map<int, Client>::const_iterator it = p.clients.begin(); it != p.clients.end(); it++)
-	{
-		if (it->second.get_fd() != -1 && &it->second != &p.client && it->second.get_key("NICKNAME") == nickname)
-		{
-			if (!p.client.is_auth())
-				throw AuthException(ERR_NICKNAMEINUSE(nickname, nickname));
-			throw ResponseException(ERR_NICKNAMEINUSE(nickname, nickname));
+		it->second(Payload(_client, body));
+		
+		if (_client.is_auth() && _client.get_state() == IS_NOT_AUTH) {
+			SUCCESS("Connexion réussie");
+			_client.get_info(true);
+			_client.set_state(IS_AUTH);
 		}
-	}
-
-	p.client["NICKNAME"] = nickname;
-	WARNING("Nickname is now: " << p.client["NICKNAME"]);
-}
-
-void Command::pass(Payload p)
-{
-	if (p.client["PASSWORD"].size() > 0)
-		throw ResponseException(ERR_ALREADYREGISTRED(p.client["NICKNAME"]));
-	if (p.body.second.size() != 1)
-		throw ResponseException(ERR_NEEDMOREPARAMS(p.client["NICKNAME"], p.body.first));
-
-	if (p.body.second[0] != Client::server_password)
-	{
 		return;
 	}
-
-	p.client["PASSWORD"] = p.body.second[0];
-}
-
-void Command::user(Payload p)
-{
-	if (p.body.second.size() != 4)
-	{
-		return;
-	}
-
-	p.client["USERNAME"] = p.body.second[0];
-	p.client["REALNAME"] = p.body.second[3];
-
-	WARNING("Username is now: " << p.client["USERNAME"]);
+	throw ResponseException(ERR_UNKNOWNCOMMAND(body.first));
 }
 
 Command::map_t Command::init_cmd()
@@ -111,6 +58,13 @@ Command::map_t Command::init_cmd()
 	map["NICK"] = &Command::nick;
 	map["PASS"] = &Command::pass;
 	map["USER"] = &Command::user;
+	map["HELP"] = &Command::help;
+	map["INFO"] = &Command::info;
+	map["PRIVMSG"] = &Command::privmsg;
+	map["QUIT"] = &Command::quit;
+
+	map["JOIN"] = &Command::join;
+
 	return (map);
 }
 

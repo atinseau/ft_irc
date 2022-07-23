@@ -36,7 +36,7 @@ public:
 	request_t::first_type size() const;
 
 	Type type() const;
-	Body body() const;
+	std::vector<Body> body() const;
 	bool is_ready() const;
 
 	void set_type(Type t);
@@ -49,5 +49,8 @@ private:
 
 
 std::ostream& operator<<(std::ostream& os, const Request::Body& body);
+
+Request::Body get_body(const std::string &buffer);
+std::vector<Request::Body> get_bodies(const std::string &buffer);
 
 #endif

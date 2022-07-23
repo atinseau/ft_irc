@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+ /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   response.hpp                                       :+:      :+:    :+:   */
@@ -18,12 +18,39 @@
 
 # define RESPONSE(CODE, USER, MSG) std::string(":") + HOST + " " + CODE + " " + USER + " :" + MSG + "\r\n"
 
+// NICK //
+# define ERR_NONICKNAMEGIVEN RESPONSE("431", "*", "Aucun surnom d'utilisateur donné")
+# define ERR_NICKNAMEINUSE(NICK) RESPONSE("432", "*", "Le surnom d'utilisateur " + NICK + " déjà utilisé")
+# define ERR_ERRONEUSNICKNAME(NICK) RESPONSE("433", "*", "Le surnom d'utilisateur " + NICK + " n'est pas valide")
+
+// USER //
+
+// PASSWORD //
+# define ERR_INVALIDPASS RESPONSE("482", "*", "Mot de passe invalide")
+
+// INFO //
+# define RPL_INFO(USER, INFO) RESPONSE("371", USER, INFO)
+
+// PRIVMSG //
+# define ERR_NOSUCHNICK(NICK, RECIPIENT) RESPONSE("401", NICK, "Aucun utilisateur avec le surnom " + RECIPIENT + " n'a été trouvé")
+# define RPL_PRIVMSG(FROM, TO, MESSAGE) std::string(":") + FROM + "!" + FROM + "@" + HOST + " PRIVMSG " + TO + " :" + MESSAGE + "\r\n"
+
+
+// JOIN //
+# define ERR_BADCHANNELKEY(CHANNEL, USER) RESPONSE("475", USER, "Le mot de passe du channel " + CHANNEL + " est incorrect")
+# define ERR_NOSUCHCHANNEL(CHANNEL, USER) RESPONSE("403", USER, "Impossible de rejoindre ou créer ce channel " + CHANNEL + " , nom de channel incorrect")
+
+// GLOBAL //
+# define ERR_ALREADYREGISTRED(USER) RESPONSE("462", USER, "Vous etes déjà enregistré")
+# define ERR_NEEDMOREPARAMS(USER, CMD) RESPONSE("461", USER, "La commande " + CMD + " requiert plus de paramètres")
+# define ERR_UNKNOWNCOMMAND(CMD) RESPONSE("421", "*", "Commande inconnue : " + CMD)
+
+
 //a voir si se message d erreur est bien juste
 # define ERR_BADCHANMASK(USER) RESPONSE("447", USER, "Mauvais masque")
 
 
 # define ERR_NOTHISUSER(USER) RESPONSE("403", USER,"<" + USER + ">" + ":is not on this server")
-# define ERR_NOSUCHCHANNEL(USER, CHANNEL) RESPONSE("403", USER,"<" + CHANNEL + ">" + ":No such channel")
 # define ERR_CANNOTSENDTOCHAN(USER, CHANNEL) RESPONSE("404", USER,"<" + CHANNEL + ">" + ":Cannot send to channel")
 # define ERR_TOOMANYCHANNELS(USER, CHANNEL) RESPONSE("405", USER, "<" + CHANNEL + ">" + ":You have joined too many channels")
 # define ERR_WASNOSUCHNICK(USER, CHANNEL) RESPONSE("406", USER, "<" + CHANNEL + ">" + ":There was no such nickname")
@@ -33,13 +60,9 @@
 # define ERR_NOTEXTTOSEND(USER) RESPONSE("412", USER, ":No text to send")
 # define ERR_NOTOPLEVEL(USER, MASQUE) RESPONSE("413", USER, "<" + MASQUE + "> :No toplevel domain specified")
 # define ERR_WILDTOPLEVEL(USER, MASQUE) RESPONSE("414", USER, "<" + MASQUE + "> :Wildcard in toplevel domain")
-# define ERR_UNKNOWNCOMMAND(USER,COMMANDE) RESPONSE("421", USER, "<" + COMMANDE + "> :Unknown command" )
 # define ERR_NOMOTD(USER) RESPONSE("422", USER, ":MOTD File is missing")
 # define ERR_NOADMININFO(USER, SERVER) RESPONSE("423", USER, "<" + SERVER + "> :Unknown command" )
 # define ERR_FILEERROR(USER, OPPERATION, FICHIER) RESPONSE("424", USER, ":File error doing <" + OPPERATION + "> on <" + FICHIER + ">")
-# define ERR_NONICKNAMEGIVEN(USER) RESPONSE("431", USER, ":No nickname given")
-# define ERR_ERRONEUSNICKNAME(USER, PSEUDO) RESPONSE("432", USER, "<" + PSEUDO + "> :Erroneus nickname")
-# define ERR_NICKNAMEINUSE(USER, NICK) RESPONSE("433", USER, "<" + NICK + ">  :Nickname is already in use")
 # define ERR_NICKCOLLISION(USER, NICK) RESPONSE("436", USER, "<" + NICK + "> :Nickname collision KILL")
 # define ERR_USERNOTINCHANNEL(USER, CHANNEL) RESPONSE("441", USER, "<" + USER + ">" + "<" + CHANNEL + "> :They aren't on that channel")
 # define ERR_NOTONCHANNEL(USER, CHANNEL) RESPONSE("442", USER, "<" + CHANNEL + "> :You're not on that channel")
@@ -48,8 +71,6 @@
 # define ERR_SUMMONDISABLED(USER) RESPONSE("445", USER, ":SUMMON has been disabled")
 # define ERR_USERSDISABLED(USER) RESPONSE("446", USER, ":USERS has been disabled")
 # define ERR_NOTREGISTERED(USER) RESPONSE("451", USER, ":You have not registered")
-# define ERR_NEEDMOREPARAMS(USER, COMMANDE) RESPONSE("461", USER, "<" + COMMANDE + "> :Not enough parameters")
-# define ERR_ALREADYREGISTRED(USER) RESPONSE("462", USER, ":You may not reregister")
 # define ERR_NOPERMFORHOST(USER) RESPONSE("463", USER, ":Your host isn't among the privileged")
 # define ERR_PASSWDMISMATCH(USER) RESPONSE("464", USER, ":Password incorrect")
 # define ERR_YOUREBANNEDCREEP(USER) RESPONSE("465", USER, ":You are banned from this server")
@@ -58,7 +79,6 @@
 # define ERR_UNKNOWNMODE(USER, CARACTERE) RESPONSE("472", USER, "<" + CARACTERE + "> :is unknown mode char to me")
 # define ERR_INVITEONLYCHAN(USER, CHANNEL) RESPONSE("473", USER, "<" + CHANNEL + "> :Cannot join channel (+i)")
 # define ERR_BANNEDFROMCHAN(USER, CHANNEL) RESPONSE("474", USER, "<" + CHANNEL + "> :Cannot join channel (+b)")
-# define ERR_BADCHANNELKEY(USER, CHANNEL) RESPONSE("475", USER, "<" + CHANNEL + "> :Cannot join channel (+k)")
 # define ERR_NOPRIVILEGES(USER) RESPONSE("481", USER, ":Permission Denied- You're not an IRC operator")
 # define ERR_CHANOPRIVSNEEDED(USER, CHANNEL) RESPONSE("482", USER, "<" + CHANNEL + "> :You're not channel operator")
 # define ERR_CANTKILLSERVER(USER) RESPONSE("483", USER, ":You cant kill a server!")
@@ -81,7 +101,6 @@
 # define RPL_MOUVPART(USER, CHANNEL) RESPONSE("372", USER, "<" + USER + "> est sorti du channal <" + CHANNEL + ">")
 # define RPL_NEWCANAL(USER, CHANNEL) RESPONSE("372", USER, "<" + USER + "> est connecter au channel <" + CHANNEL + "> nouvelement construit")
 
-# define RPL_MSGPRV(FROM, TO, MSG) std::string(":") + FROM + "!" + FROM + "@" + "localhost\n" + "PRIVMSG " + TO + " :" + MSG
 
 class Response
 {

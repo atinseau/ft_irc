@@ -19,45 +19,51 @@ class Command
 {
 	struct Payload
 	{
-		Payload(Client& client, std::map<int,Client> &clients, const Request::Body& body);
+		Payload(Client& client, const Request::Body& body);
 
-		Client &client;
-		std::map<int,Client> &clients;
-		const Request::Body &body;
+		Client& client;
+		const Request::Body& body;
 	};
 
 	typedef void (*func_t)(Payload);
 	typedef std::map<std::string, func_t> map_t;
 public:
-	Command(Client &client, std::map<int,Client> &clients);
 
-	void ex_cmd(const Request::Body &body);
 
+	Command(Client& client);
+
+	void exec(const std::vector<Request::Body>& bodies);
+
+	// STANDALONE COMMANDS
 	static void nick(Payload p);
 	static void pass(Payload p);
 	static void user(Payload p);
+	static void help(Payload p);
+	static void info(Payload p);
+	static void privmsg(Payload p);
+	static void quit(Payload p);
+
+	// CHANNEL COMMANDS
+	static void join(Payload p);
+
 	// static void join(Payload p);
 	// static void part(Payload p);
 	// static void mode(Payload p);
 	// static void topic(Payload p);
-	// static void quit(Payload p);
+	
 	// static void names(Payload p);
 	// static void list(Payload p);
 	// static void invite(Payload p);
 	// static void kick(Payload p);
-	// static void privmsg(Payload p);
 	// static void oper(Payload p);
-	// static void info(Payload p);
-
-	static void help(Payload p);
 
 private:
 	static map_t init_cmd();
 	static map_t _commands;
-	
 
-	Client &_client;
-	std::map<int,Client> &_clients;
-}; 
+	Client& _client;
+
+	void _exec(const Request::Body& body);
+};
 
 #endif
