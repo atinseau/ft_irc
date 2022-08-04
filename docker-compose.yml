@@ -1,0 +1,7 @@
+
+services:
+  valgrind:
+    build: valgrind
+    tty: true
+    volumes:
+      - ${PWD}:/irc
