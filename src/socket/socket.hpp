@@ -17,16 +17,7 @@
 
 #define BUFFER_SIZE 512
 
-/**
- * @brief
- * Pas de Kamelcase pour les fonctions !
- * exemple:
- * 		- get_fd()
- * 		- get_channel()
- * invalide:
- * 		- GetFd()
- * 		- GetChannel()
- */
+
 class Server
 {
 public:
@@ -54,7 +45,6 @@ private:
 	void			_new_client(void);
 	void			_client_handler(std::map<int, Client>::iterator& it);
 	void			_disconnect(std::map<int, Client>::iterator& it);
-	std::string		_uuid();
 	pollfd			_create_pfd(int fd);
 };
 

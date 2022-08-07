@@ -1,0 +1,1 @@
+echo "USER arthur * 1 arthur\nPASS 06112001\nNICK arthur\nINFO\n" | nc -C localhost 10000

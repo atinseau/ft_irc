@@ -4,16 +4,14 @@
 Request::Body get_body(const std::string &buffer)
 {
 	Request::Body b;
+
 	std::vector<std::string> args = split(buffer.c_str(), ' ');
 	if (args.size() == 0)
 		throw std::runtime_error("La commande est vide, cas de figure non géré");
+
 	b.first = args[0];
 	args.erase(args.begin());
 	b.second = args;
-
-	if (isspace(b.second.back()[b.second.back().size() - 1]))
-		pop_back(b.second.back());
-		
 	return (b);
 }
 
@@ -24,8 +22,9 @@ std::vector<Request::Body> get_bodies(const std::string &buffer)
 
 	for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
 	{
-		if (it->size() > 0)
-			bodies.push_back(get_body(*it));
+		if (!it->size())
+			continue;
+		bodies.push_back(get_body(*it));
 	}
 	return (bodies);
 }

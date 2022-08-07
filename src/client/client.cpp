@@ -50,14 +50,16 @@ Request Client::read()
 	}
 	buffer[req.first] = '\0';
 	chunk += buffer;
-	req.second = chunk;
+
 	if (chunk[chunk.size() - 1] == '\n')
 	{
-		chunk.clear();
+		if (chunk[chunk.size() - 1] == '\n')
+			chunk.erase(chunk.size() - 1);
+		if (chunk[chunk.size() - 1] == '\r')
+			chunk.erase(chunk.size() - 1);
+		req.second = chunk;
 		req.set_ready(true);
-		pop_back(req.second);
-		if (isspace(req.second[chunk.size() - 1]))
-			pop_back(req.second);
+		chunk.clear();
 	}
 	req.set_type(Request::SUCCESS);
 	return (req);
