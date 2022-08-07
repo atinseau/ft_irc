@@ -25,8 +25,8 @@ void Command::join(Payload p)
 	std::vector<std::string> channel_keys = split(p.body.second[0].c_str(), ',');
 	std::vector<std::string> channel_password = split(p.body.second.size() >= 2 ? p.body.second[1].c_str() : NULL, ',');
 
-	remove_if(channel_keys, "");
-	remove_if(channel_password, "");
+	utils::remove_if(channel_keys, "");
+	utils::remove_if(channel_password, "");
 	
 	for (std::vector<std::string>::iterator it = channel_keys.begin(); it != channel_keys.end(); it++)
 	{

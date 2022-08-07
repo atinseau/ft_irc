@@ -17,7 +17,7 @@ void Operator::take(std::string prefix)
 	size_t i = 0;
 	while (i < prefix.size())
 	{ 
-		remove_if(_prefix, prefix[i]);
+		utils::remove_if(_prefix, prefix[i]);
 		i++;
 	}
 	

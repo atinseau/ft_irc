@@ -17,38 +17,43 @@
 #include <iostream>
 
 std::vector<std::string> split(const char *str, char c);
-std::string join(const std::vector<std::string>& vec, const char* sep, size_t offset = 0);
-std::string format_time(struct timeval& tv);
+std::string join(const std::vector<std::string> &vec, const char *sep, size_t offset = 0);
+std::string format_time(struct timeval &tv);
 size_t strlen(const char *str);
 int atoi(const char *str);
 std::string itoa(int n);
-void pop_back(std::string& str);
+void pop_back(std::string &str);
 
-template <typename T, typename U>
-T find (T begin, T end, U value)
+namespace utils
 {
-	while (begin != end)
+
+	template <typename T, typename U>
+	T find(T begin, T end, U value)
 	{
-		if (*begin == value)
-			return begin;
-		begin++;
+		while (begin != end)
+		{
+			if (*begin == value)
+				return begin;
+			begin++;
+		}
+		return end;
 	}
-	return end;
-}
 
-template< class Container, class Function>
-void for_each(Container container, Function fn)
-{
-	for (typename Container::iterator it = container.begin(); it != container.end(); it++)
-		fn(it, container);
-}
+	template <class Container, class Function>
+	void for_each(Container container, Function fn)
+	{
+		for (typename Container::iterator it = container.begin(); it != container.end(); it++)
+			fn(it, container);
+	}
 
-template <class Container, typename EraseType>
-void remove_if(Container& vec, const EraseType value)
-{
-	typename Container::iterator it = find(vec.begin(), vec.end(), value);
-	if (it != vec.end())
-		vec.erase(it);
-}
+	template <class Container, typename EraseType>
+	void remove_if(Container &vec, const EraseType value)
+	{
+		typename Container::iterator it = utils::find(vec.begin(), vec.end(), value);
+		if (it != vec.end())
+			vec.erase(it);
+	}
 
-#endif 
+};
+
+#endif
