@@ -64,9 +64,7 @@ void Server::_init(void)
 	if ((rc = ioctl(this->_sock_server, FIONBIO, (char *)&on)) < 0)
 		throw std::runtime_error("ioctl() failed");
 
-	memset(&Server::address, 0, sizeof(Server::address));
 	Server::address.sin6_family = AF_INET6;
-	memcpy(&Server::address.sin6_addr, &in6addr_any, sizeof(in6addr_any));
 	Server::address.sin6_port = htons(Server::port);
 
 	if ((rc = bind(this->_sock_server, (struct sockaddr *)&Server::address, sizeof(Server::address))) < 0)
@@ -209,6 +207,6 @@ std::string Server::_uuid()
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	std::string ret("#" + std::to_string(tv.tv_sec + tv.tv_usec));
+	std::string ret("#" + itoa(tv.tv_sec + tv.tv_usec));
 	return (ret);
 }

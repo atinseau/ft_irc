@@ -19,7 +19,22 @@
 std::vector<std::string> split(const char *str, char c);
 std::string join(const std::vector<std::string>& vec, const char* sep, size_t offset = 0);
 std::string format_time(struct timeval& tv);
+size_t strlen(const char *str);
+int atoi(const char *str);
+std::string itoa(int n);
+void pop_back(std::string& str);
 
+template <typename T, typename U>
+T find (T begin, T end, U value)
+{
+	while (begin != end)
+	{
+		if (*begin == value)
+			return begin;
+		begin++;
+	}
+	return end;
+}
 
 template< class Container, class Function>
 void for_each(Container container, Function fn)
@@ -31,7 +46,9 @@ void for_each(Container container, Function fn)
 template <class Container, typename EraseType>
 void remove_if(Container& vec, const EraseType value)
 {
-	vec.erase(std::remove(vec.begin(), vec.end(), value), vec.end());
+	typename Container::iterator it = find(vec.begin(), vec.end(), value);
+	if (it != vec.end())
+		vec.erase(it);
 }
 
 #endif 

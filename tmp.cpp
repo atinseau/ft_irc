@@ -1,21 +1,40 @@
 #include <iostream>
 #include <vector>
 
-typedef std::vector<std::string> v_string;
+std::string itoa (int i)
+{
+	std::string res;
+	std::string reverse;
+	int e;
+
+	if (i < 0)
+	{
+		reverse += '-';
+		i *= -1;
+	}
+	while (i)
+	{
+		res += i % 10 + '0';
+		i /= 10;
+	}
+	e = res.size();
+	while (e--)
+		reverse += res[e];
+	return reverse;
+}
+
+void pop_back(std::string& str)
+{
+	str.erase(str.size() - 1);
+}
 
 int main(void)
 {
-	v_string v {
-		"salut tout le monde",
-		"bye"
-	};
+	std::string a = itoa(-267);
 
-	v_string::iterator it = std::find(v.begin(), v.end(), "ok les gars");
-	if (it != v.end())
-		v.erase(it);
-		
-	for (auto &i: v)
-		std::cout << i << std::endl;
+	pop_back(a);
+
+	std::cout << a << std::endl;
 
 	return (0);
 }

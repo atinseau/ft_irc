@@ -18,9 +18,9 @@ void Command::list(Payload p)
 	std::vector<std::string> responses;
 	for (std::map<std::string, Channel>::iterator it = Server::channels.begin(); it != Server::channels.end(); it++)
 	{
-		if (by_key && std::find(p.body.second.begin(), p.body.second.end(), it->second.get_name()) == p.body.second.end())
+		if (by_key && find(p.body.second.begin(), p.body.second.end(), it->second.get_name()) == p.body.second.end())
 			continue;
-		responses.push_back(RPL_LIST(username, it->second.get_name(), std::to_string(it->second.connected_clients()), it->second.get_topic()));
+		responses.push_back(RPL_LIST(username, it->second.get_name(), itoa(it->second.connected_clients()), it->second.get_topic()));
 	}
 
 	if (!Server::channels.size() || !responses.size())

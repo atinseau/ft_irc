@@ -54,3 +54,54 @@ std::string format_time(struct timeval& tv)
 	date[strlen(date) - 1] = '\0';
 	return (std::string(date) + " à " + buffer);
 }
+
+size_t strlen(const char *str)
+{
+	size_t i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+
+int atoi(const char *str)
+{
+	int res = 0;
+	int sign = 1;
+	if (*str == '-')
+	{
+		sign = -1;
+		str++;
+	}
+	while (*str)
+		res = res * 10 + (*str++ - '0');
+	return (res * sign);
+}
+
+
+std::string itoa (int i)
+{
+	std::string res;
+	std::string reverse;
+	int e;
+
+	if (i < 0)
+	{
+		reverse += '-';
+		i *= -1;
+	}
+	while (i)
+	{
+		res += i % 10 + '0';
+		i /= 10;
+	}
+	e = res.size();
+	while (e--)
+		reverse += res[e];
+	return reverse;
+}
+
+void pop_back(std::string& str)
+{
+	str.erase(str.size() - 1);
+}

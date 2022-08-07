@@ -23,7 +23,7 @@ Client::Client(pollfd pfd) : _pfd(pfd), _state(IS_NOT_AUTH)
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
-	_data["TIME"] = std::to_string(tv.tv_sec);
+	_data["TIME"] = itoa(tv.tv_sec);
 }
 
 Client::~Client() {}
@@ -51,13 +51,13 @@ Request Client::read()
 	buffer[req.first] = '\0';
 	chunk += buffer;
 	req.second = chunk;
-	if (chunk.back() == '\n')
+	if (chunk[chunk.size() - 1] == '\n')
 	{
 		chunk.clear();
 		req.set_ready(true);
-		req.second.pop_back();
-		if (isspace(req.second.back()))
-			req.second.pop_back();
+		pop_back(req.second);
+		if (isspace(req.second[chunk.size() - 1]))
+			pop_back(req.second);
 	}
 	req.set_type(Request::SUCCESS);
 	return (req);
@@ -141,10 +141,10 @@ std::vector<std::string> Client::get_info(bool print) const
 	std::vector<std::string> infos;
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	int diff_time = tv.tv_sec - std::atoi(get_key("TIME").c_str());
+	int diff_time = tv.tv_sec - atoi(get_key("TIME").c_str());
 	infos.push_back("Surnom du client: " + get_key("NICKNAME"));
 	infos.push_back("Nom d'utilisateur du client: " + get_key("USERNAME"));
-	infos.push_back("Connecté depuis: " + std::to_string(diff_time) + " secondes");
+	infos.push_back("Connecté depuis: " + itoa(diff_time) + " secondes");
 	if (print)
 	{
 		for (std::vector<std::string>::iterator it = infos.begin(); it != infos.end(); it++)
