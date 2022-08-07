@@ -1,40 +1,33 @@
 #include <iostream>
 #include <vector>
 
-std::string itoa (int i)
-{
-	std::string res;
-	std::string reverse;
-	int e;
 
-	if (i < 0)
+std::vector<std::string> split(const char *str, char c)
+{
+	std::vector<std::string> res;
+	std::string dup;
+	size_t pos = 0;
+
+	if (!str)
+		return res;
+	dup.append(str);
+	while ((pos = dup.find(c)) != std::string::npos)
 	{
-		reverse += '-';
-		i *= -1;
+		res.push_back(dup.substr(0, pos));
+		dup.erase(0, pos + 1);
 	}
-	while (i)
-	{
-		res += i % 10 + '0';
-		i /= 10;
-	}
-	e = res.size();
-	while (e--)
-		reverse += res[e];
-	return reverse;
+	res.push_back(dup);
+	return res;
 }
 
-void pop_back(std::string& str)
-{
-	str.erase(str.size() - 1);
-}
+
 
 int main(void)
 {
-	std::string a = itoa(-267);
+	std::vector<std::string> vec = split("Hello World\nHello World\nqsdqsqdqsd", '\n');
 
-	pop_back(a);
-
-	std::cout << a << std::endl;
+	for (auto&i : vec)
+		std::cout << i << std::endl;
 
 	return (0);
 }

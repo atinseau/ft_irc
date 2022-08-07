@@ -10,6 +10,10 @@ Request::Body get_body(const std::string &buffer)
 	b.first = args[0];
 	args.erase(args.begin());
 	b.second = args;
+
+	if (isspace(b.second.back()[b.second.back().size() - 1]))
+		pop_back(b.second.back());
+		
 	return (b);
 }
 

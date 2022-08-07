@@ -1,7 +1,7 @@
 
 CC=clang++
 EXTRA_FLAGS=-Wall -Werror -Wextra
-FLAGS=-std=c++98 -O2 -g
+FLAGS=-std=c++98 -g
 BUILD_DIR=.build
 NAME=ft_irc
 
