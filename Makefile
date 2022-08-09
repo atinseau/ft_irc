@@ -15,14 +15,12 @@ COMMAND= $(addprefix command/, \
 				user.cpp \
 				info.cpp \
 				privmsg.cpp \
-				quit.cpp \
 				join.cpp \
 				part.cpp \
 				mode.cpp \
 				list.cpp \
-				whois.cpp \
-				pingpong.cpp \
 				notice.cpp \
+				all.cpp \
 			) \
 		)
 

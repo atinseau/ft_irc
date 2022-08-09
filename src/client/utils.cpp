@@ -19,3 +19,11 @@ Client* get_client_by_key(const char* key, const char* value)
 	}
 	return NULL;
 }
+
+Client* get_client_by_fd(int fd)
+{
+	std::map<int, Client>::iterator it = Server::clients.find(fd);
+	if (it != Server::clients.end())
+		return &it->second;
+	return NULL;
+}

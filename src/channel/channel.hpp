@@ -40,6 +40,9 @@ public:
 
 	bool include(int client_fd) const;
 	void kick(int client_fd);
+	std::string get_client_list() const;
+
+	void dispatch_to_all(std::string message);
 
 	
 private:

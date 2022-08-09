@@ -14,6 +14,7 @@ void Command::part(Payload p)
 			p.client.write(ERR_NOTONCHANNEL(channel_name, p.client.get_key("USERNAME")));
 			continue;
 		}
+		p.client.write(RPL_PART(p.client.get_key("USERNAME"), channel_name));
 		std::map<std::string, Channel>::iterator channel_it = Server::channels.find(channel_name);
 		if (channel_it == Server::channels.end() || channel_it->second.connected_clients() > 0)
 			continue;

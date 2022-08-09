@@ -69,3 +69,31 @@ void Channel::kick(int client_fd)
 	if (it != _clients.end())
 		_clients.erase(it);
 }
+
+
+std::string Channel::get_client_list() const
+{
+	std::string list;
+	size_t i = 0;
+	for (std::map<int, Operator>::const_iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		Client* client = get_client_by_fd(it->first);
+		if (!client)
+			continue;
+
+		list += USER_JOIN_ITEM(client->get_key("NICKNAME")) + (i < _clients.size() - 1 ? " ": "");
+		i += 1;
+	}
+	return list;
+}
+
+void Channel::dispatch_to_all(std::string message)
+{
+	for (std::map<int, Operator>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		Client* client = get_client_by_fd(it->first);
+		if (!client)
+			continue;
+		client->write(message);
+	}
+}

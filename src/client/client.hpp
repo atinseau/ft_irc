@@ -15,7 +15,7 @@
 
 #include "../irc.hpp"
 
-#define NICKNAME_LENGTH 9
+#define NICKNAME_LENGTH 30
 
 enum ClientState
 {
@@ -57,5 +57,6 @@ private:
 
 bool is_client_key_colliding(Client &client, const char *key, std::string &next);
 Client *get_client_by_key(const char *key, const char *value);
+Client* get_client_by_fd(int fd);
 
 #endif

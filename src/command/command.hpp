@@ -46,6 +46,8 @@ public:
 	static void ping(Payload p);
 	static void notice(Payload p);
 	static void pong(Payload p);
+	static void userhost(Payload p);
+	static void lusers(Payload p);
 
 	// CHANNEL COMMANDS
 	static void join(Payload p);

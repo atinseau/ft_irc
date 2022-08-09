@@ -77,16 +77,22 @@ Command::map_t Command::init_cmd()
 	map["HELP"] = &Command::help;
 	map["INFO"] = &Command::info;
 	map["PRIVMSG"] = &Command::privmsg;
-	map["QUIT"] = &Command::quit;
-	map["WHOIS"] = &Command::whois;
-	map["PING"] = &Command::ping;
-	map["PONG"] = &Command::pong;
 	map["NOTICE"] = &Command::notice;
 
+	// CHANNEL COMMANDS
 	map["JOIN"] = &Command::join;
 	map["PART"] = &Command::part;
 	map["MODE"] = &Command::mode;
 	map["LIST"] = &Command::list;
+
+	// SHORT COMMANDS
+	map["QUIT"] = &Command::quit;
+	map["WHOIS"] = &Command::whois;
+	map["PING"] = &Command::ping;
+	map["PONG"] = &Command::pong;
+	map["USERHOST"] = &Command::userhost;
+	map["LUSERS"] = &Command::lusers;
+
 
 	return (map);
 }

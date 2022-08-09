@@ -58,6 +58,7 @@ Request Client::read()
 		if (chunk[chunk.size() - 1] == '\r')
 			chunk.erase(chunk.size() - 1);
 		req.second = chunk;
+
 		req.set_ready(true);
 		chunk.clear();
 	}
@@ -73,6 +74,14 @@ void Client::write(Response res)
 
 void Client::disconnect()
 {
+	for (std::vector<std::string>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		leave(*it);
+		std::map<std::string, Channel>::iterator channel_it = Server::channels.find(*it);
+		if (channel_it == Server::channels.end() || channel_it->second.connected_clients() > 0)
+			continue;
+		Server::channels.erase(channel_it);
+	}
 	close(_pfd.fd);
 }
 

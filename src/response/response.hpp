@@ -43,10 +43,18 @@
 
 
 // JOIN //
+# define USER_JOIN_ITEM(NICK) NICK + "!" + NICK + "@" + HOST
+
 # define ERR_BADCHANNELKEY(CHANNEL, USER) RESPONSE("475", USER, "Le mot de passe du channel " + CHANNEL + " est incorrect")
 # define ERR_NOSUCHCHANNEL(CHANNEL, USER) RESPONSE("403", USER, "Impossible de rejoindre ou créer ce channel " + CHANNEL + " , nom de channel incorrect")
 # define ERR_USERONCHANNEL(CHANNEL, USER) RESPONSE("443", USER, "Vous êtes déjà dans le channel " + CHANNEL)
+# define RPL_JOIN(USER, CHANNEL) std::string(":") + USER + "!" + USER + "@" + HOST + " JOIN :" + CHANNEL + "\r\n"
+# define RPL_JOINLIST(USER, CHANNEL, USERS_LIST) RESPONSE("353", USER + " = " + CHANNEL, USERS_LIST)
+# define RPL_ENDOFJOINLIST(USER, CHANNEL) RESPONSE("366", USER + " " + CHANNEL, "Fin de la liste des utilisateurs du channel " + CHANNEL)
 
+
+// std::string(":") 353 thomas = #salut :thomas!thomas@Chat4all-F15B3CF4.subs.proxad.net @arthur!arthur@Chat4all-F15B3CF4.subs.proxad.net 
+// :eu3.chat4all.org 366 thomas #salut :End of /NAMES list.
 // LIST //
 
 # define RPL_LISTSTART(USER) RESPONSE("321", USER, "Liste des channels disponibles :")
@@ -55,14 +63,19 @@
 # define ERR_NOCHANNELS(USER) RESPONSE("442", USER, "Aucun channel disponible")
 
 // PART //
+# define RPL_PART(USER, CHANNEL) RESPONSE("442", USER, "Vous avez quitté le channel " + CHANNEL)
 # define ERR_NOTONCHANNEL(CHANNEL, USER) RESPONSE("442", USER, "Vous n'êtes pas dans le channel " + CHANNEL)
 
 // WHOIS //
 # define RPL_ENDOFWHOIS(USER) RESPONSE("318", USER, "Fin de whois")
+# define RPL_USERHOST(USER, NICK) RESPONSE("302", USER, USER + "=+" + NICK + "@" + HOST)
 
 // PING //
 # define RPL_PING(USER) RESPONSE("PONG", USER, "Pong")
 # define RPL_PONG(NAME) RESPONSE("PING", NAME, "Ping")
+
+// LUSERS //
+# define RPL_LUSERCLIENT(USER) RESPONSE("251", USER, "Utilisateurs connectés : " + itoa(Server::clients.size()))
 
 // GLOBAL //
 # define ERR_ALREADYREGISTRED(USER) RESPONSE("462", USER, "Vous etes déjà enregistré")
