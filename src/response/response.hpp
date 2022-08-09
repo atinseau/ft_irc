@@ -43,7 +43,7 @@
 
 
 // JOIN //
-# define USER_JOIN_ITEM(NICK) NICK + "!" + NICK + "@" + HOST
+# define USER_JOIN_ITEM(NICK) NICK
 
 # define ERR_BADCHANNELKEY(CHANNEL, USER) RESPONSE("475", USER, "Le mot de passe du channel " + CHANNEL + " est incorrect")
 # define ERR_NOSUCHCHANNEL(CHANNEL, USER) RESPONSE("403", USER, "Impossible de rejoindre ou créer ce channel " + CHANNEL + " , nom de channel incorrect")
