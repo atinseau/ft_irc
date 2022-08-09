@@ -2,7 +2,7 @@
 
 void successful_join(Client &client, Channel& channel)
 {
-	client.write(RPL_JOIN(client["USERNAME"], channel.get_name()));
+	channel.dispatch_to_all(RPL_JOIN(client["USERNAME"], channel.get_name()));
 	channel.dispatch_to_all(RPL_JOINLIST(client["USERNAME"], channel.get_name(), channel.get_client_list()));
 	channel.dispatch_to_all(RPL_ENDOFJOINLIST(client["USERNAME"], channel.get_name()));
 }

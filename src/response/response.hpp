@@ -49,7 +49,7 @@
 # define ERR_NOSUCHCHANNEL(CHANNEL, USER) RESPONSE("403", USER, "Impossible de rejoindre ou créer ce channel " + CHANNEL + " , nom de channel incorrect")
 # define ERR_USERONCHANNEL(CHANNEL, USER) RESPONSE("443", USER, "Vous êtes déjà dans le channel " + CHANNEL)
 # define RPL_JOIN(USER, CHANNEL) std::string(":") + USER + "!" + USER + "@" + HOST + " JOIN :" + CHANNEL + "\r\n"
-# define RPL_JOINLIST(USER, CHANNEL, USERS_LIST) RESPONSE("353", USER + " @ " + CHANNEL, USERS_LIST)
+# define RPL_JOINLIST(USER, CHANNEL, USERS_LIST) RESPONSE("353", USER + " = " + CHANNEL, USERS_LIST)
 # define RPL_ENDOFJOINLIST(USER, CHANNEL) RESPONSE("366", USER + " " + CHANNEL, "Fin de la liste des utilisateurs du channel " + CHANNEL)
 
 
