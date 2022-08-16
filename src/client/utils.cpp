@@ -27,3 +27,11 @@ Client* get_client_by_fd(int fd)
 		return &it->second;
 	return NULL;
 }
+
+
+bool is_not_target(Client &initiator, Client &target)
+{
+	if (initiator.get_fd() == target.get_fd())
+		return false;
+	return true;
+}

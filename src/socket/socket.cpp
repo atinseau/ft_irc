@@ -7,6 +7,7 @@ std::string Server::name = "ft_irc";
 int Server::port = 0;
 struct sockaddr_in6 Server::address = {};
 struct timeval Server::launch_time = {};
+bool Server::running = true;
 
 Server::Server(std::string port, std::string password)
 {
@@ -64,7 +65,6 @@ void Server::run(void)
 	{
 		if ((rc = poll(&this->_pfds[0], this->_pfds.size(), TIME)) <= 0)
 			throw std::runtime_error("poll() failed/timeout");
-
 		for (size_t i = 0; i < _pfds.size(); i++)
 		{
 			if (_pfds[i].revents == 0)
@@ -90,7 +90,7 @@ void Server::run(void)
 				}
 			}
 		}
-	} while (true);
+	} while (Server::running);
 }
 
 void Server::_client_handler(std::map<int, Client>::iterator &it)

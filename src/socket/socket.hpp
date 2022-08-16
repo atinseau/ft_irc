@@ -35,6 +35,7 @@ public:
 
 	static int						port;
 	static struct sockaddr_in6		address;
+	static bool						running;
 
 private:
 	

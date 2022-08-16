@@ -25,7 +25,9 @@ void Command::nick(Payload p)
 			throw AuthException(ERR_NICKNAMEINUSE(nickname));
 		throw ResponseException(ERR_NICKNAMEINUSE(nickname));
 	}
-
+	const std::string& old_nickname = p.client.get_key("NICKNAME");
+	if (!old_nickname.empty() && old_nickname != nickname)
+		p.client.write(RPL_NICKCHANGE(old_nickname, nickname));
 	p.client["NICKNAME"] = nickname;
 }
 

@@ -4,7 +4,7 @@ void Command::help(Payload p)
 {
 	Client& client = p.client;
 
-	std::string username = client.get_key("USERNAME");
+	const std::string& nickname = client.get_key("NICKNAME");
 
 	const char* msg[] = {
 		"------------------ HELP ------------------",
@@ -25,6 +25,6 @@ void Command::help(Payload p)
 	};
 
 	for (size_t i = 0; i < sizeof(msg) / sizeof(char*); i++)
-		client.write(RPL_INFO(username, msg[i]));
+		client.write(RPL_INFO(nickname, msg[i]));
 	
 }

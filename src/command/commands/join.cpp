@@ -2,9 +2,13 @@
 
 void successful_join(Client &client, Channel& channel)
 {
-	channel.dispatch_to_all(RPL_JOIN(client["USERNAME"], channel.get_name()));
-	channel.dispatch_to_all(RPL_JOINLIST(client["USERNAME"], channel.get_name(), channel.get_client_list()));
-	channel.dispatch_to_all(RPL_ENDOFJOINLIST(client["USERNAME"], channel.get_name()));
+	Channel::Dispatcher dispatcher = channel.create_dispatcher(&client);
+	
+	dispatcher.load(RPL_JOIN(client.fullname(), channel.get_name()));
+	dispatcher.send();
+
+	client.write(RPL_NAMREPLY(client["NICKNAME"], channel.get_name(), channel.get_client_list()));
+	client.write(RPL_ENDOFNAMES(client["NICKNAME"], channel.get_name()));
 }
 
 Channel create_own_channel(std::string name, std::string password, Client &client)
@@ -19,9 +23,9 @@ Channel create_own_channel(std::string name, std::string password, Client &clien
 void join_channel(Channel &channel, const std::string &password, Client &client)
 {
 	if (channel.get_password().size() && channel.get_password() != password)
-		throw ResponseException(ERR_BADCHANNELKEY(channel.get_name(), client.get_key("USERNAME")));
+		throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME"), channel.get_name()));
 	if (channel.include(client.get_fd()))
-		throw ResponseException(ERR_USERONCHANNEL(channel.get_name(), client.get_key("USERNAME")));
+		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), channel.get_name()));
 	channel.insert(client);
 	successful_join(client, channel);
 }
@@ -45,7 +49,7 @@ void Command::join(Payload p)
 		std::string password = channel_password.size() == channel_keys.size() ? channel_password[it - channel_keys.begin()] : "";
 
 		if (it->size() > 200)
-			throw ResponseException(ERR_NOSUCHCHANNEL(channel_name, p.client.get_key("USERNAME")));
+			throw ResponseException(ERR_NOSUCHCHANNEL(p.client.get_key("NICKNAME"), channel_name));
 
 		if (channel_it == Server::channels.end())
 		{

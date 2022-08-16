@@ -3,9 +3,9 @@
 
 void say_hello(Client& client)
 {
-	const std::string& username = client.get_key("USERNAME");
+	const std::string& nickname = client.get_key("NICKNAME");
 
-	client.write(RPL_WELCOME(username));
-	client.write(RPL_YOURHOST(username));
-	client.write(RPL_CREATED(username, format_time(Server::launch_time)));
+	client.write(RPL_WELCOME(nickname));
+	client.write(RPL_YOURHOST(nickname));
+	client.write(RPL_CREATED(nickname, format_time(Server::launch_time)));
 }		

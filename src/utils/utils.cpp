@@ -108,3 +108,23 @@ void pop_back(std::string& str)
 {
 	str.erase(str.size() - 1);
 }
+
+
+void get_time_lock()
+{
+	static bool lock = false;
+	static struct timeval time;
+	struct timeval now;
+
+	if (!lock)
+	{
+		gettimeofday(&time, NULL);
+		lock = true;
+		return;
+	}
+	gettimeofday(&now, NULL);
+
+	long long diff = (now.tv_sec * 1000000 + now.tv_usec) - (time.tv_sec * 1000000 + time.tv_usec);
+	std::cout << std::setprecision(10) << std::fixed << (float)diff / 1000000 << "s" << std::endl;
+	lock = false;
+}

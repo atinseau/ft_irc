@@ -34,6 +34,7 @@ SRC= $(addprefix src/, \
 		response/response.cpp \
 		channel/channel.cpp \
 		channel/utils.cpp \
+		channel/mode.cpp \
 		$(COMMAND) \
 	)
 

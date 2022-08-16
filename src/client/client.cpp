@@ -59,6 +59,8 @@ Request Client::read()
 			chunk.erase(chunk.size() - 1);
 		req.second = chunk;
 
+		DEBUG(chunk);
+
 		req.set_ready(true);
 		chunk.clear();
 	}
@@ -68,6 +70,7 @@ Request Client::read()
 
 void Client::write(Response res)
 {
+	WARNING(res.str());
 	if (send(this->get_fd(), res.str().c_str(), res.str().size(), 0) < 0)
 		ERROR("Erreur lors de l'envoi de la requête");
 }
@@ -95,12 +98,12 @@ pollfd Client::get_pfd()
 	return (_pfd);
 }
 
-std::string &Client::operator[](const char *key)
+std::string& Client::operator[](const char *key)
 {
 	return (_data[key]);
 }
 
-std::string Client::get_key(const char *key) const
+const std::string& Client::get_key(const char *key) const
 {
 	return (_data.at(key));
 }
@@ -115,8 +118,13 @@ bool Client::leave(std::string channel)
 	std::map<std::string, Channel>::iterator channel_it = Server::channels.find(channel);
 	if (channel_it != Server::channels.end())
 	{
-		if (channel_it->second.include(this->get_fd())) 
+		if (channel_it->second.include(this->get_fd()))
 		{
+			Channel::Dispatcher dispatcher = channel_it->second.create_dispatcher();
+
+			dispatcher.load(RPL_PART(fullname(), channel_it->first));
+			dispatcher.send();
+			
 			channel_it->second.kick(this->get_fd());
 			return (true);
 		}
@@ -145,6 +153,11 @@ void Client::set_state(ClientState state)
 ClientState Client::get_state() const
 {
 	return (this->_state);
+}
+
+std::string Client::fullname() const
+{
+	return std::string(":" + get_key("NICKNAME") + "!" + get_key("USERNAME") + "@" + get_key("REALNAME"));
 }
 
 std::vector<std::string> Client::get_info(bool print) const

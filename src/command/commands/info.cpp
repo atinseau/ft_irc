@@ -5,13 +5,12 @@ void Command::info(Payload p)
 {
 	Client& client = p.client;
 	std::vector<std::string> infos;
-	char buffer[INET6_ADDRSTRLEN];
 
-	inet_ntop(AF_INET6, &(Server::address.sin6_addr), buffer, INET6_ADDRSTRLEN);
+	// inet_ntop(AF_INET6, &(Server::address.sin6_addr), buffer, INET6_ADDRSTRLEN);
 	
 	infos.push_back("------------------ SERVER INFO ------------------");
 	infos.push_back("Nom du serveur: " + Server::name);
-	infos.push_back("Adresse du serveur: " + std::string(buffer));
+	// infos.push_back("Adresse du serveur: " + std::string(buffer));
 	infos.push_back("Port du serveur: " + itoa(Server::port));
 	infos.push_back("Nombre de clients: " + itoa(Server::clients.size()));
 	infos.push_back("------------------ CLIENT INFO ------------------");
@@ -21,5 +20,7 @@ void Command::info(Payload p)
 		infos.push_back(*it);
 	
 	for (std::vector<std::string>::const_iterator it = infos.begin(); it != infos.end(); it++)
-		client.write(RPL_INFO(client.get_key("USERNAME"), *it));
+		client.write(RPL_INFO(client.get_key("NICKNAME"), *it));
+
+	// Server::running = false;
 }

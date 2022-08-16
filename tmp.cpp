@@ -1,33 +1,37 @@
 #include <iostream>
-#include <vector>
+#include <map>
+#include <sys/time.h>
+#include <unistd.h>
 
-
-std::vector<std::string> split(const char *str, char c)
+bool is_a (char c)
 {
-	std::vector<std::string> res;
-	std::string dup;
-	size_t pos = 0;
-
-	if (!str)
-		return res;
-	dup.append(str);
-	while ((pos = dup.find(c)) != std::string::npos)
-	{
-		res.push_back(dup.substr(0, pos));
-		dup.erase(0, pos + 1);
-	}
-	res.push_back(dup);
-	return res;
+	if (c == 'a')
+		return true;
+	return false;
 }
 
+bool is_b (char c)
+{
+	if (c == 'b')
+		return true;
+	return false;
+}
 
 
 int main(void)
 {
-	std::vector<std::string> vec = split("Hello World\nHello World\nqsdqsqdqsd", '\n');
+	typedef bool (*func_t)(char);
+	typedef func_t func_t_array[];
 
-	for (auto&i : vec)
-		std::cout << i << std::endl;
+	func_t_array f = {
+		is_a,
+		is_b,
+		is_a
+	};
 
+
+
+	std::cout << sizeof(f) / sizeof(func_t) << std::endl;
+	
 	return (0);
 }

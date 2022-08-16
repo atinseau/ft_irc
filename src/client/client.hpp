@@ -45,8 +45,9 @@ public:
 	int get_fd() const;
 	pollfd get_pfd();
 	ClientState get_state() const;
-	std::string get_key(const char *key) const;
+	const std::string& get_key(const char *key) const;
 	std::vector<std::string> get_info(bool print = false) const;
+	std::string fullname() const;
 
 private:
 	pollfd _pfd;
@@ -58,5 +59,6 @@ private:
 bool is_client_key_colliding(Client &client, const char *key, std::string &next);
 Client *get_client_by_key(const char *key, const char *value);
 Client* get_client_by_fd(int fd);
+bool is_not_target(Client &initiator, Client &target);
 
 #endif

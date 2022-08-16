@@ -19,7 +19,7 @@ std::string Response::str() const
 	return (_str);
 }
 
-ResponseException::ResponseException(Response res) : _res(res){}
+ResponseException::ResponseException(std::string response) : _res(Response(response)){}
 
 ResponseException::~ResponseException() throw(){}
 
@@ -33,4 +33,4 @@ Response& ResponseException::response()
 	return (_res);
 }
 
-AuthException::AuthException(Response res) : ResponseException(res) {}
+AuthException::AuthException(std::string response): ResponseException(response) {}
