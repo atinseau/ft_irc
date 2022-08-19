@@ -48,6 +48,7 @@ public:
 	static void pong(Payload p);
 	static void userhost(Payload p);
 	static void lusers(Payload p);
+	static void cap(Payload p);
 
 	// CHANNEL COMMANDS
 	static void join(Payload p);

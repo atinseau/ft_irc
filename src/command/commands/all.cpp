@@ -36,3 +36,8 @@ void Command::lusers(Payload p)
 	// p.client.write(RPL_LUSERCLIENT(p.client["USERNAME"]));
 	(void)p;
 }
+
+void Command::cap(Payload p)
+{
+	(void)p;
+}

@@ -53,14 +53,13 @@ Request Client::read()
 
 	if (chunk[chunk.size() - 1] == '\n')
 	{
-		if (chunk[chunk.size() - 1] == '\n')
+		while(isspace(chunk[chunk.size() - 1]))
 			chunk.erase(chunk.size() - 1);
-		if (chunk[chunk.size() - 1] == '\r')
-			chunk.erase(chunk.size() - 1);
+		// if (chunk[chunk.size() - 1] == '\n')
+		// 	chunk.erase(chunk.size() - 1);
+		// if (chunk[chunk.size() - 1] == '\r')
+		// 	chunk.erase(chunk.size() - 1);
 		req.second = chunk;
-
-		DEBUG(chunk);
-
 		req.set_ready(true);
 		chunk.clear();
 	}

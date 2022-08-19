@@ -19,19 +19,19 @@
 #define SERVER_PORT 10000
 #define TIME 100 * 60 * 1000
 
-# define CLEAR "\e[0m"
-# define RED "\e[1;31m"
-# define YELLOW "\e[1;33m"
-# define BLUE "\e[1;36m"
-# define PURPLE "\e[1;35m"
-# define GREEN "\e[1;32m"
+// # define CLEAR "\e[0m"
+// # define RED "\e[1;31m"
+// # define YELLOW "\e[1;33m"
+// # define BLUE "\e[1;36m"
+// # define PURPLE "\e[1;35m"
+// # define GREEN "\e[1;32m"
 
-// # define CLEAR ""
-// # define RED ""
-// # define YELLOW ""
-// # define BLUE ""
-// # define PURPLE ""
-// # define GREEN ""
+# define CLEAR ""
+# define RED ""
+# define YELLOW ""
+# define BLUE ""
+# define PURPLE ""
+# define GREEN ""
 
 # define LOG(color, output, msg) output << color << msg << CLEAR << std::endl
 

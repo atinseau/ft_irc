@@ -12,7 +12,8 @@ bool is_channel_mode(char c)
 		c == 'i' ||
 		c == 'm' ||
 		c == 'k' ||
-		c == 'l'
+		c == 'l' ||
+		c == 'b'
 	)
 		return true;
 	return false;
@@ -59,6 +60,10 @@ std::map<char, int> parse_mode(const Client& client, const std::string &modes, s
 	
 	for (size_t i = 0; i < modes.size(); i++)
 	{
+
+		if (modes[i] != '+' && modes[i] != '-' && !is_mode(modes[i]))
+			throw ResponseException(ERR_UNKNOWNMODE(client.get_key("NICKNAME"), modes[i]));
+
 		if (modes[i] == '+')
 		{
 			while (is_mode(modes[++i]))
@@ -125,31 +130,15 @@ void Command::mode(Payload p)
 	std::string to_remove;
 
 	std::map<char, int> parameter_order = parse_mode(p.client, modes, to_add, to_remove);
-	std::string sum_mode = to_add + to_remove;
 
-	if (!find_invalid_mode(sum_mode, is_channel_mode))
-		set_channel_mode(p.client, channel_it->second, to_add, to_remove, p.body.second, parameter_order);
-	else if (!find_invalid_mode(sum_mode, is_user_mode))
-		DEBUG("USER MODE");
-	else
-	{
-		typedef bool (*f_mode)(char);
+	
 
-		char err;
-		size_t i = 0;
-		f_mode func[] = {
-			is_channel_mode,
-			is_user_mode
-		};
-
-		while (i < sizeof(func) / sizeof(f_mode))
-		{
-			err = find_invalid_mode(sum_mode, func[i]);
-			if (err)
-				throw ResponseException(ERR_UNKNOWNMODE(p.client.fullname(), err));
-			i++;
-		}
-	}
+	// if (!find_invalid_mode(sum_mode, is_channel_mode))
+	// 	set_channel_mode(p.client, channel_it->second, to_add, to_remove, p.body.second, parameter_order);
+	// else if (!find_invalid_mode(sum_mode, is_user_mode))
+	// 	DEBUG("USER MODE");
+	// else
+	// 	throw ResponseException(ERR_UNKNOWNMODE(p.client.get_key("NICKNAME"), modes));
 
 	// DEBUG(modes);
 	// DEBUG(to_add);

@@ -47,9 +47,9 @@ void Command::_exec(const Request::Body &body)
 	{
 		if (!_client.is_auth())
 		{
-			if (it->first != "PASS" && it->first != "NICK" && it->first != "USER" && it->first != "QUIT")
+			if (it->first != "PASS" && it->first != "NICK" && it->first != "USER" && it->first != "CAP" && it->first != "QUIT")
 			{
-				ERROR("Commande non autorisée");
+				ERROR("Commande non autorisée: " << it->first);
 				return;
 			}
 		}
@@ -92,6 +92,7 @@ Command::map_t Command::init_cmd()
 	map["PONG"] = &Command::pong;
 	map["USERHOST"] = &Command::userhost;
 	map["LUSERS"] = &Command::lusers;
+	map["CAP"] = &Command::cap;
 
 
 	return (map);

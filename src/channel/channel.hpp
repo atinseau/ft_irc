@@ -25,7 +25,6 @@ public:
 	void take(std::string modes);
 
 	bool has(char mode) const;
-
 	const std::vector<char>& get_modes() const;
 
 private:

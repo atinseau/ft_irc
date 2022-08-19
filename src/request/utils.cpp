@@ -12,6 +12,13 @@ Request::Body get_body(const std::string &buffer)
 	b.first = args[0];
 	args.erase(args.begin());
 	b.second = args;
+
+	for (std::vector<std::string>::iterator it = b.second.begin(); it != b.second.end(); it++)
+	{
+		while(isspace(it->at(it->size() - 1)))
+			it->erase(it->size() - 1);
+	}
+
 	return (b);
 }
 
@@ -26,5 +33,6 @@ std::vector<Request::Body> get_bodies(const std::string &buffer)
 			continue;
 		bodies.push_back(get_body(*it));
 	}
+
 	return (bodies);
 }
