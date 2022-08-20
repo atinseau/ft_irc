@@ -54,12 +54,9 @@ public:
 	static void join(Payload p);
 	static void part(Payload p);
 	static void mode(Payload p);
-	// static void topic(Payload p);
+	static void topic(Payload p);
 	static void list(Payload p);
-
-	// static void join(Payload p);
-	
-	// static void topic(Payload p);
+	static void who(Payload p);
 	
 	// static void names(Payload p);
 	// static void list(Payload p);

@@ -49,6 +49,8 @@ public:
 	std::vector<std::string> get_info(bool print = false) const;
 	std::string fullname() const;
 
+	std::vector<Channel*> get_channels() const; 
+
 private:
 	pollfd _pfd;
 	std::vector<std::string> _channels;

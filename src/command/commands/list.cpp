@@ -20,7 +20,9 @@ void Command::list(Payload p)
 	{
 		if (by_key && utils::find(p.body.second.begin(), p.body.second.end(), it->second.get_name()) == p.body.second.end())
 			continue;
-		responses.push_back(RPL_LIST(nickname, it->second.get_name(), itoa(it->second.connected_clients()), it->second.get_topic()));
+		if (it->second.has('s') || it->second.has('p'))
+			continue;
+		responses.push_back(RPL_LIST(nickname, it->second.get_name(), utils::itoa(it->second.connected_clients()), it->second.get_topic()));
 	}
 
 	if (!Server::channels.size() || !responses.size())

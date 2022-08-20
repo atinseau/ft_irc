@@ -6,7 +6,9 @@ void Command::part(Payload p)
 	if (!p.body.second.size() || p.body.second[0] == ":")
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), "PART"));
 
-	for (std::vector<std::string>::const_iterator it = p.body.second.begin(); it != p.body.second.end(); it++)
+	std::vector<std::string> channels = utils::split(p.body.second[0].c_str(), ',');
+
+	for (std::vector<std::string>::const_iterator it = channels.begin(); it != channels.end(); it++)
 	{
 		std::string channel_name = fix_channel_name(*it);
 		if(!p.client.leave(channel_name))

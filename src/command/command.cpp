@@ -84,6 +84,8 @@ Command::map_t Command::init_cmd()
 	map["PART"] = &Command::part;
 	map["MODE"] = &Command::mode;
 	map["LIST"] = &Command::list;
+	map["WHO"] = &Command::who;
+	map["TOPIC"] = &Command::topic;
 
 	// SHORT COMMANDS
 	map["QUIT"] = &Command::quit;

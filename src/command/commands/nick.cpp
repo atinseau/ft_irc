@@ -1,5 +1,17 @@
 #include "../command.hpp"
 
+void dispatch_new_nick(Client& client, const std::string& old_nickname, const std::string& new_nickname)
+{
+	std::vector<Channel*> client_channels = client.get_channels();
+	for (std::vector<Channel*>::iterator it = client_channels.begin(); it != client_channels.end(); it++)
+	{
+		Channel::Dispatcher dispatcher = (*it)->create_dispatcher(&client);
+		dispatcher.load(RPL_NICKCHANGE(old_nickname, new_nickname));
+		dispatcher.send(is_not_target);
+	}
+	client.write(RPL_NICKCHANGE(old_nickname, new_nickname));
+}
+
 void Command::nick(Payload p)
 {
 	if (p.body.second.size() == 0)
@@ -27,7 +39,7 @@ void Command::nick(Payload p)
 	}
 	const std::string& old_nickname = p.client.get_key("NICKNAME");
 	if (!old_nickname.empty() && old_nickname != nickname)
-		p.client.write(RPL_NICKCHANGE(old_nickname, nickname));
+		dispatch_new_nick(p.client, old_nickname, nickname);
 	p.client["NICKNAME"] = nickname;
 }
 

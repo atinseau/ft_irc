@@ -11,8 +11,8 @@ void Command::info(Payload p)
 	infos.push_back("------------------ SERVER INFO ------------------");
 	infos.push_back("Nom du serveur: " + Server::name);
 	// infos.push_back("Adresse du serveur: " + std::string(buffer));
-	infos.push_back("Port du serveur: " + itoa(Server::port));
-	infos.push_back("Nombre de clients: " + itoa(Server::clients.size()));
+	infos.push_back("Port du serveur: " + utils::itoa(Server::port));
+	infos.push_back("Nombre de clients: " + utils::itoa(Server::clients.size()));
 	infos.push_back("------------------ CLIENT INFO ------------------");
 	
 	std::vector<std::string> client_infos = client.get_info();

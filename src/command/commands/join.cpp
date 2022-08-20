@@ -7,8 +7,10 @@ void successful_join(Client &client, Channel& channel)
 	dispatcher.load(RPL_JOIN(client.fullname(), channel.get_name()));
 	dispatcher.send();
 
-	client.write(RPL_NAMREPLY(client["NICKNAME"], channel.get_name(), channel.get_client_list()));
-	client.write(RPL_ENDOFNAMES(client["NICKNAME"], channel.get_name()));
+	if (!channel.get_topic().empty())
+		client.write(RPL_TOPIC(client.get_key("NICKNAME"), channel.get_name(), channel.get_topic()));
+	client.write(RPL_NAMREPLY(client.get_key("NICKNAME"), channel.get_name(), channel.get_client_list()));
+	client.write(RPL_ENDOFNAMES(client.get_key("NICKNAME"), channel.get_name()));
 }
 
 Channel create_own_channel(std::string name, std::string password, Client &client)
@@ -24,6 +26,10 @@ void join_channel(Channel &channel, const std::string &password, Client &client)
 {
 	if (channel.get_password().size() && channel.get_password() != password)
 		throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME"), channel.get_name()));
+
+	if (channel.has('i') && !channel.is_invite(client))
+		throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME"), channel.get_name()));
+
 	if (channel.include(client.get_fd()))
 		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), channel.get_name()));
 	channel.insert(client);
@@ -33,10 +39,10 @@ void join_channel(Channel &channel, const std::string &password, Client &client)
 void Command::join(Payload p)
 {
 	if (p.body.second.size() < 1 || (p.body.second.size() == 1 && p.body.second[0] == "#"))
-		throw ResponseException(ERR_NEEDMOREPARAMS("*", "JOIN"));
+		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), "JOIN"));
 
-	std::vector<std::string> channel_keys = split(p.body.second[0].c_str(), ',');
-	std::vector<std::string> channel_password = split(p.body.second.size() >= 2 ? p.body.second[1].c_str() : NULL, ',');
+	std::vector<std::string> channel_keys = utils::split(p.body.second[0].c_str(), ',');
+	std::vector<std::string> channel_password = utils::split(p.body.second.size() >= 2 ? p.body.second[1].c_str() : NULL, ',');
 
 	utils::remove_if(channel_keys, "");
 	utils::remove_if(channel_password, "");

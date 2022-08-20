@@ -7,5 +7,5 @@ void say_hello(Client& client)
 
 	client.write(RPL_WELCOME(nickname));
 	client.write(RPL_YOURHOST(nickname));
-	client.write(RPL_CREATED(nickname, format_time(Server::launch_time)));
+	client.write(RPL_CREATED(nickname, utils::format_time(Server::launch_time)));
 }		

@@ -4,7 +4,7 @@
 Operator::Operator() : Mode() {}
 
 
-Channel::Channel(std::string name, std::string password) : Mode(), _name(name), _password(password)
+Channel::Channel(std::string name, std::string password) : Mode(), _name(name), _password(password), _limit(-1)
 {}
 
 Operator &Channel::insert(Client &client)
@@ -112,7 +112,10 @@ void Channel::Dispatcher::send(bool (*filter)(Client& initiator, Client& target)
 
 void Channel::set_topic(const std::string& topic)
 {
-	_topic = topic;
+	if (topic[0] == ':')
+		_topic = topic.substr(1);
+	else
+		_topic = topic;
 }
 
 void Channel::set_password(const std::string& password)
@@ -123,4 +126,52 @@ void Channel::set_password(const std::string& password)
 void Channel::set_limit(int limit)
 {
 	_limit = limit;
+}
+
+std::string Channel::get_modes_reply(const std::string* to_add, const std::string* to_remove) const
+{
+	std::string str;
+	std::string args;
+
+	if (!to_add)
+	{
+		if (_modes.size())
+			str += "+";
+		for (std::vector<char>::const_iterator it = _modes.begin(); it != _modes.end(); it++)
+			str += *it;
+	}
+	else
+	{
+		if (to_add->size())
+			str += "+" + *to_add;
+	}
+
+	if (to_remove && to_remove->size())
+		str += "-" + *to_remove;
+		
+	for (size_t i = 0; i < str.size(); i++)
+	{
+		if (str[i] == 'k')
+			args += " " + _password;
+		else if (str[i] == 'l')
+			args += " " + utils::itoa(_limit);
+	}
+	return str + args;
+}
+
+Operator* Channel::get_operator(int client_fd)
+{
+	std::map<int, Operator>::iterator it = _clients.find(client_fd);
+	if (it == _clients.end())
+		return NULL;
+	return &it->second;
+}
+
+bool Channel::is_invite(const Client& client)
+{
+	std::vector<std::string>::iterator invite = utils::find(_invites.begin(), _invites.end(), client.get_key("NICKNAME"));
+	if (invite == _invites.end())
+		return false;
+	_invites.erase(invite);
+	return true;
 }

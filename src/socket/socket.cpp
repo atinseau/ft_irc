@@ -17,7 +17,7 @@ Server::Server(std::string port, std::string password)
 			throw std::runtime_error("Port incorrecte");
 		if (i > 5)
 			throw std::runtime_error("Port incorrecte");
-		Server::port = atoi(port.c_str());
+		Server::port = utils::atoi(port.c_str());
 		if (Server::port > 65536)
 			throw std::runtime_error("Port incorrecte");
 	}

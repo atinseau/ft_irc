@@ -33,7 +33,8 @@
 # define RPL_LISTSTART(NICK)					F(":" + HOST + " 321 " + NICK + " Channel :Liste des channels")
 # define RPL_LIST(NICK, CHANNEL, COUNT, TOPIC)	F(":" + HOST + " 322 " + NICK + " " + CHANNEL + " " + COUNT + " : " + TOPIC)
 # define RPL_LISTEND(NICK)						F(":" + HOST + " 323 " + NICK + " :End of /LIST")
-
+# define RPL_TOPIC(NICK, CHANNEL, TOPIC)		F(":" + HOST + " 332 " + NICK + " " + CHANNEL + " :" + TOPIC)
+# define RPL_NOTOPIC(NICK, CHANNEL)				F(":" + HOST + " 331 " + NICK + " " + CHANNEL + " :Le channel n'a pas de topic")
 
 # define ERR_UNKNOWNCOMMAND(COMMAND)			F(":" + HOST + " 421 * :La commande " + COMMAND + " n'existe pas")
 # define ERR_NONICKNAMEGIVEN					F(":" + HOST + " 431 :Aucun surnom d'utilisateur n'a etait fourni")
@@ -46,9 +47,18 @@
 # define ERR_NOSUCHNICK(NICK, TO)				F(":" + HOST + " 401 " + NICK + " :Il n'y a pas d'utilisateur avec le surnom " + TO)
 # define ERR_BADCHANNELKEY(NICK, CHANNEL)		F(":" + HOST + " 475 " + NICK + " :Le mot de passe du channel " + CHANNEL + " est incorrect")
 # define ERR_USERONCHANNEL(NICK, CHANNEL)		F(":" + HOST + " 443 " + NICK + " :Vous êtes déjà dans le channel " + CHANNEL)
-# define ERR_NOSUCHCHANNEL(NICK, CHANNEL)		F(":" + HOST + " 403 " + NICK + " " + CHANNEL + " :Le channel " + CHANNEL + " n'existe pas")
+# define ERR_NOSUCHCHANNEL(NICK, CHANNEL)		F(":" + HOST + " 403 " + NICK + " :Le channel " + CHANNEL + " n'existe pas")
 # define ERR_NOCHANNELS(NICK)					F(":" + HOST + " 442 " + NICK + " :Aucun channel n'est disponible")
+
 # define ERR_UNKNOWNMODE(NICK, MODE)			F(":" + HOST + " 472 " + NICK + " :Mode inconnu " + MODE)
+# define ERR_MODESYNTAX(NICK)					F(":" + HOST + " 472 " + NICK + " :Syntaxe pour le mode du channel invalide")
+# define ERR_DUPLICATEMODE(NICK, MODE)			F(":" + HOST + " 472 " + NICK + " :Syntaxe erreur, le mode " + MODE + " est present plusieurs fois")
+# define ERR_NOMODE(NICK, CHANNEL)				F(":" + HOST + " 472 " + NICK + " :Aucun mode pour " + CHANNEL + " n'a été fourni")
+# define ERR_AMBIGUOUS(NICK, MODE, CHANNEL)				F(":" + HOST + " 472 " + NICK + " :Attention, le mode " + MODE + " est ambigu pour le channel " + CHANNEL)
+
+# define ERR_INVITEONLYCHAN(NICK, CHANNEL)		F(":" + HOST + " 473 " + NICK + " :Le channel " + CHANNEL + " est sur invitation uniquement (+i)")
+# define ERR_CHANOPRIVSNEEDED(NICK, CHANNEL)	F(":" + HOST + " 482 " + NICK + " :Vous n'êtes pas opérateur du channel " + CHANNEL + " (+o )")
+
 
 class Response
 {

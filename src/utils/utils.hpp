@@ -19,18 +19,17 @@
 #include <unistd.h>
 #include <iomanip>
 
-
-std::vector<std::string> split(const char *str, char c);
-std::string join(const std::vector<std::string> &vec, const char *sep, size_t offset = 0);
-std::string format_time(struct timeval &tv);
-size_t strlen(const char *str);
-int atoi(const char *str);
-std::string itoa(int n);
-void pop_back(std::string &str);
-void get_time_lock();
-
 namespace utils
 {
+
+	std::vector<std::string> split(const char *str, char c);
+	std::string join(const std::vector<std::string> &vec, const char *sep, size_t offset = 0);
+	std::string format_time(struct timeval &tv);
+	size_t strlen(const char *str);
+	int atoi(const char *str);
+	std::string itoa(int n);
+	void pop_back(std::string &str);
+	void get_time_lock();
 
 	template <typename T, typename U>
 	T find(T begin, T end, U value)

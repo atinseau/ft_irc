@@ -27,7 +27,7 @@ public:
 	bool has(char mode) const;
 	const std::vector<char>& get_modes() const;
 
-private:
+protected:
 	std::vector<char> _modes;
 };
 
@@ -47,7 +47,9 @@ class Channel: public Mode
 {
 private:
 	std::map<int, Operator> _clients;
-	std::vector<char> _modes;
+	std::vector<std::string> _bans;
+	std::vector<std::string> _invites;
+
 	std::string _name;
 	std::string _topic;
 	std::string _password;
@@ -78,6 +80,7 @@ public:
 	const std::string& get_name() const;
 	const std::string& get_topic() const;
 	int get_limit() const;
+	std::string get_modes_reply(const std::string* to_add = NULL, const std::string* to_remove = NULL) const;
 
 	int connected_clients() const;
 
@@ -87,9 +90,13 @@ public:
 
 	Dispatcher create_dispatcher(Client *initiator = NULL);
 
+	Operator* get_operator(int client_fd);
+
 	void set_topic(const std::string& topic);
 	void set_password(const std::string& password);
 	void set_limit(int limit);
+
+	bool is_invite(const Client& client);
 };
 
 std::string fix_channel_name(const std::string &name);

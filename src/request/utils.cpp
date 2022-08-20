@@ -5,7 +5,7 @@ Request::Body get_body(const std::string &buffer)
 {
 	Request::Body b;
 
-	std::vector<std::string> args = split(buffer.c_str(), ' ');
+	std::vector<std::string> args = utils::split(buffer.c_str(), ' ');
 	if (args.size() == 0)
 		throw std::runtime_error("La commande est vide, cas de figure non géré");
 
@@ -25,7 +25,7 @@ Request::Body get_body(const std::string &buffer)
 std::vector<Request::Body> get_bodies(const std::string &buffer)
 {
 	std::vector<Request::Body> bodies;
-	std::vector<std::string> lines = split(buffer.c_str(), '\n');
+	std::vector<std::string> lines = utils::split(buffer.c_str(), '\n');
 
 	for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
 	{

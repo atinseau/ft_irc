@@ -21,6 +21,7 @@ COMMAND= $(addprefix command/, \
 				list.cpp \
 				notice.cpp \
 				all.cpp \
+				topic.cpp \
 			) \
 		)
 
