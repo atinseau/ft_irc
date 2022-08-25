@@ -1,6 +1,6 @@
 #include "../command.hpp"
 
-void Command::topic(Payload p)
+void Command::topic(Payload& p)
 {
 	if (!p.body.second.size())
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), "TOPIC"));
@@ -19,7 +19,7 @@ void Command::topic(Payload p)
 		return;
 	}
 
-	Operator* op = it->second.get_operator(p.client.get_fd());
+	Operator* op = it->second.get_operator(p.client);
 	if (it->second.has('t') && !op->has('o'))
 		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), channel_name));
 	it->second.set_topic(utils::join(p.body.second, " ", 1));

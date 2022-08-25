@@ -1,7 +1,7 @@
 
 CC=clang++
 EXTRA_FLAGS=-Wall -Werror -Wextra
-FLAGS=-std=c++98 -g
+FLAGS=-std=c++98 -g -D DEV=1
 BUILD_DIR=.build
 NAME=ft_irc
 
@@ -22,6 +22,8 @@ COMMAND= $(addprefix command/, \
 				notice.cpp \
 				all.cpp \
 				topic.cpp \
+				who.cpp \
+				invite.cpp \
 			) \
 		)
 

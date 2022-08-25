@@ -56,9 +56,7 @@ Request Client::read()
 		while(isspace(chunk[chunk.size() - 1]))
 			chunk.erase(chunk.size() - 1);
 		req.second = chunk;
-
-		DEBUG(req.second);
-
+		if (DEV) DEBUG(req.second);
 		req.set_ready(true);
 		chunk.clear();
 	}
@@ -68,7 +66,7 @@ Request Client::read()
 
 void Client::write(Response res)
 {
-	WARNING(res.str());
+	if (DEV) WARNING(res.str().substr(0, res.str().size() - 1));
 	if (send(this->get_fd(), res.str().c_str(), res.str().size(), 0) < 0)
 		ERROR("Erreur lors de l'envoi de la requête");
 }

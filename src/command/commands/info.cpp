@@ -1,16 +1,13 @@
 #include "../command.hpp"
 
 
-void Command::info(Payload p)
+void Command::info(Payload& p)
 {
 	Client& client = p.client;
 	std::vector<std::string> infos;
 
-	// inet_ntop(AF_INET6, &(Server::address.sin6_addr), buffer, INET6_ADDRSTRLEN);
-	
 	infos.push_back("------------------ SERVER INFO ------------------");
 	infos.push_back("Nom du serveur: " + Server::name);
-	// infos.push_back("Adresse du serveur: " + std::string(buffer));
 	infos.push_back("Port du serveur: " + utils::itoa(Server::port));
 	infos.push_back("Nombre de clients: " + utils::itoa(Server::clients.size()));
 	infos.push_back("------------------ CLIENT INFO ------------------");

@@ -24,19 +24,23 @@ Channel create_own_channel(std::string name, std::string password, Client &clien
 
 void join_channel(Channel &channel, const std::string &password, Client &client)
 {
-	if (channel.get_password().size() && channel.get_password() != password)
-		throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME"), channel.get_name()));
+	if (channel.include(client.get_fd()))
+		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), channel.get_name()));
+
+	if (channel.has('l') && channel.connected_clients() + 1 > channel.get_limit())
+		throw ResponseException(ERR_CHANNELISFULL(client.get_key("NICKNAME"), channel.get_name()));
 
 	if (channel.has('i') && !channel.is_invite(client))
 		throw ResponseException(ERR_INVITEONLYCHAN(client.get_key("NICKNAME"), channel.get_name()));
 
-	if (channel.include(client.get_fd()))
-		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), channel.get_name()));
+	if (channel.get_password().size() && channel.get_password() != password)
+		throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME"), channel.get_name()));
+
 	channel.insert(client);
 	successful_join(client, channel);
 }
 
-void Command::join(Payload p)
+void Command::join(Payload& p)
 {
 	if (p.body.second.size() < 1 || (p.body.second.size() == 1 && p.body.second[0] == "#"))
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), "JOIN"));

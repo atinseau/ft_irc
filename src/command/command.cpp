@@ -53,13 +53,15 @@ void Command::_exec(const Request::Body &body)
 				return;
 			}
 		}
-		it->second(Payload(_client, body));
+
+		Payload p(_client, body);
+
+		it->second(p);
 
 		if (_client.is_auth() && _client.get_state() == IS_NOT_AUTH)
 		{
 			SUCCESS("Connexion réussie");
 			say_hello(_client);
-			_client.get_info(true);
 			_client.set_state(IS_AUTH);
 		}
 		return;
@@ -86,6 +88,7 @@ Command::map_t Command::init_cmd()
 	map["LIST"] = &Command::list;
 	map["WHO"] = &Command::who;
 	map["TOPIC"] = &Command::topic;
+	map["INVITE"] = &Command::invite;
 
 	// SHORT COMMANDS
 	map["QUIT"] = &Command::quit;

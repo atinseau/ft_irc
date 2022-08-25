@@ -5,7 +5,10 @@ Operator::Operator() : Mode() {}
 
 
 Channel::Channel(std::string name, std::string password) : Mode(), _name(name), _password(password), _limit(-1)
-{}
+{
+	if (_password.size())
+		give("k");
+}
 
 Operator &Channel::insert(Client &client)
 {
@@ -159,9 +162,27 @@ std::string Channel::get_modes_reply(const std::string* to_add, const std::strin
 	return str + args;
 }
 
-Operator* Channel::get_operator(int client_fd)
+
+std::string Operator::get_modes_reply(const std::string* to_remove) const
 {
-	std::map<int, Operator>::iterator it = _clients.find(client_fd);
+	std::string modes;
+	if (_modes.size() > 0)
+		modes += "+";
+	for (size_t i = 0; i < _modes.size(); i++)
+		modes += _modes[i];
+	if (to_remove != NULL)
+	{
+		if (to_remove->size() > 0)
+			modes += "-";
+		for (size_t i = 0; i < to_remove->size(); i++)
+			modes += to_remove->at(i);
+	}
+	return modes;
+}
+
+Operator* Channel::get_operator(const Client& client)
+{
+	std::map<int, Operator>::iterator it = _clients.find(client.get_fd());
 	if (it == _clients.end())
 		return NULL;
 	return &it->second;
@@ -174,4 +195,21 @@ bool Channel::is_invite(const Client& client)
 		return false;
 	_invites.erase(invite);
 	return true;
+}
+
+
+void Channel::invite(const Client& client)
+{
+	if (get_operator(client))
+		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), get_name()));
+	_invites.push_back(client.get_key("NICKNAME"));
+}
+
+
+std::vector<int> Channel::get_clients() const
+{
+	std::vector<int> fds;
+	for (std::map<int, Operator>::const_iterator it = _clients.begin(); it != _clients.end(); it++)
+		fds.push_back(it->first);
+	return fds;
 }

@@ -19,6 +19,10 @@
 #define SERVER_PORT 10000
 #define TIME 100 * 60 * 1000
 
+#ifndef DEV
+ # define DEV 0
+#endif
+
 # define CLEAR "\e[0m"
 # define RED "\e[1;31m"
 # define YELLOW "\e[1;33m"

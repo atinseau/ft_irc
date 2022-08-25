@@ -1,6 +1,6 @@
 #include "../command.hpp"
 
-void Command::part(Payload p)
+void Command::part(Payload& p)
 {
 
 	if (!p.body.second.size() || p.body.second[0] == ":")

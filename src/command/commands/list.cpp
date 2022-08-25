@@ -10,7 +10,7 @@ void send_responses(std::vector<std::string>& responses, Client& client)
 	client.write(RPL_LISTEND(nickname));
 }
 
-void Command::list(Payload p)
+void Command::list(Payload& p)
 {
 	const std::string& nickname = p.client.get_key("NICKNAME");
 	bool by_key = p.body.second.size() > 0 && p.body.second[0] != "";

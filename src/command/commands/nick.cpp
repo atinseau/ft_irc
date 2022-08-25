@@ -12,7 +12,7 @@ void dispatch_new_nick(Client& client, const std::string& old_nickname, const st
 	client.write(RPL_NICKCHANGE(old_nickname, new_nickname));
 }
 
-void Command::nick(Payload p)
+void Command::nick(Payload& p)
 {
 	if (p.body.second.size() == 0)
 	{

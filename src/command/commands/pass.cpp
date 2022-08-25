@@ -1,6 +1,6 @@
 #include "../command.hpp"
 
-void Command::pass(Payload p)
+void Command::pass(Payload& p)
 {
 	if (p.client["PASSWORD"].size() > 0)
 		throw ResponseException(ERR_ALREADYREGISTRED(p.client.get_key("NICKNAME")));

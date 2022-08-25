@@ -34,7 +34,7 @@ std::string get_message(const std::vector<std::string> &vec)
 }
 
 
-void Command::privmsg(Payload p)
+void Command::privmsg(Payload& p)
 {
 
 	Client &client = p.client;
@@ -53,7 +53,22 @@ void Command::privmsg(Payload p)
 			std::map<std::string, Channel>::iterator channel_it = Server::channels.find(it->identifier);
 			if (channel_it == Server::channels.end())
 			{
-				client.write(ERR_NOTONCHANNEL(from, it->identifier));
+				client.write(ERR_NOSUCHCHANNEL(from, it->identifier));
+				continue;
+			}
+			if (channel_it->second.has('n'))
+			{
+				if (channel_it->second.has('s'))
+					client.write(ERR_NOSUCHCHANNEL(from, it->identifier));
+				else
+					client.write(ERR_CANNOTSENDTOCHAN(from, it->identifier));
+				continue;
+			}
+
+			Operator* op = channel_it->second.get_operator(client);
+			if (channel_it->second.has('m') && (!op->has('o') && !op->has('v')))
+			{
+				client.write(ERR_CANNOTSENDTOCHAN(from, it->identifier));
 				continue;
 			}
 

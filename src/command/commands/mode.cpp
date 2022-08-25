@@ -98,8 +98,6 @@ std::map<char, int> parse_mode(const Client& client, const std::string &modes, s
 
 void set_channel_mode(Client& client, Channel &channel, const std::string &to_add, const std::string &to_remove, const std::vector<std::string>& args, const std::map<char, int>& parameter_order)
 {
-	(void)client;
-
 	channel.give(to_add);
 	channel.take(to_remove);
 
@@ -119,12 +117,10 @@ void set_channel_mode(Client& client, Channel &channel, const std::string &to_ad
 		channel.set_limit(utils::atoi(args[2 + order].c_str()));
 	}
 
-
 	if (to_remove.find('k') != std::string::npos)
 		channel.set_password("");
 	if (to_remove.find('l') != std::string::npos)
 		channel.set_limit(-1);
-
 
 	Channel::Dispatcher dispatcher = channel.create_dispatcher();
 
@@ -132,7 +128,31 @@ void set_channel_mode(Client& client, Channel &channel, const std::string &to_ad
 	dispatcher.send();
 }
 
-void Command::mode(Payload p)
+void set_user_mode(Client &client, Channel &channel, const std::string &to_add, const std::string &to_remove, const std::vector<std::string>& args)
+{
+	(void)to_add;
+	(void)to_remove;
+
+	if (args.size() < 3)
+		throw ResponseException(ERR_NEEDMOREPARAMS(client.get_key("NICKNAME"), "MODE"));
+
+	Client* c = get_client_by_key("NICKNAME", args[2].c_str());
+	if (!c)
+		throw ResponseException(ERR_NOSUCHNICK(client.get_key("NICKNAME"), args[2]));
+
+	Operator *op = channel.get_operator(*c);
+	if (!op)
+		throw ResponseException(ERR_NOSUCHNICK(client.get_key("NICKNAME"), args[2]));
+
+	op->give(to_add);
+	op->take(to_remove);
+
+	Channel::Dispatcher dispatcher = channel.create_dispatcher();
+	dispatcher.load(RPL_MODEUSER(client.fullname(), channel.get_name(), op->get_modes_reply(&to_remove), c->get_key("NICKNAME")));
+	dispatcher.send();
+}
+
+void Command::mode(Payload& p)
 {
 	(void)p;
 	if (p.body.second.size() < 1)
@@ -145,13 +165,11 @@ void Command::mode(Payload p)
 
 	if (p.body.second.size() < 2)
 	{
-		Channel::Dispatcher dispatcher = channel_it->second.create_dispatcher();
-		dispatcher.load(RPL_MODE(p.client.fullname(), channel_it->second.get_name(), channel_it->second.get_modes_reply()));
-		dispatcher.send();
+		p.client.write(RPL_CHANNELMODEIS(p.client.get_key("NICKNAME"), channel_it->second.get_name(), channel_it->second.get_modes_reply()));
 		return;
 	}
 		
-	Operator* op = channel_it->second.get_operator(p.client.get_fd());
+	Operator* op = channel_it->second.get_operator(p.client);
 	if (!op || (op && !op->has('o')))
 		throw ResponseException(ERR_CHANOPRIVSNEEDED(p.client.get_key("NICKNAME"), target));
 
@@ -170,22 +188,7 @@ void Command::mode(Payload p)
 	if (!is_not_profil(sum_mode, is_channel_mode))
 		set_channel_mode(p.client, channel_it->second, to_add, to_remove, p.body.second, parameter_order);
 	else if (!is_not_profil(sum_mode, is_user_mode))
-	{
-
-	}
+		set_user_mode(p.client, channel_it->second, to_add, to_remove, p.body.second);
 	else
 		throw ResponseException(ERR_AMBIGUOUS(p.client.get_key("NICKNAME"), modes, target));
-
-
-
-	// if (!find_invalid_mode(sum_mode, is_channel_mode))
-	// 	set_channel_mode(p.client, channel_it->second, to_add, to_remove, p.body.second, parameter_order);
-	// else if (!find_invalid_mode(sum_mode, is_user_mode))
-	// 	DEBUG("USER MODE");
-	// else
-	// 	throw ResponseException(ERR_UNKNOWNMODE(p.client.get_key("NICKNAME"), modes));
-
-	// DEBUG(modes);
-	// DEBUG(to_add);
-	// DEBUG(to_remove);
 }

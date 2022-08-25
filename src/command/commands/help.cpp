@@ -1,6 +1,6 @@
 #include "../command.hpp"
 
-void Command::help(Payload p)
+void Command::help(Payload& p)
 {
 	Client& client = p.client;
 

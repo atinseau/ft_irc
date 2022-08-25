@@ -3,35 +3,34 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-bool is_a (char c)
+class Human
 {
-	if (c == 'a')
-		return true;
-	return false;
-}
+public:
+	virtual int createMan()
+	{
+		return 0;
+	}
 
-bool is_b (char c)
+	int createWoman()
+	{
+		return 1;
+	}
+};
+
+class MicrosoftHuman : public Human
 {
-	if (c == 'b')
-		return true;
-	return false;
-}
-
+	int createMan()
+	{
+		return 1;
+	}
+};
 
 int main(void)
 {
-	typedef bool (*func_t)(char);
-	typedef func_t func_t_array[];
 
-	func_t_array f = {
-		is_a,
-		is_b,
-		is_a
-	};
+	Human *human = new MicrosoftHuman();
 
+	std::cout << human->createMan() << std::endl;
 
-
-	std::cout << sizeof(f) / sizeof(func_t) << std::endl;
-	
 	return (0);
 }

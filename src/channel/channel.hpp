@@ -35,6 +35,9 @@ class Operator: public Mode
 {
 public:
 	Operator();
+
+	std::string get_modes_reply(const std::string* to_remove = NULL) const;
+
 };
 
 struct DispatchFilter
@@ -88,15 +91,18 @@ public:
 	void kick(int client_fd);
 	std::string get_client_list() const;
 
+	std::vector<int> get_clients() const;
+
 	Dispatcher create_dispatcher(Client *initiator = NULL);
 
-	Operator* get_operator(int client_fd);
+	Operator* get_operator(const Client& client);
 
 	void set_topic(const std::string& topic);
 	void set_password(const std::string& password);
 	void set_limit(int limit);
 
 	bool is_invite(const Client& client);
+	void invite(const Client& client);
 };
 
 std::string fix_channel_name(const std::string &name);
