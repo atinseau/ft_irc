@@ -155,7 +155,7 @@ std::string Channel::get_modes_reply(const std::string* to_add, const std::strin
 	for (size_t i = 0; i < str.size(); i++)
 	{
 		if (str[i] == 'k')
-			args += " " + _password;
+			args += " " + (_password.size() ? _password : "NaN");
 		else if (str[i] == 'l' && _limit != -1)
 			args += " " + utils::itoa(_limit);
 		else if (str[i] == 'b')
@@ -163,7 +163,7 @@ std::string Channel::get_modes_reply(const std::string* to_add, const std::strin
 			std::string bans;
 			for (std::vector<std::string>::const_iterator it = _pending_bans.begin(); it != _pending_bans.end(); it++)
 				bans += *it + (it != _pending_bans.end() - 1 ? "," : "");
-			args += " " + (bans.size() ? bans : "*");
+			args += " " + (bans.size() ? bans : "NaN");
 			_pending_bans.clear();
 		}
 	}
