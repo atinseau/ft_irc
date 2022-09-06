@@ -89,6 +89,7 @@ Command::map_t Command::init_cmd()
 	map["WHO"] = &Command::who;
 	map["TOPIC"] = &Command::topic;
 	map["INVITE"] = &Command::invite;
+	map["KICK"] = &Command::kick;
 
 	// SHORT COMMANDS
 	map["QUIT"] = &Command::quit;

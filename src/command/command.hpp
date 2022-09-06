@@ -58,6 +58,7 @@ public:
 	static void list(Payload& p);
 	static void who(Payload& p);
 	static void invite(Payload& p);
+	static void kick(Payload& p);
 	
 	// static void names(Payload& p);
 	// static void list(Payload& p);

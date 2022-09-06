@@ -46,11 +46,19 @@ struct DispatchFilter
 	Client &source;
 };
 
+struct Mask
+{
+	std::string mask;
+	std::string client_name;
+	time_t timestamp;
+};
+
 class Channel: public Mode
 {
 private:
 	std::map<int, Operator> _clients;
-	std::vector<std::string> _bans;
+	std::vector<Mask> _bans;
+	std::vector<std::string> _pending_bans;
 	std::vector<std::string> _invites;
 
 	std::string _name;
@@ -83,12 +91,12 @@ public:
 	const std::string& get_name() const;
 	const std::string& get_topic() const;
 	int get_limit() const;
-	std::string get_modes_reply(const std::string* to_add = NULL, const std::string* to_remove = NULL) const;
+	std::string get_modes_reply(const std::string* to_add = NULL, const std::string* to_remove = NULL);
 
 	int connected_clients() const;
 
-	bool include(int client_fd) const;
-	void kick(int client_fd);
+	bool include(const Client& client) const;
+	void kick(Client& client);
 	std::string get_client_list() const;
 
 	std::vector<int> get_clients() const;
@@ -103,6 +111,10 @@ public:
 
 	bool is_invite(const Client& client);
 	void invite(const Client& client);
+
+	void add_ban(const std::string& ban, const Client& client);
+	void remove_ban(const std::string* ban);
+	const std::vector<Mask>& get_bans() const;
 };
 
 std::string fix_channel_name(const std::string &name);

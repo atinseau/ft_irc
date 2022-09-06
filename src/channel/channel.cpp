@@ -19,6 +19,15 @@ Operator &Channel::insert(Client &client)
 	return it.first->second;
 }
 
+void Channel::kick(Client& client)
+{
+	std::map<int, Operator>::iterator it = _clients.find(client.get_fd());
+	if (it != _clients.end()) {
+		_clients.erase(it);
+		client.remove_channel(_name);
+	}
+}
+
 const std::string& Channel::get_password() const
 {
 	return _password;
@@ -44,22 +53,13 @@ int Channel::connected_clients() const
 	return _clients.size();
 }
 
-bool Channel::include(int client_fd) const
+bool Channel::include(const Client& client) const
 {
-	std::map<int, Operator>::const_iterator it = _clients.find(client_fd);
+	std::map<int, Operator>::const_iterator it = _clients.find(client.get_fd());
 	if (it == _clients.end())
 		return false;
 	return true;
 }
-
-void Channel::kick(int client_fd)
-{
-	std::map<int, Operator>::iterator it = _clients.find(client_fd);
-	if (it != _clients.end())
-		_clients.erase(it);
-}
-
-
 
 std::string Channel::get_client_list() const
 {
@@ -131,7 +131,7 @@ void Channel::set_limit(int limit)
 	_limit = limit;
 }
 
-std::string Channel::get_modes_reply(const std::string* to_add, const std::string* to_remove) const
+std::string Channel::get_modes_reply(const std::string* to_add, const std::string* to_remove)
 {
 	std::string str;
 	std::string args;
@@ -156,8 +156,16 @@ std::string Channel::get_modes_reply(const std::string* to_add, const std::strin
 	{
 		if (str[i] == 'k')
 			args += " " + _password;
-		else if (str[i] == 'l')
+		else if (str[i] == 'l' && _limit != -1)
 			args += " " + utils::itoa(_limit);
+		else if (str[i] == 'b')
+		{
+			std::string bans;
+			for (std::vector<std::string>::const_iterator it = _pending_bans.begin(); it != _pending_bans.end(); it++)
+				bans += *it + (it != _pending_bans.end() - 1 ? "," : "");
+			args += " " + (bans.size() ? bans : "*");
+			_pending_bans.clear();
+		}
 	}
 	return str + args;
 }
@@ -212,4 +220,46 @@ std::vector<int> Channel::get_clients() const
 	for (std::map<int, Operator>::const_iterator it = _clients.begin(); it != _clients.end(); it++)
 		fds.push_back(it->first);
 	return fds;
+}
+
+const std::vector<Mask>& Channel::get_bans() const
+{
+	return _bans;
+}
+
+void Channel::add_ban(const std::string& ban, const Client& client)
+{
+	Mask mask;
+
+	mask.mask = ban;
+	mask.client_name = client.get_key("NICKNAME");
+	mask.timestamp = time(NULL);
+
+	for (std::vector<Mask>::iterator it = _bans.begin(); it != _bans.end(); it++)
+	{
+		if (it->mask == ban)
+			return;
+	}
+	_pending_bans.push_back(ban);
+	_bans.push_back(mask);
+}
+
+void Channel::remove_ban(const std::string* ban)
+{
+	if (ban == NULL)
+	{
+		for (std::vector<Mask>::iterator it = _bans.begin(); it != _bans.end(); it++)
+			_pending_bans.push_back(it->mask);
+		_bans.clear();
+		return;
+	}
+	for (std::vector<Mask>::iterator it = _bans.begin(); it != _bans.end(); it++)
+	{
+		if (it->mask == *ban)
+		{
+			_pending_bans.push_back(it->mask);
+			_bans.erase(it);
+			return;
+		}
+	}
 }

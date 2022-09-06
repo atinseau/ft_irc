@@ -109,19 +109,28 @@ void Client::join(std::string channel)
 	_channels.push_back(channel);
 }
 
+
+void Client::remove_channel(const std::string& channel)
+{
+	std::vector<std::string>::iterator it = utils::find(_channels.begin(), _channels.end(), channel);
+	if (it != _channels.end())
+		_channels.erase(it);
+}
+
+
 bool Client::leave(std::string channel)
 {
 	std::map<std::string, Channel>::iterator channel_it = Server::channels.find(channel);
 	if (channel_it != Server::channels.end())
 	{
-		if (channel_it->second.include(this->get_fd()))
+		if (channel_it->second.include(*this))
 		{
 			Channel::Dispatcher dispatcher = channel_it->second.create_dispatcher();
 
 			dispatcher.load(RPL_PART(fullname(), channel_it->first));
 			dispatcher.send();
 			
-			channel_it->second.kick(this->get_fd());
+			channel_it->second.kick(*this);
 			return (true);
 		}
 	}

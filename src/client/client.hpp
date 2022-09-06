@@ -37,6 +37,8 @@ public:
 	void join(std::string channel);
 	bool leave(std::string channel);
 
+	void remove_channel(const std::string& channel);
+
 	void set_state(ClientState state);
 
 	bool is_auth();

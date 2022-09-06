@@ -24,7 +24,7 @@ Channel create_own_channel(std::string name, std::string password, Client &clien
 
 void join_channel(Channel &channel, const std::string &password, Client &client)
 {
-	if (channel.include(client.get_fd()))
+	if (channel.include(client))
 		throw ResponseException(ERR_USERONCHANNEL(client.get_key("NICKNAME"), channel.get_name()));
 
 	if (channel.has('l') && channel.connected_clients() + 1 > channel.get_limit())

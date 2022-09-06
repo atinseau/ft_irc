@@ -14,16 +14,18 @@ COMMAND= $(addprefix command/, \
 				pass.cpp \
 				user.cpp \
 				info.cpp \
-				privmsg.cpp \
+				msg/privmsg.cpp \
+				msg/notice.cpp \
+				msg/utils.cpp \
 				join.cpp \
 				part.cpp \
 				mode.cpp \
 				list.cpp \
-				notice.cpp \
 				all.cpp \
 				topic.cpp \
 				who.cpp \
 				invite.cpp \
+				kick.cpp \
 			) \
 		)
 

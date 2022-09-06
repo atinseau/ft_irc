@@ -27,10 +27,12 @@
 
 # define RPL_PART(FULLNAME, CHANNEL)					F(FULLNAME + " PART " + CHANNEL)
 # define RPL_PRIVMSG(FULLNAME, TO, MSG)					F(FULLNAME + " PRIVMSG " + TO + " :" + MSG)
+# define RPL_NOTICE(FULLNAME, TO, MSG)					F(FULLNAME + " NOTICE " + TO + " :" + MSG)
 # define RPL_JOIN(FULLNAME, CHANNEL)					F(FULLNAME + " JOIN " + CHANNEL)
 # define RPL_MODE(FULLNAME, CHANNEL, MODE)				F(FULLNAME + " MODE " + CHANNEL + " " + MODE)
 # define RPL_MODEUSER(FULLNAME, CHANNEL, MODE, NICK)	F(FULLNAME + " MODE " + CHANNEL + " " + MODE + " " + NICK)
 # define RPL_INVITE(FULLNAME, CHANNEL, NICK)			F(FULLNAME + " INVITE " + NICK + " :" + CHANNEL)
+# define RPL_KICK(FULLNAME, CHANNEL, NICK)				F(FULLNAME + " KICK " + CHANNEL + " " + NICK)
 
 # define RPL_CHANNELMODEIS(NICK, CHANNEL, MODE)	F(":" + HOST + " 324 " + NICK + " " + CHANNEL + " " + MODE)
 
@@ -39,6 +41,8 @@
 # define RPL_LISTSTART(NICK)					F(":" + HOST + " 321 " + NICK + " Channel :Liste des channels")
 # define RPL_LIST(NICK, CHANNEL, COUNT, TOPIC)	F(":" + HOST + " 322 " + NICK + " " + CHANNEL + " " + COUNT + " : " + TOPIC)
 # define RPL_LISTEND(NICK)						F(":" + HOST + " 323 " + NICK + " :End of /LIST")
+# define RPL_BANLIST(NICK, CHANNEL, MASK, FROM, TIME)	F(":" + HOST + " 367 " + NICK + " " + CHANNEL + " " + MASK + " " + FROM + " " + TIME)
+# define RPL_ENDOFBANLIST(NICK, CHANNEL)		F(":" + HOST + " 368 " + NICK + " " + CHANNEL + " :End of /BANLIST")
 # define RPL_TOPIC(NICK, CHANNEL, TOPIC)		F(":" + HOST + " 332 " + NICK + " " + CHANNEL + " :" + TOPIC)
 # define RPL_NOTOPIC(NICK, CHANNEL)				F(":" + HOST + " 331 " + NICK + " " + CHANNEL + " :Le channel n'a pas de topic")
 
