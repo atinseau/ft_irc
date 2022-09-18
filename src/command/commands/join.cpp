@@ -36,13 +36,19 @@ void join_channel(Channel &channel, const std::string &password, Client &client)
 	if (channel.get_password().size() && channel.get_password() != password)
 		throw ResponseException(ERR_BADCHANNELKEY(client.get_key("NICKNAME"), channel.get_name()));
 
+	for(std::vector<Mask>::const_iterator ban_it = channel.get_bans().begin(); ban_it != channel.get_bans().end(); ban_it++)
+	{
+		if (user_match_mask(ban_it->mask, client))
+			throw ResponseException(ERR_BANNEDFROMCHAN(client.get_key("NICKNAME"), channel.get_name()));
+	}
+
 	channel.insert(client);
 	successful_join(client, channel);
 }
 
 void Command::join(Payload& p)
 {
-	if (p.body.second.size() < 1 || (p.body.second.size() == 1 && p.body.second[0] == "#"))
+	if (p.body.second.size() < 1 || (p.body.second.size() == 1 && (p.body.second[0] == "#" || p.body.second[0] == "&")))
 		throw ResponseException(ERR_NEEDMOREPARAMS(p.client.get_key("NICKNAME"), "JOIN"));
 
 	std::vector<std::string> channel_keys = utils::split(p.body.second[0].c_str(), ',');

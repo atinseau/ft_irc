@@ -26,6 +26,7 @@ COMMAND= $(addprefix command/, \
 				who.cpp \
 				invite.cpp \
 				kick.cpp \
+				names.cpp \
 			) \
 		)
 

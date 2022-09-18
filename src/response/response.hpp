@@ -25,14 +25,14 @@
 # define RPL_INFO(NICK, MSG)					F(":" + HOST + " 371 " + NICK + " :" + MSG)
 # define RPL_NICKCHANGE(OLD, NEW)				F(":" + OLD + " NICK " + ":" + NEW)
 
-# define RPL_PART(FULLNAME, CHANNEL)					F(FULLNAME + " PART " + CHANNEL)
-# define RPL_PRIVMSG(FULLNAME, TO, MSG)					F(FULLNAME + " PRIVMSG " + TO + " :" + MSG)
-# define RPL_NOTICE(FULLNAME, TO, MSG)					F(FULLNAME + " NOTICE " + TO + " :" + MSG)
-# define RPL_JOIN(FULLNAME, CHANNEL)					F(FULLNAME + " JOIN " + CHANNEL)
-# define RPL_MODE(FULLNAME, CHANNEL, MODE)				F(FULLNAME + " MODE " + CHANNEL + " " + MODE)
-# define RPL_MODEUSER(FULLNAME, CHANNEL, MODE, NICK)	F(FULLNAME + " MODE " + CHANNEL + " " + MODE + " " + NICK)
-# define RPL_INVITE(FULLNAME, CHANNEL, NICK)			F(FULLNAME + " INVITE " + NICK + " :" + CHANNEL)
-# define RPL_KICK(FULLNAME, CHANNEL, NICK)				F(FULLNAME + " KICK " + CHANNEL + " " + NICK)
+# define RPL_PART(FULLNAME, CHANNEL)					F(":" + FULLNAME + " PART " + CHANNEL)
+# define RPL_PRIVMSG(FULLNAME, TO, MSG)					F(":" + FULLNAME + " PRIVMSG " + TO + " :" + MSG)
+# define RPL_NOTICE(FULLNAME, TO, MSG)					F(":" + FULLNAME + " NOTICE " + TO + " :" + MSG)
+# define RPL_JOIN(FULLNAME, CHANNEL)					F(":" + FULLNAME + " JOIN " + CHANNEL)
+# define RPL_MODE(FULLNAME, CHANNEL, MODE)				F(":" + FULLNAME + " MODE " + CHANNEL + " " + MODE)
+# define RPL_MODEUSER(FULLNAME, CHANNEL, MODE, NICK)	F(":" + FULLNAME + " MODE " + CHANNEL + " " + MODE + " " + NICK)
+# define RPL_INVITE(FULLNAME, CHANNEL, NICK)			F(":" + FULLNAME + " INVITE " + NICK + " :" + CHANNEL)
+# define RPL_KICK(FULLNAME, CHANNEL, NICK)				F(":" + FULLNAME + " KICK " + CHANNEL + " " + NICK)
 
 # define RPL_CHANNELMODEIS(NICK, CHANNEL, MODE)	F(":" + HOST + " 324 " + NICK + " " + CHANNEL + " " + MODE)
 
@@ -73,7 +73,7 @@
 
 # define ERR_INVITEONLYCHAN(NICK, CHANNEL)		F(":" + HOST + " 473 " + NICK + " :Le channel " + CHANNEL + " est sur invitation uniquement (+i)")
 # define ERR_CHANNELISFULL(NICK, CHANNEL)		F(":" + HOST + " 471 " + NICK + " :Le channel " + CHANNEL + " est plein (+l)")
-
+# define ERR_BANNEDFROMCHAN(NICK, CHANNEL)		F(":" + HOST + " 474 " + NICK + " :Vous êtes banni du channel " + CHANNEL + " (+b)")
 # define ERR_CHANOPRIVSNEEDED(NICK, CHANNEL)	F(":" + HOST + " 482 " + NICK + " " + CHANNEL + " :Vous n'êtes pas opérateur de ce channel (+o)")
 # define ERR_CANNOTSENDTOCHAN(NICK, CHANNEL)	F(":" + HOST + " 404 " + NICK + " " + CHANNEL + " :Vous n'êtes pas autorisé à envoyer des messages sur ce channel")
 

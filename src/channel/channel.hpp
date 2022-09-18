@@ -120,4 +120,8 @@ public:
 std::string fix_channel_name(const std::string &name);
 bool operator_is(const Operator &op, char p);
 
+bool is_valid_mask(const char *mask);
+bool string_mask_match(std::string &mask, std::string &value);
+bool user_match_mask(const std::string &mask, const Client& client);
+
 #endif

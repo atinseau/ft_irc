@@ -23,6 +23,7 @@ namespace utils
 {
 
 	std::vector<std::string> split(const char *str, char c);
+	std::vector<std::string> split(const char *str, const char* sep);
 	std::string join(const std::vector<std::string> &vec, const char *sep, size_t offset = 0);
 	std::string format_time(struct timeval &tv);
 	size_t strlen(const char *str);

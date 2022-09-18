@@ -80,6 +80,7 @@ Command::map_t Command::init_cmd()
 	map["INFO"] = &Command::info;
 	map["PRIVMSG"] = &Command::privmsg;
 	map["NOTICE"] = &Command::notice;
+	map["NAMES"] = &Command::names;
 
 	// CHANNEL COMMANDS
 	map["JOIN"] = &Command::join;

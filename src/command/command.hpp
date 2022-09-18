@@ -49,6 +49,7 @@ public:
 	static void userhost(Payload& p);
 	static void lusers(Payload& p);
 	static void cap(Payload& p);
+	static void names(Payload& payload);
 
 	// CHANNEL COMMANDS
 	static void join(Payload& p);

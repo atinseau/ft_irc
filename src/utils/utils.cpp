@@ -12,6 +12,19 @@
 
 #include "utils.hpp"
 
+size_t find_list(std::string &str, const char *sep)
+{
+	int i = 0;
+	size_t pos = 0;
+	while (sep[i] != '\0')
+	{
+		if ((pos = str.find(sep[i])) != std::string::npos)
+			return pos;
+		i++;
+	}
+	return std::string::npos;
+}
+
 namespace utils
 {
 	std::vector<std::string> split(const char *str, char c)
@@ -24,6 +37,24 @@ namespace utils
 			return res;
 		dup.append(str);
 		while ((pos = dup.find(c)) != std::string::npos)
+		{
+			res.push_back(dup.substr(0, pos));
+			dup.erase(0, pos + 1);
+		}
+		res.push_back(dup);
+		return res;
+	}
+
+	std::vector<std::string> split(const char *str, const char *sep)
+	{
+		std::vector<std::string> res;
+		std::string dup;
+		size_t pos = 0;
+
+		if (!str)
+			return res;
+		dup.append(str);
+		while ((pos = find_list(dup, sep)) != std::string::npos)
 		{
 			res.push_back(dup.substr(0, pos));
 			dup.erase(0, pos + 1);

@@ -240,6 +240,7 @@ void Channel::add_ban(const std::string& ban, const Client& client)
 		if (it->mask == ban)
 			return;
 	}
+
 	_pending_bans.push_back(ban);
 	_bans.push_back(mask);
 }

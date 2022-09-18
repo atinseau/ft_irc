@@ -148,7 +148,10 @@ void set_channel_mode(Client &client, Channel &channel, std::string &to_add, std
 		{
 			std::vector<std::string> masks = utils::split(args[2 + it->second].c_str(), ',');
 			for (std::vector<std::string>::iterator it = masks.begin(); it != masks.end(); it++)
-				channel.add_ban(*it, client);
+			{
+				if (is_valid_mask(it->c_str()))
+					channel.add_ban(*it, client);
+			}
 		}
 	}
 

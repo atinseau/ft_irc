@@ -23,6 +23,7 @@ Client::Client(pollfd pfd) : _pfd(pfd), _state(IS_NOT_AUTH)
 	_data["REALNAME"] = "";
 	_data["NICKNAME"] = "";
 	_data["PASSWORD"] = "";
+	_data["HOSTNAME"] = HOST;
 	_data["TIME"] = utils::itoa(tv.tv_sec);
 }
 
@@ -162,7 +163,7 @@ ClientState Client::get_state() const
 
 std::string Client::fullname() const
 {
-	return std::string(":" + get_key("NICKNAME") + "!" + get_key("USERNAME") + "@" + get_key("REALNAME"));
+	return get_key("NICKNAME") + "!" + get_key("USERNAME") + "@" + get_key("REALNAME");
 }
 
 std::vector<std::string> Client::get_info(bool print) const
