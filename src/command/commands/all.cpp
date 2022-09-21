@@ -35,3 +35,8 @@ void Command::cap(Payload& p)
 {
 	(void)p;
 }
+
+void Command::who(Payload& p)
+{
+	(void)p;
+}

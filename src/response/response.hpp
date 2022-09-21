@@ -1,15 +1,3 @@
- /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   response.hpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/23 12:10:25 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/03 19:46:47 by mbonnet          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 #include <string>
@@ -45,8 +33,6 @@
 # define RPL_ENDOFBANLIST(NICK, CHANNEL)		F(":" + HOST + " 368 " + NICK + " " + CHANNEL + " :End of /BANLIST")
 # define RPL_TOPIC(NICK, CHANNEL, TOPIC)		F(":" + HOST + " 332 " + NICK + " " + CHANNEL + " :" + TOPIC)
 # define RPL_NOTOPIC(NICK, CHANNEL)				F(":" + HOST + " 331 " + NICK + " " + CHANNEL + " :Le channel n'a pas de topic")
-
-// :irc.Chaat.fr 354 Guest49877 152 #salut thomas FEDFFC53.6A0FD317.55D43F85.IP irc.Chaat.fr Guest49877 H@ 0 :87 M
 
 # define RPL_WHOREPLY(FROM_NICK, NICK, CHANNEL, USER, REAL)F(":" + HOST + " 354 " + FROM_NICK + " 152 " + CHANNEL + " " + USER + " " + HOST + " " + SERVER + " " + NICK + " H@ 0 :" + REAL)
 # define RPL_ENDOFWHO(NICK, CHANNEL)			F(":" + HOST + " 315 " + NICK + " " + CHANNEL + " :End of /WHO list")

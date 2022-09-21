@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   command.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/23 12:10:35 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/06 08:26:24 by mbonnet          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
@@ -60,12 +48,6 @@ public:
 	static void who(Payload& p);
 	static void invite(Payload& p);
 	static void kick(Payload& p);
-	
-	// static void names(Payload& p);
-	// static void list(Payload& p);
-	// static void invite(Payload& p);
-	// static void kick(Payload& p);
-	// static void oper(Payload& p);
 
 private:
 	static map_t init_cmd();

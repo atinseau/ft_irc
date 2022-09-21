@@ -23,7 +23,6 @@ COMMAND= $(addprefix command/, \
 				list.cpp \
 				all.cpp \
 				topic.cpp \
-				who.cpp \
 				invite.cpp \
 				kick.cpp \
 				names.cpp \

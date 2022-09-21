@@ -1,20 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbonnet <mbonnet@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/18 09:52:29 by mbonnet           #+#    #+#             */
-/*   Updated: 2022/06/02 08:07:32 by mbonnet          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef IRC_HPP
 #define IRC_HPP
-
-// in english les variables please ;)
-// # define BLEU_2 "\e[1;34m"
 
 #define SERVER_PORT 10000
 #define TIME 100 * 60 * 1000
@@ -29,13 +14,6 @@
 # define BLUE "\e[1;36m"
 # define PURPLE "\e[1;35m"
 # define GREEN "\e[1;32m"
-
-// # define CLEAR ""
-// # define RED ""
-// # define YELLOW ""
-// # define BLUE ""
-// # define PURPLE ""
-// # define GREEN ""
 
 # define LOG(color, output, msg) output << color << msg << CLEAR << std::endl
 
