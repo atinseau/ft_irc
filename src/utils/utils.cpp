@@ -45,6 +45,14 @@ namespace utils
 		return res;
 	}
 
+	std::string toupper(const std::string &str)
+	{
+		std::string res;
+		for (size_t i = 0; i < str.size(); i++)
+			res += std::toupper(str[i]);
+		return res;
+	}
+
 	std::vector<std::string> split(const char *str, const char *sep)
 	{
 		std::vector<std::string> res;

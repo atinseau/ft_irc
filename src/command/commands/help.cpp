@@ -21,6 +21,7 @@ void Command::help(Payload& p)
 		"INVITE <username> #<channel>        | Invite un utilisateur dans un channel",
 		"KICK <channel> <username>           | Expulse un utilisateur d'un channel si vous êtes operateur",
 		"PRIVMSG <username> <message>        | Envoie un message à un utilisateur",
+		"NOTICE <username> <message>         | Envoie un message à un utilisateur",
 		"HELP                                | Affiche cette liste",
 	};
 

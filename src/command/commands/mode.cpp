@@ -106,6 +106,9 @@ void set_channel_mode(Client &client, Channel &channel, std::string &to_add, std
 
 	std::map<std::string, int> to_add_map;
 
+	if (to_add.find('p') != std::string::npos && to_add.find('s') != std::string::npos)
+		throw ResponseException(ERR_AMBIGUOUS(client.get_key("NICKNAME"), "+" + to_add, channel.get_name()));
+
 	if (to_add.find('k') != std::string::npos)
 	{
 		size_t order = parameter_order.find('k')->second;
@@ -156,6 +159,12 @@ void set_channel_mode(Client &client, Channel &channel, std::string &to_add, std
 	}
 
 	channel.give(to_add);
+
+	if (to_add.find('p') != std::string::npos && channel.has('s'))
+		to_remove.push_back('s');
+	if (to_add.find('s') != std::string::npos && channel.has('p'))
+		to_remove.push_back('p');
+
 	channel.take(to_remove);
 
 	if (to_remove.find('k') != std::string::npos)

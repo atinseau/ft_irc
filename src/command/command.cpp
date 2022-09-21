@@ -42,7 +42,7 @@ void Command::exec(const std::vector<Request::Body> &bodies)
 
 void Command::_exec(const Request::Body &body)
 {
-	map_t::iterator it = _commands.find(body.first);
+	map_t::iterator it = _commands.find(utils::toupper(body.first));
 	if (it != _commands.end())
 	{
 		if (!_client.is_auth())

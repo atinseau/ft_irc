@@ -32,6 +32,8 @@ namespace utils
 	void pop_back(std::string &str);
 	void get_time_lock();
 
+	std::string toupper(const std::string &str);
+
 	template <typename T, typename U>
 	T find(T begin, T end, U value)
 	{
