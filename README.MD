@@ -1,10 +1,10 @@
-# RESSOURCES
+# Résumé:
 
-- [IBM TUTO](https://www.ibm.com/docs/en/i/7.4?topic=designs-using-poll-instead-select)
-- [IRC DOCU](https://datatracker.ietf.org/doc/html/rfc1459)
-
-# FUNCTION REQUIRED
-
-- poll / 1 un seul
+L’objectif de ce projet est de reproduire le fonctionnement d’un serveur IRC.
+Vous utiliserez un vrai client IRC afin de vous connecter à votre serveur et ainsi de le
+tester.
+Internet fonctionne grâce à de nombreux standards et protocoles pour permettre une
+interopérabilité entre les machines connectées. Il est toujours intéressant de connaître ce
+genre de chose
 
 
