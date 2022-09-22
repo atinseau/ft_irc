@@ -37,6 +37,7 @@
 # define RPL_WHOREPLY(FROM_NICK, NICK, CHANNEL, USER, REAL)F(":" + HOST + " 354 " + FROM_NICK + " 152 " + CHANNEL + " " + USER + " " + HOST + " " + SERVER + " " + NICK + " H@ 0 :" + REAL)
 # define RPL_ENDOFWHO(NICK, CHANNEL)			F(":" + HOST + " 315 " + NICK + " " + CHANNEL + " :End of /WHO list")
 
+# define ERR_NOTREGISTERED(NICK)				F(":" + HOST + " 451 " + NICK + ": Vous n'etes pas authentifié, utilisez la commande /PASS <password> pour vous authentifier")
 # define ERR_UNKNOWNCOMMAND(COMMAND)			F(":" + HOST + " 421 * :La commande " + COMMAND + " n'existe pas")
 # define ERR_NONICKNAMEGIVEN					F(":" + HOST + " 431 :Aucun surnom d'utilisateur n'a etait fourni")
 # define ERR_ERRONEUSNICKNAME(NICK)				F(":" + HOST + " 432 " + NICK + " :Surnom d'utilisateur invalide")

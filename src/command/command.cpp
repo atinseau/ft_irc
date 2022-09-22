@@ -37,6 +37,7 @@ void Command::_exec(const Request::Body &body)
 		{
 			if (it->first != "PASS" && it->first != "NICK" && it->first != "USER" && it->first != "CAP" && it->first != "QUIT")
 			{
+				_client.write(ERR_NOTREGISTERED(_client.get_key("NICKNAME")));
 				ERROR("Commande non autorisée: " << it->first);
 				return;
 			}

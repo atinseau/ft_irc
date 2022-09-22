@@ -23,6 +23,8 @@ void Command::privmsg(Payload& p)
 				client.write(ERR_NOSUCHCHANNEL(from, it->identifier));
 				continue;
 			}
+
+			
 			if (channel_it->second.has('n'))
 			{
 				if (channel_it->second.has('s'))
@@ -33,7 +35,7 @@ void Command::privmsg(Payload& p)
 			}
 
 			Operator* op = channel_it->second.get_operator(client);
-			if (channel_it->second.has('m') && (!op->has('o') && !op->has('v')))
+			if (!op || (channel_it->second.has('m') && (!op->has('o') && !op->has('v'))))
 			{
 				client.write(ERR_CANNOTSENDTOCHAN(from, it->identifier));
 				continue;

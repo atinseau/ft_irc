@@ -1,9 +1,9 @@
 
 CC=clang++
 EXTRA_FLAGS=-Wall -Werror -Wextra
-FLAGS=-std=c++98 -g -D DEV=1
+FLAGS=-std=c++98 -g -D DEV=0
 BUILD_DIR=.build
-NAME=ft_irc
+NAME=ircserv
 
 COMMAND= $(addprefix command/, \
 			command.cpp \
@@ -60,20 +60,17 @@ all: $(NAME)
 	@echo "✅ $(NAME) is ready to start"
 
 clean:
-	@rm -f $(OBJ)
+	@rm -rf $(BUILD_DIR)
 	@echo "🗑 Cleaning library"
 
 fclean: clean
 	@rm -rf $(BUILD_DIR)
-	@echo "🗑 Cleaning build folder"
+	@rm -f $(NAME)
+	@echo "🗑 Cleaning all files"
 
 re: fclean all
 
 run: all
 	@./$(NAME) 10000 06112001
-
-valgrind:
-	@docker build -t valgrind .
-	@docker run -it -p 10000:10000 valgrind
 
 .DEFAULT_GOAL:=all
