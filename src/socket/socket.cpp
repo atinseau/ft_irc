@@ -114,11 +114,7 @@ void Server::_new_client(void)
 	int fd;
 
 	if ((fd = accept(this->_sock_server, NULL, NULL)) < 0)
-	{
-		if (errno != EWOULDBLOCK)
-			throw std::runtime_error("accept() failed");
-		return;
-	}
+		throw std::runtime_error("accept() failed");
 	Client client(_create_pfd(fd));
 	Server::clients.insert(std::pair<int, Client>(fd, client));
 }

@@ -27,9 +27,8 @@ Request Client::read()
 
 	req.first = recv(this->get_fd(), buffer, BUFFER_SIZE, 0);
 	if (req.first < 0)
-	{
-		if (errno != EWOULDBLOCK)
-			req.set_type(Request::ERROR);
+	{ 
+		req.set_type(Request::ERROR);
 		return (req);
 	}
 	if (req.first == 0)
