@@ -2,6 +2,7 @@
 # OBJECT FILE
 **/*.o
 ft_irc
+ircserv
 
 .vscode
 ft_irc.dSYM
