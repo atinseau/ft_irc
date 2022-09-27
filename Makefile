@@ -1,7 +1,7 @@
 
 CC=clang++
 EXTRA_FLAGS=-Wall -Werror -Wextra
-FLAGS=-std=c++98 -g -D DEV=0
+FLAGS=-std=c++98 -g -D DEV=1
 BUILD_DIR=.build
 NAME=ircserv
 
